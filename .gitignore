@@ -1,0 +1,7 @@
+kokoro-en-v0_19/
+*.opus
+*.mp3
+*.log
+__pycache__/
+*.tmp
+*.zip

@@ -265,7 +265,7 @@ def _get_engine():
 
 # ── main render ──────────────────────────────────────────────────────────────
 
-def render(infile, outfile=None, speaker="Carter", bitrate=32, engine=None):
+def render(infile, outfile=None, speaker="Carter", bitrate=32, engine=None, progress_cb=None):
     text = load_text(infile)
     if not text.strip():
         sys.exit("no extractable text")
@@ -316,6 +316,8 @@ def render(infile, outfile=None, speaker="Carter", bitrate=32, engine=None):
             sys.stderr.write("  %d/%d — %.1f min audio — RTF %.2fx\n"
                              % (i + 1, len(sentences), audio_sec / 60, rtf))
             sys.stderr.flush()
+            if progress_cb:
+                progress_cb(i + 1, len(sentences), audio_sec)
 
     ff.stdin.close()
     if ff.wait() != 0:

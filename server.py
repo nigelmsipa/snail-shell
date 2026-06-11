@@ -51,9 +51,20 @@ jobs_lock = threading.Lock()
 def _do_render(job_id, infile, voice, outbase):
     with jobs_lock:
         jobs[job_id]["status"] = "rendering"
+        jobs[job_id]["progress"] = {"done": 0, "total": 0, "audio_min": 0.0}
+
+    def _progress(done, total, audio_sec):
+        with jobs_lock:
+            jobs[job_id]["progress"] = {
+                "done": done,
+                "total": total,
+                "audio_min": round(audio_sec / 60, 1),
+            }
+
     try:
         with gpu_lock:
-            rv.render(infile, str(outbase) + ".opus", voice, engine=ENGINE)
+            rv.render(infile, str(outbase) + ".opus", voice, engine=ENGINE,
+                      progress_cb=_progress)
         with jobs_lock:
             jobs[job_id]["status"] = "done"
             jobs[job_id]["files"] = {
@@ -105,6 +116,22 @@ def render():
                              daemon=True)
         t.start()
         return jsonify({"job_id": job_id, "status": "queued"}), 202
+
+
+@app.route("/progress/<job_id>")
+def progress(job_id):
+    with jobs_lock:
+        job = jobs.get(job_id)
+    if not job:
+        return jsonify({"error": "job not found"}), 404
+    p = job.get("progress", {})
+    return jsonify({
+        "job_id":    job_id,
+        "status":    job["status"],
+        "done":      p.get("done", 0),
+        "total":     p.get("total", 0),
+        "audio_min": p.get("audio_min", 0.0),
+    })
 
 
 @app.route("/status/<job_id>")

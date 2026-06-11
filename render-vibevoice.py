@@ -210,20 +210,28 @@ def render(infile, outfile=None, speaker="Carter", bitrate=32):
     tmp  = outfile + ".tmp"
 
     # ── load model (once) ──
-    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+        load_dtype = torch.bfloat16
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        device = "mps"
+        load_dtype = torch.float32
+    else:
+        device = "cpu"
+        load_dtype = torch.float32
     sys.stderr.write(f"Loading VibeVoice model ({MODEL_ID}) on {device}…\n")
     processor = VibeVoiceStreamingProcessor.from_pretrained(MODEL_ID)
     model = VibeVoiceStreamingForConditionalGenerationInference.from_pretrained(
         MODEL_ID,
-        torch_dtype=torch.float32,
-        device_map="cpu",
+        torch_dtype=load_dtype,
+        device_map=device,
         attn_implementation="sdpa",
     )
     model.eval()
     model.set_ddpm_inference_steps(num_steps=5)
 
     voice_path  = _voice_path(speaker)
-    voice_cache = torch.load(voice_path, map_location="cpu", weights_only=False)
+    voice_cache = torch.load(voice_path, map_location=device, weights_only=False)
     sys.stderr.write(f"Voice: {speaker} ({os.path.basename(voice_path)})\n")
 
     sentences = _sentences(text)

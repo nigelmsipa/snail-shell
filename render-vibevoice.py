@@ -216,7 +216,8 @@ def render(infile, outfile=None, speaker="Carter", bitrate=32):
                 # Sanity check: actually run a tiny op to catch ROCm failures
                 t = torch.zeros(1, device="cuda")
                 _ = t + 1
-                return "cuda", torch.bfloat16
+                # Use float16 — bfloat16 is emulated on AMD RX 6000 and slower
+                return "cuda", torch.float16
             except Exception as e:
                 sys.stderr.write(f"[warn] GPU check failed ({e}), falling back to CPU\n")
         if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():

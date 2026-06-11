@@ -21,7 +21,7 @@ import uuid
 import zipfile
 import tempfile
 import threading
-import subprocess
+import importlib.util
 from pathlib import Path
 from flask import Flask, request, jsonify, send_file
 
@@ -31,8 +31,17 @@ OUTPUT_DIR = Path(os.environ.get("RENDER_OUTPUT_DIR",
                   Path.home() / "rendered")).expanduser()
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-RENDER_SCRIPT = Path(__file__).parent / "render-vibevoice.py"
-PYTHON = sys.executable
+# Import the hyphenated render module by path so we can call render() in-process.
+_spec = importlib.util.spec_from_file_location(
+    "render_vibevoice", str(Path(__file__).parent / "render-vibevoice.py"))
+rv = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(rv)
+
+# Build the model ONCE at startup, then reuse it for every job. The 0.5B model +
+# voice caches stay resident in VRAM, so jobs start instantly instead of paying a
+# fresh model load on each request. One GPU = one render at a time, so serialise.
+ENGINE = rv.Engine()
+gpu_lock = threading.Lock()
 
 # Track in-progress jobs
 jobs = {}
@@ -43,28 +52,21 @@ def _do_render(job_id, infile, voice, outbase):
     with jobs_lock:
         jobs[job_id]["status"] = "rendering"
     try:
-        result = subprocess.run(
-            [PYTHON, str(RENDER_SCRIPT), infile,
-             str(outbase) + ".opus", voice],
-            capture_output=True, text=True
-        )
-        if result.returncode != 0:
-            with jobs_lock:
-                jobs[job_id]["status"] = "error"
-                jobs[job_id]["error"] = result.stderr[-2000:]
-        else:
-            with jobs_lock:
-                jobs[job_id]["status"] = "done"
-                jobs[job_id]["files"] = {
-                    "opus": str(outbase) + ".opus",
-                    "html": str(outbase) + ".html",
-                    "json": str(outbase) + ".json",
-                    "vtt":  str(outbase) + ".vtt",
-                }
-    except Exception as e:
+        with gpu_lock:
+            rv.render(infile, str(outbase) + ".opus", voice, engine=ENGINE)
+        with jobs_lock:
+            jobs[job_id]["status"] = "done"
+            jobs[job_id]["files"] = {
+                "opus": str(outbase) + ".opus",
+                "html": str(outbase) + ".html",
+                "json": str(outbase) + ".json",
+                "vtt":  str(outbase) + ".vtt",
+            }
+    except (Exception, SystemExit) as e:
+        import traceback
         with jobs_lock:
             jobs[job_id]["status"] = "error"
-            jobs[job_id]["error"] = str(e)
+            jobs[job_id]["error"] = traceback.format_exc()[-2000:] or str(e)
 
 
 @app.route("/render", methods=["POST"])

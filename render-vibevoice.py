@@ -142,6 +142,22 @@ document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
 
 # ── voice loader ─────────────────────────────────────────────────────────────
 
+def _cast_cache(voice_cache_dict, dtype):
+    """Cast all KV cache tensors in a voice cache dict to the given dtype.
+    Needed because the .pt files are saved in bfloat16 but we run float16 on
+    AMD gfx1030 (which emulates bfloat16 as float32, causing SDPA dtype mismatch)."""
+    from transformers.modeling_outputs import BaseModelOutputWithPast
+    for output in voice_cache_dict.values():
+        if not isinstance(output, BaseModelOutputWithPast):
+            continue
+        if output.last_hidden_state is not None:
+            output.last_hidden_state = output.last_hidden_state.to(dtype=dtype)
+        cache = output.past_key_values
+        if hasattr(cache, "key_cache"):
+            cache.key_cache   = [t.to(dtype=dtype) for t in cache.key_cache]
+            cache.value_cache = [t.to(dtype=dtype) for t in cache.value_cache]
+    return voice_cache_dict
+
 def _voice_path(name):
     # exact filename match first
     for fname in os.listdir(VOICES_DIR):
@@ -192,9 +208,64 @@ def _synth(model, processor, voice_cache, text, device):
         sys.stderr.write(f"  [warn] synth failed ({e}), skipping chunk\n")
     return np.zeros(0, dtype=np.float32)
 
+# ── engine (model loaded once, reused across renders) ────────────────────────
+
+def _pick_device():
+    if torch.cuda.is_available():
+        try:
+            # Sanity check: actually run a tiny op to catch ROCm failures
+            t = torch.zeros(1, device="cuda")
+            _ = t + 1
+            # Use float16 — bfloat16 is emulated on AMD RX 6000 and slower
+            return "cuda", torch.float16
+        except Exception as e:
+            sys.stderr.write(f"[warn] GPU check failed ({e}), falling back to CPU\n")
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return "mps", torch.float32
+    return "cpu", torch.float32
+
+
+class Engine:
+    """Holds the model + processor loaded once, plus a per-speaker voice cache.
+    Reuse one Engine across many render() calls so the model is never reloaded."""
+
+    def __init__(self):
+        self.device, self.load_dtype = _pick_device()
+        sys.stderr.write(f"Loading VibeVoice model ({MODEL_ID}) on {self.device}…\n")
+        self.processor = VibeVoiceStreamingProcessor.from_pretrained(MODEL_ID)
+        self.model = VibeVoiceStreamingForConditionalGenerationInference.from_pretrained(
+            MODEL_ID,
+            torch_dtype=self.load_dtype,
+            device_map=self.device,
+            attn_implementation="sdpa",
+        )
+        self.model.eval()
+        self.model.set_ddpm_inference_steps(num_steps=5)
+        self._voices = {}   # speaker -> cast voice cache, loaded once and kept resident
+        sys.stderr.write("Engine ready\n")
+
+    def voice(self, speaker):
+        key = speaker.lower()
+        if key not in self._voices:
+            voice_path = _voice_path(speaker)
+            cache = torch.load(voice_path, map_location=self.device, weights_only=False)
+            self._voices[key] = _cast_cache(cache, self.load_dtype)
+            sys.stderr.write(f"Voice loaded: {speaker} ({os.path.basename(voice_path)})\n")
+        return self._voices[key]
+
+
+_DEFAULT_ENGINE = None
+
+def _get_engine():
+    """Lazily build a process-wide default engine (used by the CLI path)."""
+    global _DEFAULT_ENGINE
+    if _DEFAULT_ENGINE is None:
+        _DEFAULT_ENGINE = Engine()
+    return _DEFAULT_ENGINE
+
 # ── main render ──────────────────────────────────────────────────────────────
 
-def render(infile, outfile=None, speaker="Carter", bitrate=32):
+def render(infile, outfile=None, speaker="Carter", bitrate=32, engine=None):
     text = load_text(infile)
     if not text.strip():
         sys.exit("no extractable text")
@@ -209,36 +280,11 @@ def render(infile, outfile=None, speaker="Carter", bitrate=32):
     base = os.path.splitext(outfile)[0]
     tmp  = outfile + ".tmp"
 
-    # ── load model (once) ──
-    def _pick_device():
-        if torch.cuda.is_available():
-            try:
-                # Sanity check: actually run a tiny op to catch ROCm failures
-                t = torch.zeros(1, device="cuda")
-                _ = t + 1
-                # Use float16 — bfloat16 is emulated on AMD RX 6000 and slower
-                return "cuda", torch.float16
-            except Exception as e:
-                sys.stderr.write(f"[warn] GPU check failed ({e}), falling back to CPU\n")
-        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-            return "mps", torch.float32
-        return "cpu", torch.float32
-
-    device, load_dtype = _pick_device()
-    sys.stderr.write(f"Loading VibeVoice model ({MODEL_ID}) on {device}…\n")
-    processor = VibeVoiceStreamingProcessor.from_pretrained(MODEL_ID)
-    model = VibeVoiceStreamingForConditionalGenerationInference.from_pretrained(
-        MODEL_ID,
-        torch_dtype=load_dtype,
-        device_map=device,
-        attn_implementation="sdpa",
-    )
-    model.eval()
-    model.set_ddpm_inference_steps(num_steps=5)
-
-    voice_path  = _voice_path(speaker)
-    voice_cache = torch.load(voice_path, map_location=device, weights_only=False)
-    sys.stderr.write(f"Voice: {speaker} ({os.path.basename(voice_path)})\n")
+    engine      = engine or _get_engine()
+    model       = engine.model
+    processor   = engine.processor
+    device      = engine.device
+    voice_cache = engine.voice(speaker)
 
     sentences = _sentences(text)
     sys.stderr.write(f"{len(sentences)} sentences to render\n\n")

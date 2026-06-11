@@ -210,15 +210,20 @@ def render(infile, outfile=None, speaker="Carter", bitrate=32):
     tmp  = outfile + ".tmp"
 
     # ── load model (once) ──
-    if torch.cuda.is_available():
-        device = "cuda"
-        load_dtype = torch.bfloat16
-    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        device = "mps"
-        load_dtype = torch.float32
-    else:
-        device = "cpu"
-        load_dtype = torch.float32
+    def _pick_device():
+        if torch.cuda.is_available():
+            try:
+                # Sanity check: actually run a tiny op to catch ROCm failures
+                t = torch.zeros(1, device="cuda")
+                _ = t + 1
+                return "cuda", torch.bfloat16
+            except Exception as e:
+                sys.stderr.write(f"[warn] GPU check failed ({e}), falling back to CPU\n")
+        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return "mps", torch.float32
+        return "cpu", torch.float32
+
+    device, load_dtype = _pick_device()
     sys.stderr.write(f"Loading VibeVoice model ({MODEL_ID}) on {device}…\n")
     processor = VibeVoiceStreamingProcessor.from_pretrained(MODEL_ID)
     model = VibeVoiceStreamingForConditionalGenerationInference.from_pretrained(

@@ -27,7 +27,8 @@ import sherpa_onnx
 import lameenc
 import numpy as np
 
-MODEL = os.path.expanduser("~/kokoro-render/kokoro-en-v0_19")
+MODEL = os.path.expanduser(
+    os.environ.get("KOKORO_MODEL_DIR", "~/snail-shell/kokoro-en-v0_19"))
 
 
 def load_text(path):
@@ -189,7 +190,7 @@ def _gen_samples(tts, text, sid, depth=0):
     return left if left.size else right
 
 
-def render(infile, outfile=None, sid=0, bitrate=32):
+def render(infile, outfile=None, sid=0, bitrate=32, progress_cb=None):
     text = load_text(infile)
     if not text.strip():
         sys.exit("no extractable text")
@@ -245,6 +246,8 @@ def render(infile, outfile=None, sid=0, bitrate=32):
             sys.stderr.write("  %d/%d sentences — %.1f min audio\n"
                              % (i + 1, len(sentences), audio_sec / 60))
             sys.stderr.flush()
+            if progress_cb:
+                progress_cb(i + 1, len(sentences), audio_sec)
     ff.stdin.close()
     if ff.wait() != 0:
         raise RuntimeError("ffmpeg opus encoding failed")

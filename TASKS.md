@@ -73,6 +73,37 @@ The goal is to find out if the GPU helps Kokoro more than it helps VibeVoice.
 
 ---
 
+## Benchmark results (2026-06-11, RX 6600 / gfx1030)
+
+Done. Deps installed (`sherpa-onnx` 1.13.2 + `lameenc`), model downloaded to
+`~/snail-shell/kokoro-en-v0_19`, server restarted, `adam` tested. Same
+3-sentence text through both models:
+
+| Model | Voice | Audio | Wall | RTF |
+|---|---|---|---|---|
+| VibeVoice (GPU, 0.5B + DDPM) | Carter | 8.7s | ~10s | **~1.16x** (slower than real-time) |
+| Kokoro (sherpa-onnx) | adam | 6.8s | 2.9s | **~0.42x** (~2.4x faster than real-time) |
+
+Kokoro's 0.42x is *pessimistic* — `render.py` reloads the sherpa model on every
+call (not kept resident like the VibeVoice `Engine`), so the 2.9s includes model
+load. Per-sentence synthesis is faster still.
+
+**Why Kokoro wins, and the answer to the question above:** it's not that "the
+GPU helps Kokoro more." Kokoro has **no diffusion decoder** — it's a single ONNX
+forward pass per sentence. The thing that pins VibeVoice near real-time on this
+card (the 5-step DDPM decode with no FlashAttention on gfx1030 — see SPEED.md)
+simply isn't in Kokoro's pipeline. So Kokoro is fast for the same reason
+VibeVoice is slow.
+
+**User's call:** VibeVoice stays the default for quality ("buy once, cry once").
+Kokoro/`adam` is the fast fallback for when speed matters in a pinch.
+
+**Easy follow-up win (not yet done):** make Kokoro load-once/resident like the
+VibeVoice `Engine` instead of reloading the sherpa model per job — removes the
+load cost from every Kokoro render.
+
+---
+
 ## Voice reference
 
 ### VibeVoice voices (model=vibevoice)

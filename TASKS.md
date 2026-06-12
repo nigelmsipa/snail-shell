@@ -1,5 +1,77 @@
 # Tasks for GPU Server (CachyOS AI)
 
+## PRIORITY: Set up Ollama with GPU acceleration
+
+### Why
+This machine replaces the Void Linux CPU-only Ollama server. The RX 6600 should
+run 7B models significantly faster than CPU-only inference.
+
+### 1. Install Ollama
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+### 2. Configure ROCm for RX 6600
+
+```bash
+# Add to ~/.bashrc and run now:
+echo 'export HSA_OVERRIDE_GFX_VERSION=10.3.0' >> ~/.bashrc
+export HSA_OVERRIDE_GFX_VERSION=10.3.0
+```
+
+### 3. Start Ollama (GPU mode)
+
+```bash
+OLLAMA_HOST=0.0.0.0:11434 ollama serve &
+```
+
+Confirm GPU is being used — should show `rocm` in the logs.
+
+### 4. Pull the model
+
+```bash
+# Same model sage-rag uses:
+ollama pull gpt-oss:20b
+
+# If 20B is too big for 8GB VRAM, fall back to:
+ollama pull qwen2.5:7b
+```
+
+### 5. Test it
+
+```bash
+curl http://localhost:11434/api/generate -d '{
+  "model": "qwen2.5:7b",
+  "prompt": "Say hello",
+  "stream": false
+}'
+```
+
+### 6. Make it persistent
+
+```bash
+sudo systemctl enable ollama
+sudo systemctl start ollama
+
+# Or if systemd isn't available, add to tmux startup
+```
+
+### 7. Open firewall
+
+```bash
+sudo firewall-cmd --add-port=11434/tcp --permanent
+sudo firewall-cmd --reload
+```
+
+### 8. Report back
+
+Note the tokens/sec for `qwen2.5:7b` — that's the benchmark.
+Compare to CPU-only Void Linux Ollama speed.
+
+---
+
+
 ## Current task: Add Kokoro support and benchmark vs VibeVoice
 
 ### 1. Pull latest changes

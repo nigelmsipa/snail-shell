@@ -1,0 +1,112 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>James 3</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--read:#cfc6b4;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.8;font-size:1.18rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .w{cursor:pointer;border-radius:.22rem;padding:.04em .04em;
+   transition:background .15s ease-out,color .15s ease-out,box-shadow .15s ease-out}
+ .w:hover{background:#eadfc8}
+ .w.read{color:var(--read)}
+ .w.active{background:var(--hi);color:var(--fg);box-shadow:0 0 0 .12em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+ .vn{font-size:.62em;color:#b07a3a;font-weight:600;vertical-align:.45em;
+   margin:0 .12em 0 .04em;cursor:pointer;user-select:none}
+ .vn:hover{color:#8a5e2a}
+ .w.it{font-style:italic}
+ .bnav{display:flex;align-items:center;gap:.4rem;margin-bottom:.55rem;font-size:.9rem}
+ .navbtn{text-decoration:none;color:var(--fg);background:#fbf7ee;border:1px solid #ccc3b2;
+   border-radius:.4rem;padding:.18rem .62rem;cursor:pointer;font:inherit}
+ .navbtn:hover{background:var(--hi);border-color:#e0c050}
+ .navbtn.off{opacity:.32;pointer-events:none}
+ .bnav select{font:inherit;background:#fbf7ee;border:1px solid #ccc3b2;border-radius:.4rem;
+   padding:.2rem .4rem;color:var(--fg);cursor:pointer}
+ .bnav .home{margin-left:auto;color:var(--vn);font-weight:600}
+</style></head><body>
+<header><nav class="bnav"><a class="navbtn" href="james-02-words.html">‹</a><select id="chsel"><option value="james-01-words.html">James 1</option><option value="james-02-words.html">James 2</option><option value="james-03-words.html" selected>James 3</option></select><a class="navbtn off">›</a><a class="navbtn home" href="james-index.html">✦ James</a></nav><audio id="a" src="james-03.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div>
+<div class="spd">Lead:
+ <button id="lm">&minus;20ms</button><span id="lv" style="min-width:5ch;display:inline-block;text-align:center">0&thinsp;ms</span><button id="lp">+20ms</button>
+ <span style="color:var(--dim)">&nbsp;(how far ahead the highlight runs)</span></div></header>
+<main><h1>James 3</h1><p id="t"></p></main>
+<script>
+const W=[{"s": 102, "e": 447, "t": "James,"}, {"s": 529, "e": 875, "t": "Chapter"}, {"s": 936, "e": 1180, "t": "Three."}, {"s": 1681, "e": 1781, "t": "My", "v": 1}, {"s": 1842, "e": 2202, "t": "brethren,"}, {"s": 2383, "e": 2443, "t": "be"}, {"s": 2543, "e": 2704, "t": "not"}, {"s": 2744, "e": 2944, "t": "many"}, {"s": 3024, "e": 3606, "t": "masters,"}, {"s": 4027, "e": 4288, "t": "knowing"}, {"s": 4308, "e": 4428, "t": "that"}, {"s": 4468, "e": 4548, "t": "we"}, {"s": 4588, "e": 4769, "t": "shall"}, {"s": 4809, "e": 5210, "t": "receive"}, {"s": 5230, "e": 5310, "t": "the"}, {"s": 5350, "e": 5691, "t": "greater"}, {"s": 5771, "e": 6493, "t": "condemnation."}, {"s": 6916, "e": 7078, "t": "For", "v": 2}, {"s": 7138, "e": 7219, "t": "in"}, {"s": 7279, "e": 7461, "t": "many"}, {"s": 7562, "e": 7884, "t": "things"}, {"s": 7945, "e": 8025, "t": "we"}, {"s": 8086, "e": 8509, "t": "offend"}, {"s": 8610, "e": 8772, "t": "all."}, {"s": 9313, "e": 9394, "t": "If"}, {"s": 9454, "e": 9574, "t": "any"}, {"s": 9634, "e": 9814, "t": "man"}, {"s": 9854, "e": 10154, "t": "offend"}, {"s": 10235, "e": 10435, "t": "not"}, {"s": 10515, "e": 10595, "t": "in"}, {"s": 10675, "e": 10975, "t": "word,"}, {"s": 11036, "e": 11116, "t": "the"}, {"s": 11176, "e": 11416, "t": "same"}, {"s": 11436, "e": 11496, "t": "is", "i": 1}, {"s": 11536, "e": 11556, "t": "a"}, {"s": 11616, "e": 11977, "t": "perfect"}, {"s": 12017, "e": 12277, "t": "man,"}, {"s": 12718, "e": 12818, "t": "and", "i": 1}, {"s": 12858, "e": 13058, "t": "able"}, {"s": 13118, "e": 13378, "t": "also"}, {"s": 13498, "e": 13559, "t": "to"}, {"s": 13619, "e": 13959, "t": "bridle"}, {"s": 13979, "e": 14059, "t": "the"}, {"s": 14099, "e": 14299, "t": "whole"}, {"s": 14319, "e": 14600, "t": "body."}, {"s": 15261, "e": 15701, "t": "Behold,", "v": 3}, {"s": 15761, "e": 15821, "t": "we"}, {"s": 15921, "e": 16121, "t": "put"}, {"s": 16242, "e": 16522, "t": "bits"}, {"s": 16582, "e": 16642, "t": "in"}, {"s": 16662, "e": 16762, "t": "the"}, {"s": 16802, "e": 17183, "t": "horses'"}, {"s": 17243, "e": 17723, "t": "mouths,"}, {"s": 18124, "e": 18244, "t": "that"}, {"s": 18304, "e": 18424, "t": "they"}, {"s": 18464, "e": 18604, "t": "may"}, {"s": 18684, "e": 18945, "t": "obey"}, {"s": 19025, "e": 19185, "t": "us;"}, {"s": 19465, "e": 19545, "t": "and"}, {"s": 19565, "e": 19625, "t": "we"}, {"s": 19705, "e": 19906, "t": "turn"}, {"s": 19946, "e": 20186, "t": "about"}, {"s": 20226, "e": 20346, "t": "their"}, {"s": 20386, "e": 20586, "t": "whole"}, {"s": 20606, "e": 20887, "t": "body."}, {"s": 21267, "e": 21628, "t": "Behold", "v": 4}, {"s": 21728, "e": 21949, "t": "also"}, {"s": 22029, "e": 22109, "t": "the"}, {"s": 22169, "e": 22530, "t": "ships,"}, {"s": 22710, "e": 22891, "t": "which"}, {"s": 22971, "e": 23191, "t": "though"}, {"s": 23211, "e": 23351, "t": "they", "i": 1}, {"s": 23432, "e": 23512, "t": "be", "i": 1}, {"s": 23652, "e": 23752, "t": "so"}, {"s": 23892, "e": 24193, "t": "great,"}, {"s": 24353, "e": 24454, "t": "and"}, {"s": 24494, "e": 24614, "t": "are", "i": 1}, {"s": 24654, "e": 24975, "t": "driven"}, {"s": 25075, "e": 25155, "t": "of"}, {"s": 25215, "e": 25536, "t": "fierce"}, {"s": 25596, "e": 26017, "t": "winds,"}, {"s": 26698, "e": 26858, "t": "yet"}, {"s": 26958, "e": 27059, "t": "are"}, {"s": 27079, "e": 27199, "t": "they"}, {"s": 27259, "e": 27580, "t": "turned"}, {"s": 27600, "e": 27960, "t": "about"}, {"s": 28060, "e": 28181, "t": "with"}, {"s": 28201, "e": 28221, "t": "a"}, {"s": 28281, "e": 28501, "t": "very"}, {"s": 28601, "e": 28922, "t": "small"}, {"s": 29002, "e": 29343, "t": "helm,"}, {"s": 29684, "e": 30365, "t": "whithersoever"}, {"s": 30405, "e": 30485, "t": "the"}, {"s": 30525, "e": 30886, "t": "governor"}, {"s": 30946, "e": 31347, "t": "listeth."}, {"s": 32149, "e": 32389, "t": "Even", "v": 5}, {"s": 32530, "e": 32630, "t": "so"}, {"s": 32891, "e": 32991, "t": "the"}, {"s": 33051, "e": 33412, "t": "tongue"}, {"s": 33452, "e": 33552, "t": "is"}, {"s": 33593, "e": 33613, "t": "a"}, {"s": 33673, "e": 33893, "t": "little"}, {"s": 33934, "e": 34274, "t": "member,"}, {"s": 34856, "e": 34956, "t": "and"}, {"s": 35077, "e": 35558, "t": "boasteth"}, {"s": 35618, "e": 35839, "t": "great"}, {"s": 35919, "e": 36340, "t": "things."}, {"s": 36883, "e": 37366, "t": "Behold,"}, {"s": 37467, "e": 37587, "t": "how"}, {"s": 37688, "e": 37889, "t": "great"}, {"s": 37909, "e": 37930, "t": "a"}, {"s": 37970, "e": 38252, "t": "matter"}, {"s": 38332, "e": 38352, "t": "a"}, {"s": 38413, "e": 38614, "t": "little"}, {"s": 38674, "e": 38996, "t": "fire"}, {"s": 39077, "e": 39560, "t": "kindleth!"}, {"s": 40120, "e": 40220, "t": "And", "v": 6}, {"s": 40220, "e": 40320, "t": "the"}, {"s": 40380, "e": 40701, "t": "tongue"}, {"s": 40801, "e": 40881, "t": "is", "i": 1}, {"s": 40941, "e": 40961, "t": "a"}, {"s": 41081, "e": 41481, "t": "fire,"}, {"s": 41901, "e": 41921, "t": "a"}, {"s": 42021, "e": 42341, "t": "world"}, {"s": 42381, "e": 42461, "t": "of"}, {"s": 42502, "e": 42962, "t": "iniquity:"}, {"s": 43642, "e": 43742, "t": "so"}, {"s": 43862, "e": 43942, "t": "is"}, {"s": 44002, "e": 44082, "t": "the"}, {"s": 44162, "e": 44503, "t": "tongue"}, {"s": 44603, "e": 44843, "t": "among"}, {"s": 44883, "e": 44983, "t": "our"}, {"s": 45003, "e": 45423, "t": "members,"}, {"s": 45983, "e": 46123, "t": "that"}, {"s": 46183, "e": 46243, "t": "it"}, {"s": 46283, "e": 46924, "t": "defileth"}, {"s": 46944, "e": 47024, "t": "the"}, {"s": 47084, "e": 47304, "t": "whole"}, {"s": 47344, "e": 47644, "t": "body,"}, {"s": 48285, "e": 48385, "t": "and"}, {"s": 48485, "e": 48825, "t": "setteth"}, {"s": 48885, "e": 48965, "t": "on"}, {"s": 49105, "e": 49425, "t": "fire"}, {"s": 49465, "e": 49545, "t": "the"}, {"s": 49585, "e": 49865, "t": "course"}, {"s": 49905, "e": 49965, "t": "of"}, {"s": 50045, "e": 50446, "t": "nature;"}, {"s": 51146, "e": 51246, "t": "and"}, {"s": 51266, "e": 51346, "t": "it"}, {"s": 51386, "e": 51466, "t": "is"}, {"s": 51526, "e": 51706, "t": "set"}, {"s": 51766, "e": 51846, "t": "on"}, {"s": 51946, "e": 52307, "t": "fire"}, {"s": 52407, "e": 52487, "t": "of"}, {"s": 52587, "e": 52847, "t": "hell."}, {"s": 53967, "e": 54087, "t": "For", "v": 7}, {"s": 54167, "e": 54388, "t": "every"}, {"s": 54468, "e": 54728, "t": "kind"}, {"s": 54768, "e": 54828, "t": "of"}, {"s": 54928, "e": 55408, "t": "beasts,"}, {"s": 55588, "e": 55708, "t": "and"}, {"s": 55728, "e": 55788, "t": "of"}, {"s": 55888, "e": 56368, "t": "birds,"}, {"s": 56649, "e": 56749, "t": "and"}, {"s": 56769, "e": 56829, "t": "of"}, {"s": 56949, "e": 57409, "t": "serpents,"}, {"s": 57469, "e": 57549, "t": "and"}, {"s": 57569, "e": 57649, "t": "of"}, {"s": 57709, "e": 57949, "t": "things"}, {"s": 58009, "e": 58069, "t": "in"}, {"s": 58109, "e": 58189, "t": "the"}, {"s": 58309, "e": 58569, "t": "sea,"}, {"s": 58929, "e": 59030, "t": "is"}, {"s": 59130, "e": 59590, "t": "tamed,"}, {"s": 59730, "e": 59830, "t": "and"}, {"s": 59870, "e": 60030, "t": "hath"}, {"s": 60090, "e": 60210, "t": "been"}, {"s": 60270, "e": 60550, "t": "tamed"}, {"s": 60570, "e": 60650, "t": "of"}, {"s": 60690, "e": 61330, "t": "mankind:"}, {"s": 62151, "e": 62251, "t": "But", "v": 8}, {"s": 62291, "e": 62371, "t": "the"}, {"s": 62411, "e": 62671, "t": "tongue"}, {"s": 62691, "e": 62831, "t": "can"}, {"s": 62871, "e": 62951, "t": "no"}, {"s": 63051, "e": 63271, "t": "man"}, {"s": 63371, "e": 63751, "t": "tame;"}, {"s": 64352, "e": 64432, "t": "it", "i": 1}, {"s": 64472, "e": 64572, "t": "is", "i": 1}, {"s": 64612, "e": 64692, "t": "an"}, {"s": 64772, "e": 65292, "t": "unruly"}, {"s": 65452, "e": 65752, "t": "evil,"}, {"s": 65972, "e": 66132, "t": "full"}, {"s": 66173, "e": 66253, "t": "of"}, {"s": 66333, "e": 66653, "t": "deadly"}, {"s": 66753, "e": 67193, "t": "poison."}, {"s": 67955, "e": 68296, "t": "Therewith", "v": 9}, {"s": 68356, "e": 68557, "t": "bless"}, {"s": 68637, "e": 68697, "t": "we"}, {"s": 68778, "e": 69018, "t": "God,"}, {"s": 69058, "e": 69219, "t": "even"}, {"s": 69239, "e": 69319, "t": "the"}, {"s": 69379, "e": 69781, "t": "Father;"}, {"s": 70082, "e": 70162, "t": "and"}, {"s": 70182, "e": 70483, "t": "therewith"}, {"s": 70543, "e": 70844, "t": "curse"}, {"s": 70864, "e": 70944, "t": "we"}, {"s": 71045, "e": 71285, "t": "men,"}, {"s": 71406, "e": 71566, "t": "which"}, {"s": 71586, "e": 71687, "t": "are"}, {"s": 71707, "e": 71887, "t": "made"}, {"s": 72028, "e": 72288, "t": "after"}, {"s": 72309, "e": 72389, "t": "the"}, {"s": 72469, "e": 73131, "t": "similitude"}, {"s": 73131, "e": 73211, "t": "of"}, {"s": 73272, "e": 73552, "t": "God."}, {"s": 74437, "e": 74538, "t": "Out", "v": 10}, {"s": 74558, "e": 74598, "t": "of"}, {"s": 74619, "e": 74699, "t": "the"}, {"s": 74759, "e": 74981, "t": "same"}, {"s": 75001, "e": 75263, "t": "mouth"}, {"s": 75283, "e": 75705, "t": "proceedeth"}, {"s": 75766, "e": 76148, "t": "blessing"}, {"s": 76188, "e": 76269, "t": "and"}, {"s": 76309, "e": 76772, "t": "cursing."}, {"s": 77534, "e": 77634, "t": "My"}, {"s": 77695, "e": 78075, "t": "brethren,"}, {"s": 78536, "e": 78737, "t": "these"}, {"s": 78757, "e": 78997, "t": "things"}, {"s": 79097, "e": 79218, "t": "ought"}, {"s": 79278, "e": 79438, "t": "not"}, {"s": 79538, "e": 79638, "t": "so"}, {"s": 79819, "e": 79899, "t": "to"}, {"s": 79959, "e": 80059, "t": "be."}, {"s": 80581, "e": 80742, "t": "Doth", "v": 11}, {"s": 80762, "e": 80782, "t": "a"}, {"s": 80903, "e": 81345, "t": "fountain"}, {"s": 81465, "e": 81686, "t": "send"}, {"s": 81767, "e": 82109, "t": "forth"}, {"s": 82149, "e": 82229, "t": "at"}, {"s": 82249, "e": 82330, "t": "the"}, {"s": 82390, "e": 82651, "t": "same"}, {"s": 82691, "e": 82993, "t": "place"}, {"s": 83033, "e": 83294, "t": "sweet"}, {"s": 83375, "e": 83696, "t": "water", "i": 1}, {"s": 83857, "e": 83958, "t": "and"}, {"s": 84038, "e": 84299, "t": "bitter?"}, {"s": 84742, "e": 84882, "t": "Can", "v": 12}, {"s": 84902, "e": 84983, "t": "the"}, {"s": 85043, "e": 85224, "t": "fig"}, {"s": 85284, "e": 85505, "t": "tree,"}, {"s": 85585, "e": 85706, "t": "my"}, {"s": 85786, "e": 86128, "t": "brethren,"}, {"s": 86208, "e": 86369, "t": "bear"}, {"s": 86509, "e": 86771, "t": "olive"}, {"s": 86811, "e": 87233, "t": "berries?"}, {"s": 87615, "e": 87797, "t": "either"}, {"s": 87857, "e": 87877, "t": "a"}, {"s": 87958, "e": 88361, "t": "vine,"}, {"s": 88583, "e": 88966, "t": "figs?"}, {"s": 89870, "e": 89950, "t": "so"}, {"s": 90030, "e": 90170, "t": "can", "i": 1}, {"s": 90211, "e": 90291, "t": "no"}, {"s": 90451, "e": 90812, "t": "fountain"}, {"s": 90893, "e": 91113, "t": "both"}, {"s": 91214, "e": 91575, "t": "yield"}, {"s": 91735, "e": 91976, "t": "salt"}, {"s": 92036, "e": 92317, "t": "water"}, {"s": 92478, "e": 92638, "t": "and"}, {"s": 92759, "e": 93100, "t": "fresh."}, {"s": 93984, "e": 94085, "t": "Who", "v": 13}, {"s": 94165, "e": 94246, "t": "is", "i": 1}, {"s": 94306, "e": 94326, "t": "a"}, {"s": 94366, "e": 94688, "t": "wise"}, {"s": 94749, "e": 95030, "t": "man"}, {"s": 95151, "e": 95231, "t": "and"}, {"s": 95272, "e": 95613, "t": "endued"}, {"s": 95634, "e": 95774, "t": "with"}, {"s": 95794, "e": 96217, "t": "knowledge"}, {"s": 96237, "e": 96498, "t": "among"}, {"s": 96539, "e": 96659, "t": "you?"}, {"s": 97221, "e": 97362, "t": "let"}, {"s": 97442, "e": 97542, "t": "him"}, {"s": 97643, "e": 97783, "t": "shew"}, {"s": 97863, "e": 97964, "t": "out"}, {"s": 97984, "e": 98044, "t": "of"}, {"s": 98084, "e": 98104, "t": "a"}, {"s": 98164, "e": 98305, "t": "good"}, {"s": 98365, "e": 99067, "t": "conversation"}, {"s": 99127, "e": 99268, "t": "his"}, {"s": 99328, "e": 99589, "t": "works"}, {"s": 99629, "e": 99769, "t": "with"}, {"s": 99830, "e": 100231, "t": "meekness"}, {"s": 100311, "e": 100371, "t": "of"}, {"s": 100451, "e": 100833, "t": "wisdom."}, {"s": 101455, "e": 101575, "t": "But", "v": 14}, {"s": 101595, "e": 101675, "t": "if"}, {"s": 101736, "e": 101796, "t": "ye"}, {"s": 101896, "e": 102077, "t": "have"}, {"s": 102197, "e": 102418, "t": "bitter"}, {"s": 102558, "e": 103000, "t": "envying"}, {"s": 103040, "e": 103140, "t": "and"}, {"s": 103201, "e": 103542, "t": "strife"}, {"s": 103562, "e": 103622, "t": "in"}, {"s": 103642, "e": 103782, "t": "your"}, {"s": 103823, "e": 104124, "t": "hearts,"}, {"s": 104204, "e": 104465, "t": "glory"}, {"s": 104565, "e": 104846, "t": "not,"}, {"s": 105247, "e": 105348, "t": "and"}, {"s": 105428, "e": 105629, "t": "lie"}, {"s": 105669, "e": 105849, "t": "not"}, {"s": 105930, "e": 106251, "t": "against"}, {"s": 106291, "e": 106371, "t": "the"}, {"s": 106411, "e": 106793, "t": "truth."}, {"s": 107475, "e": 107615, "t": "This", "v": 15}, {"s": 107675, "e": 108037, "t": "wisdom"}, {"s": 108117, "e": 108619, "t": "descendeth"}, {"s": 108699, "e": 108879, "t": "not"}, {"s": 108920, "e": 109060, "t": "from"}, {"s": 109100, "e": 109542, "t": "above,"}, {"s": 110023, "e": 110144, "t": "but"}, {"s": 110184, "e": 110264, "t": "is", "i": 1}, {"s": 110385, "e": 110726, "t": "earthly,"}, {"s": 111288, "e": 111769, "t": "sensual,"}, {"s": 112311, "e": 112813, "t": "devilish."}, {"s": 113716, "e": 113857, "t": "For", "v": 16}, {"s": 113897, "e": 114078, "t": "where"}, {"s": 114178, "e": 114580, "t": "envying"}, {"s": 114600, "e": 114700, "t": "and"}, {"s": 114741, "e": 115122, "t": "strife"}, {"s": 115202, "e": 115403, "t": "is,", "i": 1}, {"s": 115484, "e": 115624, "t": "there"}, {"s": 115664, "e": 115725, "t": "is", "i": 1}, {"s": 115785, "e": 116387, "t": "confusion"}, {"s": 116528, "e": 116648, "t": "and"}, {"s": 116729, "e": 116950, "t": "every"}, {"s": 117090, "e": 117331, "t": "evil"}, {"s": 117392, "e": 117653, "t": "work."}, {"s": 117993, "e": 118114, "t": "But", "v": 17}, {"s": 118134, "e": 118214, "t": "the"}, {"s": 118274, "e": 118695, "t": "wisdom"}, {"s": 118795, "e": 118935, "t": "that"}, {"s": 118955, "e": 119035, "t": "is"}, {"s": 119075, "e": 119236, "t": "from"}, {"s": 119296, "e": 119717, "t": "above"}, {"s": 119857, "e": 119957, "t": "is"}, {"s": 120037, "e": 120318, "t": "first"}, {"s": 120418, "e": 120778, "t": "pure,"}, {"s": 121119, "e": 121279, "t": "then"}, {"s": 121400, "e": 121941, "t": "peaceable,"}, {"s": 122121, "e": 122582, "t": "gentle,"}, {"s": 122722, "e": 122822, "t": "and", "i": 1}, {"s": 122962, "e": 123183, "t": "easy"}, {"s": 123263, "e": 123323, "t": "to"}, {"s": 123363, "e": 123423, "t": "be"}, {"s": 123503, "e": 124004, "t": "intreated,"}, {"s": 124325, "e": 124485, "t": "full"}, {"s": 124525, "e": 124605, "t": "of"}, {"s": 124685, "e": 125046, "t": "mercy"}, {"s": 125246, "e": 125347, "t": "and"}, {"s": 125387, "e": 125527, "t": "good"}, {"s": 125607, "e": 125988, "t": "fruits,"}, {"s": 126388, "e": 126669, "t": "without"}, {"s": 126709, "e": 127470, "t": "partiality,"}, {"s": 127831, "e": 127931, "t": "and"}, {"s": 127951, "e": 128232, "t": "without"}, {"s": 128272, "e": 128873, "t": "hypocrisy."}, {"s": 129536, "e": 129637, "t": "And", "v": 18}, {"s": 129637, "e": 129717, "t": "the"}, {"s": 129737, "e": 129938, "t": "fruit"}, {"s": 129978, "e": 130039, "t": "of"}, {"s": 130099, "e": 130642, "t": "righteousness"}, {"s": 130722, "e": 130802, "t": "is"}, {"s": 130863, "e": 131064, "t": "sown"}, {"s": 131104, "e": 131184, "t": "in"}, {"s": 131265, "e": 131546, "t": "peace"}, {"s": 131566, "e": 131647, "t": "of"}, {"s": 131687, "e": 131848, "t": "them"}, {"s": 131908, "e": 132028, "t": "that"}, {"s": 132089, "e": 132310, "t": "make"}, {"s": 132370, "e": 132752, "t": "peace."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=W.map((w,i)=>{
+ if(w.v){const s=document.createElement('sup');s.className='vn';s.textContent=w.v;
+  s.title='verse '+w.v;s.onclick=()=>{a.currentTime=w.s/1000;a.play()};t.appendChild(s);}
+ const e=document.createElement('span');
+ e.className='w'+(w.i?' it':'');e.textContent=w.t+' ';
+ e.onclick=()=>{a.currentTime=w.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+// LEAD = ms the highlight runs AHEAD of the heard audio.
+// Default 180 = 60ms CTC-lag correction (MMS emits late) + 120ms eye-voice lead.
+let LEAD=+(localStorage.getItem('snailLead')||180);
+const lv=document.getElementById('lv');
+function showLead(){lv.innerHTML=LEAD+'&thinsp;ms';localStorage.setItem('snailLead',LEAD);}
+document.getElementById('lm').onclick=()=>{LEAD=Math.max(-300,LEAD-20);showLead();};
+document.getElementById('lp').onclick=()=>{LEAD=Math.min(900,LEAD+20);showLead();};
+showLead();
+
+// --- Rank 4: hardware (Bluetooth/buffer) latency, read from a bare AudioContext.
+// We don't route audio through it (element keeps its own output) — we only read the
+// device's output/base latency so the clock reflects what the EAR hears, not the buffer.
+let hwLat=0;
+try{const C=window.AudioContext||window.webkitAudioContext;
+ if(C){const ctx=new C();
+  const rd=()=>{hwLat=(ctx.baseLatency||0)+(ctx.outputLatency||0);};rd();
+  a.addEventListener('play',()=>{if(ctx.state==='suspended')ctx.resume().then(rd);else rd();});}
+}catch(e){}
+
+// --- Rank 3 core: a smoothed media clock. a.currentTime updates in coarse chunks
+// (same value for several frames, then jumps), so we extrapolate between updates with
+// performance.now() for a continuous playhead, then subtract hardware latency.
+let baseCT=-1,baseWall=0;
+function playheadMs(){
+ const ct=a.currentTime,now=performance.now();
+ if(ct!==baseCT){baseCT=ct;baseWall=now;}
+ const adv=a.paused?0:(now-baseWall)/1000*(a.playbackRate||1);
+ return (baseCT+adv-hwLat)*1000;
+}
+
+function find(ms){ // cursor-forward scan; jump-safe fallback
+ if(cur>=0&&ms>=W[cur].s&&ms<W[cur].e)return cur;
+ if(cur>=0&&ms>=W[cur].e){for(let i=cur+1;i<W.length;i++){
+   if(ms<W[i].e)return ms>=W[i].s?i:i-1>=cur?i-1:cur;}return W.length-1;}
+ for(let i=0;i<W.length;i++)if(ms<W[i].e)return ms>=W[i].s?i:Math.max(0,i-1);
+ return W.length-1;}
+
+let lastScroll=0;
+function paint(i){
+ if(i===cur)return;
+ if(i>cur){for(let k=Math.max(0,cur);k<i;k++)spans[k].classList.add('read');}
+ else{for(let k=i;k<=cur&&k<spans.length;k++)spans[k].classList.remove('read');}
+ if(cur>=0)spans[cur].classList.remove('active');
+ cur=i;
+ if(i>=0){spans[i].classList.remove('read');spans[i].classList.add('active');
+  const now=performance.now();           // throttle smooth-scroll so it doesn't fight itself
+  if(now-lastScroll>200){lastScroll=now;
+   spans[i].scrollIntoView({block:'center',behavior:'smooth'});}}}
+
+// --- Rank 3: 60/120Hz render loop, decoupled from the ~4Hz timeupdate event.
+function loop(){paint(find(playheadMs()+LEAD));requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+
+// speed buttons only (scoped to [data-r] so this does NOT clobber the lead buttons)
+document.querySelectorAll('.spd button[data-r]').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button[data-r]').forEach(x=>x.classList.toggle('on',x===b))});
+var _cs=document.getElementById('chsel');if(_cs)_cs.onchange=function(e){location.href=e.target.value};</script></body></html>

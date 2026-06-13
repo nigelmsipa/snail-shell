@@ -1,0 +1,104 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revelation 15</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--read:#cfc6b4;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.8;font-size:1.18rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .w{cursor:pointer;border-radius:.22rem;padding:.04em .04em;
+   transition:background .15s ease-out,color .15s ease-out,box-shadow .15s ease-out}
+ .w:hover{background:#eadfc8}
+ .w.read{color:var(--read)}
+ .w.active{background:var(--hi);color:var(--fg);box-shadow:0 0 0 .12em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+ .vn{font-size:.62em;color:#b07a3a;font-weight:600;vertical-align:.45em;
+   margin:0 .12em 0 .04em;cursor:pointer;user-select:none}
+ .vn:hover{color:#8a5e2a}
+ .w.it{font-style:italic}
+</style></head><body>
+<header><audio id="a" src="revelation-15.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div>
+<div class="spd">Lead:
+ <button id="lm">&minus;20ms</button><span id="lv" style="min-width:5ch;display:inline-block;text-align:center">0&thinsp;ms</span><button id="lp">+20ms</button>
+ <span style="color:var(--dim)">&nbsp;(how far ahead the highlight runs)</span></div></header>
+<main><h1>Revelation 15</h1><p id="t"></p></main>
+<script>
+const W=[{"s": 202, "e": 768, "t": "Revelation,"}, {"s": 1071, "e": 1394, "t": "Chapter"}, {"s": 1434, "e": 1899, "t": "Fifteen."}, {"s": 2361, "e": 2461, "t": "And", "v": 1}, {"s": 2541, "e": 2561, "t": "I"}, {"s": 2621, "e": 2761, "t": "saw"}, {"s": 2821, "e": 3122, "t": "another"}, {"s": 3182, "e": 3462, "t": "sign"}, {"s": 3482, "e": 3562, "t": "in"}, {"s": 3622, "e": 3903, "t": "heaven,"}, {"s": 4023, "e": 4263, "t": "great"}, {"s": 4384, "e": 4504, "t": "and"}, {"s": 4544, "e": 5045, "t": "marvellous,"}, {"s": 5545, "e": 5826, "t": "seven"}, {"s": 5886, "e": 6266, "t": "angels"}, {"s": 6307, "e": 6567, "t": "having"}, {"s": 6587, "e": 6667, "t": "the"}, {"s": 6727, "e": 6988, "t": "seven"}, {"s": 7068, "e": 7328, "t": "last"}, {"s": 7368, "e": 7849, "t": "plagues;"}, {"s": 8169, "e": 8310, "t": "for"}, {"s": 8430, "e": 8530, "t": "in"}, {"s": 8570, "e": 8770, "t": "them"}, {"s": 8830, "e": 8931, "t": "is"}, {"s": 8991, "e": 9251, "t": "filled"}, {"s": 9291, "e": 9391, "t": "up"}, {"s": 9471, "e": 9552, "t": "the"}, {"s": 9592, "e": 9872, "t": "wrath"}, {"s": 9912, "e": 9972, "t": "of"}, {"s": 10032, "e": 10413, "t": "God."}, {"s": 11073, "e": 11153, "t": "And", "v": 2}, {"s": 11233, "e": 11253, "t": "I"}, {"s": 11333, "e": 11533, "t": "saw"}, {"s": 11594, "e": 11674, "t": "as"}, {"s": 11714, "e": 11794, "t": "it"}, {"s": 11834, "e": 12014, "t": "were"}, {"s": 12054, "e": 12074, "t": "a"}, {"s": 12234, "e": 12414, "t": "sea"}, {"s": 12474, "e": 12534, "t": "of"}, {"s": 12614, "e": 13014, "t": "glass"}, {"s": 13174, "e": 13534, "t": "mingled"}, {"s": 13554, "e": 13695, "t": "with"}, {"s": 13775, "e": 14195, "t": "fire:"}, {"s": 14755, "e": 14875, "t": "and"}, {"s": 14935, "e": 15115, "t": "them"}, {"s": 15155, "e": 15275, "t": "that"}, {"s": 15295, "e": 15415, "t": "had"}, {"s": 15475, "e": 15796, "t": "gotten"}, {"s": 15956, "e": 16056, "t": "the"}, {"s": 16116, "e": 16476, "t": "victory"}, {"s": 16596, "e": 16756, "t": "over"}, {"s": 16796, "e": 16876, "t": "the"}, {"s": 16936, "e": 17276, "t": "beast,"}, {"s": 17336, "e": 17416, "t": "and"}, {"s": 17456, "e": 17616, "t": "over"}, {"s": 17656, "e": 17797, "t": "his"}, {"s": 17917, "e": 18237, "t": "image,"}, {"s": 18357, "e": 18457, "t": "and"}, {"s": 18497, "e": 18657, "t": "over"}, {"s": 18697, "e": 18817, "t": "his"}, {"s": 18897, "e": 19177, "t": "mark,"}, {"s": 19677, "e": 19778, "t": "and", "i": 1}, {"s": 19798, "e": 19958, "t": "over"}, {"s": 19978, "e": 20058, "t": "the"}, {"s": 20138, "e": 20398, "t": "number"}, {"s": 20458, "e": 20518, "t": "of"}, {"s": 20558, "e": 20678, "t": "his"}, {"s": 20758, "e": 21098, "t": "name,"}, {"s": 21498, "e": 21899, "t": "stand"}, {"s": 21939, "e": 21999, "t": "on"}, {"s": 22019, "e": 22099, "t": "the"}, {"s": 22179, "e": 22339, "t": "sea"}, {"s": 22379, "e": 22439, "t": "of"}, {"s": 22499, "e": 22939, "t": "glass,"}, {"s": 23439, "e": 23679, "t": "having"}, {"s": 23719, "e": 23779, "t": "the"}, {"s": 23840, "e": 24160, "t": "harps"}, {"s": 24200, "e": 24280, "t": "of"}, {"s": 24340, "e": 24700, "t": "God."}, {"s": 25201, "e": 25281, "t": "And", "v": 3}, {"s": 25301, "e": 25401, "t": "they"}, {"s": 25501, "e": 25702, "t": "sing"}, {"s": 25742, "e": 25822, "t": "the"}, {"s": 25902, "e": 26142, "t": "song"}, {"s": 26182, "e": 26262, "t": "of"}, {"s": 26323, "e": 26703, "t": "Moses"}, {"s": 26763, "e": 26863, "t": "the"}, {"s": 26944, "e": 27284, "t": "servant"}, {"s": 27324, "e": 27404, "t": "of"}, {"s": 27464, "e": 27825, "t": "God,"}, {"s": 28326, "e": 28406, "t": "and"}, {"s": 28426, "e": 28506, "t": "the"}, {"s": 28586, "e": 28907, "t": "song"}, {"s": 28947, "e": 29007, "t": "of"}, {"s": 29047, "e": 29127, "t": "the"}, {"s": 29187, "e": 29528, "t": "Lamb,"}, {"s": 29648, "e": 30049, "t": "saying,"}, {"s": 30329, "e": 30630, "t": "Great"}, {"s": 30830, "e": 30930, "t": "and"}, {"s": 30990, "e": 31431, "t": "marvellous"}, {"s": 31511, "e": 31631, "t": "are", "i": 1}, {"s": 31631, "e": 31792, "t": "thy"}, {"s": 31892, "e": 32212, "t": "works,"}, {"s": 32493, "e": 32673, "t": "Lord"}, {"s": 32733, "e": 32934, "t": "God"}, {"s": 32994, "e": 33394, "t": "Almighty;"}, {"s": 33635, "e": 33955, "t": "just"}, {"s": 34035, "e": 34136, "t": "and"}, {"s": 34176, "e": 34496, "t": "true"}, {"s": 34556, "e": 34696, "t": "are", "i": 1}, {"s": 34696, "e": 34877, "t": "thy"}, {"s": 34957, "e": 35358, "t": "ways,"}, {"s": 35638, "e": 35818, "t": "thou"}, {"s": 35898, "e": 36119, "t": "King"}, {"s": 36159, "e": 36239, "t": "of"}, {"s": 36339, "e": 36700, "t": "saints."}, {"s": 37402, "e": 37502, "t": "Who", "v": 4}, {"s": 37623, "e": 37803, "t": "shall"}, {"s": 37844, "e": 38024, "t": "not"}, {"s": 38165, "e": 38386, "t": "fear"}, {"s": 38446, "e": 38586, "t": "thee,"}, {"s": 38646, "e": 38666, "t": "O"}, {"s": 38787, "e": 39068, "t": "Lord,"}, {"s": 39168, "e": 39269, "t": "and"}, {"s": 39309, "e": 39871, "t": "glorify"}, {"s": 39931, "e": 40091, "t": "thy"}, {"s": 40172, "e": 40493, "t": "name?"}, {"s": 40834, "e": 40954, "t": "for"}, {"s": 40994, "e": 41174, "t": "thou", "i": 1}, {"s": 41395, "e": 41675, "t": "only"}, {"s": 41855, "e": 42016, "t": "art", "i": 1}, {"s": 42096, "e": 42376, "t": "holy:"}, {"s": 43017, "e": 43158, "t": "for"}, {"s": 43278, "e": 43438, "t": "all"}, {"s": 43498, "e": 43919, "t": "nations"}, {"s": 43979, "e": 44160, "t": "shall"}, {"s": 44240, "e": 44560, "t": "come"}, {"s": 44600, "e": 44701, "t": "and"}, {"s": 44741, "e": 45101, "t": "worship"}, {"s": 45181, "e": 45622, "t": "before"}, {"s": 45662, "e": 45823, "t": "thee;"}, {"s": 46243, "e": 46344, "t": "for"}, {"s": 46384, "e": 46504, "t": "thy"}, {"s": 46584, "e": 47085, "t": "judgments"}, {"s": 47225, "e": 47345, "t": "are"}, {"s": 47365, "e": 47566, "t": "made"}, {"s": 47606, "e": 48207, "t": "manifest."}, {"s": 48888, "e": 48988, "t": "And", "v": 5}, {"s": 49048, "e": 49268, "t": "after"}, {"s": 49288, "e": 49449, "t": "that"}, {"s": 49549, "e": 49569, "t": "I"}, {"s": 49629, "e": 49889, "t": "looked,"}, {"s": 50310, "e": 50510, "t": "and,"}, {"s": 50570, "e": 50951, "t": "behold,"}, {"s": 51011, "e": 51091, "t": "the"}, {"s": 51151, "e": 51471, "t": "temple"}, {"s": 51512, "e": 51572, "t": "of"}, {"s": 51592, "e": 51672, "t": "the"}, {"s": 51712, "e": 52313, "t": "tabernacle"}, {"s": 52333, "e": 52393, "t": "of"}, {"s": 52413, "e": 52493, "t": "the"}, {"s": 52533, "e": 53094, "t": "testimony"}, {"s": 53154, "e": 53214, "t": "in"}, {"s": 53254, "e": 53494, "t": "heaven"}, {"s": 53554, "e": 53675, "t": "was"}, {"s": 53755, "e": 54115, "t": "opened:"}, {"s": 54796, "e": 54876, "t": "And", "v": 6}, {"s": 54896, "e": 54956, "t": "the"}, {"s": 55016, "e": 55257, "t": "seven"}, {"s": 55317, "e": 55597, "t": "angels"}, {"s": 55657, "e": 55838, "t": "came"}, {"s": 55858, "e": 55978, "t": "out"}, {"s": 55998, "e": 56058, "t": "of"}, {"s": 56078, "e": 56138, "t": "the"}, {"s": 56178, "e": 56579, "t": "temple,"}, {"s": 56779, "e": 57019, "t": "having"}, {"s": 57039, "e": 57119, "t": "the"}, {"s": 57179, "e": 57460, "t": "seven"}, {"s": 57500, "e": 57920, "t": "plagues,"}, {"s": 58021, "e": 58421, "t": "clothed"}, {"s": 58441, "e": 58521, "t": "in"}, {"s": 58581, "e": 58862, "t": "pure"}, {"s": 58902, "e": 59002, "t": "and"}, {"s": 59022, "e": 59262, "t": "white"}, {"s": 59302, "e": 59543, "t": "linen,"}, {"s": 60003, "e": 60103, "t": "and"}, {"s": 60143, "e": 60384, "t": "having"}, {"s": 60404, "e": 60544, "t": "their"}, {"s": 60604, "e": 61005, "t": "breasts"}, {"s": 61125, "e": 61425, "t": "girded"}, {"s": 61505, "e": 61646, "t": "with"}, {"s": 61686, "e": 62006, "t": "golden"}, {"s": 62086, "e": 62527, "t": "girdles."}, {"s": 63289, "e": 63369, "t": "And", "v": 7}, {"s": 63429, "e": 63529, "t": "one"}, {"s": 63549, "e": 63590, "t": "of"}, {"s": 63610, "e": 63690, "t": "the"}, {"s": 63730, "e": 63931, "t": "four"}, {"s": 64011, "e": 64332, "t": "beasts"}, {"s": 64372, "e": 64532, "t": "gave"}, {"s": 64572, "e": 64713, "t": "unto"}, {"s": 64753, "e": 64833, "t": "the"}, {"s": 64893, "e": 65134, "t": "seven"}, {"s": 65214, "e": 65535, "t": "angels"}, {"s": 65595, "e": 65876, "t": "seven"}, {"s": 65936, "e": 66257, "t": "golden"}, {"s": 66317, "e": 66698, "t": "vials"}, {"s": 66778, "e": 66979, "t": "full"}, {"s": 67019, "e": 67079, "t": "of"}, {"s": 67099, "e": 67180, "t": "the"}, {"s": 67200, "e": 67480, "t": "wrath"}, {"s": 67520, "e": 67601, "t": "of"}, {"s": 67661, "e": 67962, "t": "God,"}, {"s": 68022, "e": 68122, "t": "who"}, {"s": 68202, "e": 68503, "t": "liveth"}, {"s": 68543, "e": 68684, "t": "for"}, {"s": 68804, "e": 69045, "t": "ever"}, {"s": 69245, "e": 69366, "t": "and"}, {"s": 69466, "e": 69686, "t": "ever."}, {"s": 70107, "e": 70187, "t": "And", "v": 8}, {"s": 70207, "e": 70288, "t": "the"}, {"s": 70328, "e": 70668, "t": "temple"}, {"s": 70708, "e": 70828, "t": "was"}, {"s": 70948, "e": 71229, "t": "filled"}, {"s": 71269, "e": 71409, "t": "with"}, {"s": 71469, "e": 71849, "t": "smoke"}, {"s": 71910, "e": 72050, "t": "from"}, {"s": 72090, "e": 72170, "t": "the"}, {"s": 72190, "e": 72490, "t": "glory"}, {"s": 72550, "e": 72610, "t": "of"}, {"s": 72690, "e": 73031, "t": "God,"}, {"s": 73311, "e": 73391, "t": "and"}, {"s": 73431, "e": 73572, "t": "from"}, {"s": 73612, "e": 73732, "t": "his"}, {"s": 73812, "e": 74192, "t": "power;"}, {"s": 74793, "e": 74893, "t": "and"}, {"s": 74933, "e": 75013, "t": "no"}, {"s": 75134, "e": 75334, "t": "man"}, {"s": 75394, "e": 75514, "t": "was"}, {"s": 75594, "e": 75814, "t": "able"}, {"s": 75854, "e": 75914, "t": "to"}, {"s": 76035, "e": 76335, "t": "enter"}, {"s": 76395, "e": 76575, "t": "into"}, {"s": 76615, "e": 76695, "t": "the"}, {"s": 76735, "e": 77156, "t": "temple,"}, {"s": 77496, "e": 77617, "t": "till"}, {"s": 77637, "e": 77717, "t": "the"}, {"s": 77777, "e": 78057, "t": "seven"}, {"s": 78117, "e": 78578, "t": "plagues"}, {"s": 78618, "e": 78678, "t": "of"}, {"s": 78698, "e": 78778, "t": "the"}, {"s": 78838, "e": 79098, "t": "seven"}, {"s": 79199, "e": 79599, "t": "angels"}, {"s": 79639, "e": 79799, "t": "were"}, {"s": 79819, "e": 80360, "t": "fulfilled."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=W.map((w,i)=>{
+ if(w.v){const s=document.createElement('sup');s.className='vn';s.textContent=w.v;
+  s.title='verse '+w.v;s.onclick=()=>{a.currentTime=w.s/1000;a.play()};t.appendChild(s);}
+ const e=document.createElement('span');
+ e.className='w'+(w.i?' it':'');e.textContent=w.t+' ';
+ e.onclick=()=>{a.currentTime=w.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+// LEAD = ms the highlight runs AHEAD of the heard audio.
+// Default 180 = 60ms CTC-lag correction (MMS emits late) + 120ms eye-voice lead.
+let LEAD=+(localStorage.getItem('snailLead')||180);
+const lv=document.getElementById('lv');
+function showLead(){lv.innerHTML=LEAD+'&thinsp;ms';localStorage.setItem('snailLead',LEAD);}
+document.getElementById('lm').onclick=()=>{LEAD=Math.max(-300,LEAD-20);showLead();};
+document.getElementById('lp').onclick=()=>{LEAD=Math.min(900,LEAD+20);showLead();};
+showLead();
+
+// --- Rank 4: hardware (Bluetooth/buffer) latency, read from a bare AudioContext.
+// We don't route audio through it (element keeps its own output) — we only read the
+// device's output/base latency so the clock reflects what the EAR hears, not the buffer.
+let hwLat=0;
+try{const C=window.AudioContext||window.webkitAudioContext;
+ if(C){const ctx=new C();
+  const rd=()=>{hwLat=(ctx.baseLatency||0)+(ctx.outputLatency||0);};rd();
+  a.addEventListener('play',()=>{if(ctx.state==='suspended')ctx.resume().then(rd);else rd();});}
+}catch(e){}
+
+// --- Rank 3 core: a smoothed media clock. a.currentTime updates in coarse chunks
+// (same value for several frames, then jumps), so we extrapolate between updates with
+// performance.now() for a continuous playhead, then subtract hardware latency.
+let baseCT=-1,baseWall=0;
+function playheadMs(){
+ const ct=a.currentTime,now=performance.now();
+ if(ct!==baseCT){baseCT=ct;baseWall=now;}
+ const adv=a.paused?0:(now-baseWall)/1000*(a.playbackRate||1);
+ return (baseCT+adv-hwLat)*1000;
+}
+
+function find(ms){ // cursor-forward scan; jump-safe fallback
+ if(cur>=0&&ms>=W[cur].s&&ms<W[cur].e)return cur;
+ if(cur>=0&&ms>=W[cur].e){for(let i=cur+1;i<W.length;i++){
+   if(ms<W[i].e)return ms>=W[i].s?i:i-1>=cur?i-1:cur;}return W.length-1;}
+ for(let i=0;i<W.length;i++)if(ms<W[i].e)return ms>=W[i].s?i:Math.max(0,i-1);
+ return W.length-1;}
+
+let lastScroll=0;
+function paint(i){
+ if(i===cur)return;
+ if(i>cur){for(let k=Math.max(0,cur);k<i;k++)spans[k].classList.add('read');}
+ else{for(let k=i;k<=cur&&k<spans.length;k++)spans[k].classList.remove('read');}
+ if(cur>=0)spans[cur].classList.remove('active');
+ cur=i;
+ if(i>=0){spans[i].classList.remove('read');spans[i].classList.add('active');
+  const now=performance.now();           // throttle smooth-scroll so it doesn't fight itself
+  if(now-lastScroll>200){lastScroll=now;
+   spans[i].scrollIntoView({block:'center',behavior:'smooth'});}}}
+
+// --- Rank 3: 60/120Hz render loop, decoupled from the ~4Hz timeupdate event.
+function loop(){paint(find(playheadMs()+LEAD));requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+
+// speed buttons only (scoped to [data-r] so this does NOT clobber the lead buttons)
+document.querySelectorAll('.spd button[data-r]').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button[data-r]').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

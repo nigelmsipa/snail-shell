@@ -1,0 +1,104 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revelation 10</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--read:#cfc6b4;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.8;font-size:1.18rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .w{cursor:pointer;border-radius:.22rem;padding:.04em .04em;
+   transition:background .15s ease-out,color .15s ease-out,box-shadow .15s ease-out}
+ .w:hover{background:#eadfc8}
+ .w.read{color:var(--read)}
+ .w.active{background:var(--hi);color:var(--fg);box-shadow:0 0 0 .12em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+ .vn{font-size:.62em;color:#b07a3a;font-weight:600;vertical-align:.45em;
+   margin:0 .12em 0 .04em;cursor:pointer;user-select:none}
+ .vn:hover{color:#8a5e2a}
+ .w.it{font-style:italic}
+</style></head><body>
+<header><audio id="a" src="revelation-10.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div>
+<div class="spd">Lead:
+ <button id="lm">&minus;20ms</button><span id="lv" style="min-width:5ch;display:inline-block;text-align:center">0&thinsp;ms</span><button id="lp">+20ms</button>
+ <span style="color:var(--dim)">&nbsp;(how far ahead the highlight runs)</span></div></header>
+<main><h1>Revelation 10</h1><p id="t"></p></main>
+<script>
+const W=[{"s": 61, "e": 727, "t": "Revelation,"}, {"s": 1293, "e": 1636, "t": "Chapter"}, {"s": 1697, "e": 1939, "t": "Ten."}, {"s": 2600, "e": 2680, "t": "And", "v": 1}, {"s": 2761, "e": 2781, "t": "I"}, {"s": 2841, "e": 2981, "t": "saw"}, {"s": 3021, "e": 3301, "t": "another"}, {"s": 3381, "e": 3601, "t": "mighty"}, {"s": 3761, "e": 4041, "t": "angel"}, {"s": 4122, "e": 4282, "t": "come"}, {"s": 4322, "e": 4522, "t": "down"}, {"s": 4582, "e": 4722, "t": "from"}, {"s": 4782, "e": 5062, "t": "heaven,"}, {"s": 5322, "e": 5723, "t": "clothed"}, {"s": 5763, "e": 5863, "t": "with"}, {"s": 5903, "e": 5923, "t": "a"}, {"s": 5983, "e": 6463, "t": "cloud:"}, {"s": 6823, "e": 6904, "t": "and"}, {"s": 6924, "e": 6944, "t": "a"}, {"s": 7024, "e": 7424, "t": "rainbow"}, {"s": 7484, "e": 7604, "t": "was", "i": 1}, {"s": 7644, "e": 7884, "t": "upon"}, {"s": 7904, "e": 8024, "t": "his"}, {"s": 8084, "e": 8365, "t": "head,"}, {"s": 8865, "e": 8945, "t": "and"}, {"s": 8985, "e": 9085, "t": "his"}, {"s": 9185, "e": 9505, "t": "face"}, {"s": 9565, "e": 9726, "t": "was", "i": 1}, {"s": 9886, "e": 9986, "t": "as"}, {"s": 10026, "e": 10106, "t": "it"}, {"s": 10126, "e": 10286, "t": "were"}, {"s": 10286, "e": 10366, "t": "the"}, {"s": 10466, "e": 10726, "t": "sun,"}, {"s": 11187, "e": 11267, "t": "and"}, {"s": 11307, "e": 11427, "t": "his"}, {"s": 11507, "e": 11707, "t": "feet"}, {"s": 11787, "e": 11867, "t": "as"}, {"s": 11947, "e": 12287, "t": "pillars"}, {"s": 12327, "e": 12387, "t": "of"}, {"s": 12468, "e": 12868, "t": "fire:"}, {"s": 13568, "e": 13668, "t": "And", "v": 2}, {"s": 13708, "e": 13768, "t": "he"}, {"s": 13869, "e": 14049, "t": "had"}, {"s": 14089, "e": 14169, "t": "in"}, {"s": 14189, "e": 14309, "t": "his"}, {"s": 14369, "e": 14689, "t": "hand"}, {"s": 14769, "e": 14789, "t": "a"}, {"s": 14849, "e": 15069, "t": "little"}, {"s": 15129, "e": 15310, "t": "book"}, {"s": 15410, "e": 15690, "t": "open:"}, {"s": 16310, "e": 16390, "t": "and"}, {"s": 16410, "e": 16470, "t": "he"}, {"s": 16570, "e": 16731, "t": "set"}, {"s": 16771, "e": 16891, "t": "his"}, {"s": 16991, "e": 17191, "t": "right"}, {"s": 17271, "e": 17471, "t": "foot"}, {"s": 17531, "e": 17751, "t": "upon"}, {"s": 17791, "e": 17871, "t": "the"}, {"s": 17971, "e": 18212, "t": "sea,"}, {"s": 18632, "e": 18712, "t": "and"}, {"s": 18752, "e": 18852, "t": "his", "i": 1}, {"s": 18932, "e": 19132, "t": "left"}, {"s": 19192, "e": 19372, "t": "foot", "i": 1}, {"s": 19432, "e": 19513, "t": "on"}, {"s": 19553, "e": 19633, "t": "the"}, {"s": 19713, "e": 20013, "t": "earth,"}, {"s": 20433, "e": 20533, "t": "And", "v": 3}, {"s": 20573, "e": 20894, "t": "cried"}, {"s": 20914, "e": 21034, "t": "with"}, {"s": 21054, "e": 21074, "t": "a"}, {"s": 21134, "e": 21394, "t": "loud"}, {"s": 21454, "e": 21875, "t": "voice,"}, {"s": 22475, "e": 22716, "t": "as"}, {"s": 22796, "e": 22936, "t": "when", "i": 1}, {"s": 22956, "e": 22976, "t": "a"}, {"s": 23056, "e": 23376, "t": "lion"}, {"s": 23456, "e": 23857, "t": "roareth:"}, {"s": 24217, "e": 24337, "t": "and"}, {"s": 24357, "e": 24497, "t": "when"}, {"s": 24557, "e": 24617, "t": "he"}, {"s": 24637, "e": 24738, "t": "had"}, {"s": 24798, "e": 25258, "t": "cried,"}, {"s": 25438, "e": 25719, "t": "seven"}, {"s": 25799, "e": 26199, "t": "thunders"}, {"s": 26279, "e": 26479, "t": "uttered"}, {"s": 26499, "e": 26639, "t": "their"}, {"s": 26659, "e": 27120, "t": "voices."}, {"s": 27701, "e": 27801, "t": "And", "v": 4}, {"s": 27821, "e": 27941, "t": "when"}, {"s": 27981, "e": 28061, "t": "the"}, {"s": 28121, "e": 28381, "t": "seven"}, {"s": 28441, "e": 28802, "t": "thunders"}, {"s": 28842, "e": 28962, "t": "had"}, {"s": 29002, "e": 29222, "t": "uttered"}, {"s": 29242, "e": 29363, "t": "their"}, {"s": 29403, "e": 29883, "t": "voices,"}, {"s": 30684, "e": 30704, "t": "I"}, {"s": 30724, "e": 30844, "t": "was"}, {"s": 30864, "e": 31085, "t": "about"}, {"s": 31125, "e": 31185, "t": "to"}, {"s": 31225, "e": 31585, "t": "write:"}, {"s": 31785, "e": 31886, "t": "and"}, {"s": 31946, "e": 31966, "t": "I"}, {"s": 31986, "e": 32146, "t": "heard"}, {"s": 32166, "e": 32186, "t": "a"}, {"s": 32246, "e": 32526, "t": "voice"}, {"s": 32546, "e": 32687, "t": "from"}, {"s": 32747, "e": 33007, "t": "heaven"}, {"s": 33107, "e": 33347, "t": "saying"}, {"s": 33387, "e": 33568, "t": "unto"}, {"s": 33628, "e": 33708, "t": "me,"}, {"s": 34409, "e": 34649, "t": "Seal"}, {"s": 34689, "e": 34769, "t": "up"}, {"s": 34829, "e": 35069, "t": "those"}, {"s": 35109, "e": 35410, "t": "things"}, {"s": 35450, "e": 35630, "t": "which"}, {"s": 35710, "e": 35790, "t": "the"}, {"s": 35850, "e": 36111, "t": "seven"}, {"s": 36171, "e": 36511, "t": "thunders"}, {"s": 36571, "e": 36831, "t": "uttered,"}, {"s": 37192, "e": 37292, "t": "and"}, {"s": 37312, "e": 37552, "t": "write"}, {"s": 37592, "e": 37692, "t": "them"}, {"s": 37773, "e": 38033, "t": "not."}, {"s": 38593, "e": 38673, "t": "And", "v": 5}, {"s": 38693, "e": 38773, "t": "the"}, {"s": 38854, "e": 39154, "t": "angel"}, {"s": 39194, "e": 39354, "t": "which"}, {"s": 39474, "e": 39494, "t": "I"}, {"s": 39594, "e": 39774, "t": "saw"}, {"s": 39894, "e": 40175, "t": "stand"}, {"s": 40215, "e": 40415, "t": "upon"}, {"s": 40455, "e": 40535, "t": "the"}, {"s": 40635, "e": 40855, "t": "sea"}, {"s": 41035, "e": 41115, "t": "and"}, {"s": 41135, "e": 41395, "t": "upon"}, {"s": 41415, "e": 41516, "t": "the"}, {"s": 41576, "e": 41816, "t": "earth"}, {"s": 42296, "e": 42576, "t": "lifted"}, {"s": 42596, "e": 42676, "t": "up"}, {"s": 42716, "e": 42837, "t": "his"}, {"s": 42877, "e": 43117, "t": "hand"}, {"s": 43137, "e": 43217, "t": "to"}, {"s": 43297, "e": 43597, "t": "heaven,"}, {"s": 44258, "e": 44358, "t": "And", "v": 6}, {"s": 44438, "e": 44718, "t": "sware"}, {"s": 44758, "e": 44898, "t": "by"}, {"s": 44958, "e": 45138, "t": "him"}, {"s": 45178, "e": 45298, "t": "that"}, {"s": 45378, "e": 45639, "t": "liveth"}, {"s": 45679, "e": 45819, "t": "for"}, {"s": 45919, "e": 46099, "t": "ever"}, {"s": 46139, "e": 46239, "t": "and"}, {"s": 46279, "e": 46499, "t": "ever,"}, {"s": 46920, "e": 47000, "t": "who"}, {"s": 47080, "e": 47540, "t": "created"}, {"s": 47620, "e": 47920, "t": "heaven,"}, {"s": 48661, "e": 48761, "t": "and"}, {"s": 48781, "e": 48861, "t": "the"}, {"s": 48921, "e": 49201, "t": "things"}, {"s": 49241, "e": 49381, "t": "that"}, {"s": 49442, "e": 49782, "t": "therein"}, {"s": 49922, "e": 50182, "t": "are,"}, {"s": 50803, "e": 50883, "t": "and"}, {"s": 50903, "e": 50983, "t": "the"}, {"s": 51083, "e": 51383, "t": "earth,"}, {"s": 51783, "e": 51883, "t": "and"}, {"s": 51903, "e": 51963, "t": "the"}, {"s": 52023, "e": 52284, "t": "things"}, {"s": 52324, "e": 52424, "t": "that"}, {"s": 52484, "e": 52804, "t": "therein"}, {"s": 52944, "e": 53184, "t": "are,"}, {"s": 53925, "e": 54025, "t": "and"}, {"s": 54045, "e": 54125, "t": "the"}, {"s": 54225, "e": 54485, "t": "sea,"}, {"s": 55206, "e": 55286, "t": "and"}, {"s": 55306, "e": 55386, "t": "the"}, {"s": 55446, "e": 55706, "t": "things"}, {"s": 55726, "e": 55886, "t": "which"}, {"s": 55946, "e": 56067, "t": "are"}, {"s": 56107, "e": 56547, "t": "therein,"}, {"s": 56907, "e": 57027, "t": "that"}, {"s": 57047, "e": 57187, "t": "there"}, {"s": 57187, "e": 57367, "t": "should"}, {"s": 57387, "e": 57427, "t": "be"}, {"s": 57527, "e": 57868, "t": "time"}, {"s": 57928, "e": 57988, "t": "no"}, {"s": 58108, "e": 58508, "t": "longer:"}, {"s": 59388, "e": 59508, "t": "But", "v": 7}, {"s": 59528, "e": 59589, "t": "in"}, {"s": 59609, "e": 59689, "t": "the"}, {"s": 59749, "e": 60069, "t": "days"}, {"s": 60109, "e": 60169, "t": "of"}, {"s": 60209, "e": 60289, "t": "the"}, {"s": 60329, "e": 60649, "t": "voice"}, {"s": 60689, "e": 60749, "t": "of"}, {"s": 60769, "e": 60849, "t": "the"}, {"s": 60929, "e": 61269, "t": "seventh"}, {"s": 61349, "e": 61670, "t": "angel,"}, {"s": 61750, "e": 61890, "t": "when"}, {"s": 61930, "e": 61990, "t": "he"}, {"s": 62070, "e": 62230, "t": "shall"}, {"s": 62270, "e": 62570, "t": "begin"}, {"s": 62650, "e": 62730, "t": "to"}, {"s": 62870, "e": 63350, "t": "sound,"}, {"s": 63851, "e": 63951, "t": "the"}, {"s": 64011, "e": 64351, "t": "mystery"}, {"s": 64411, "e": 64471, "t": "of"}, {"s": 64531, "e": 64831, "t": "God"}, {"s": 64871, "e": 65051, "t": "should"}, {"s": 65071, "e": 65131, "t": "be"}, {"s": 65211, "e": 65652, "t": "finished,"}, {"s": 65772, "e": 65872, "t": "as"}, {"s": 65912, "e": 65972, "t": "he"}, {"s": 65992, "e": 66132, "t": "hath"}, {"s": 66212, "e": 66692, "t": "declared"}, {"s": 66732, "e": 66792, "t": "to"}, {"s": 66832, "e": 66952, "t": "his"}, {"s": 67012, "e": 67413, "t": "servants"}, {"s": 67453, "e": 67533, "t": "the"}, {"s": 67553, "e": 67993, "t": "prophets."}, {"s": 68734, "e": 68814, "t": "And", "v": 8}, {"s": 68834, "e": 68915, "t": "the"}, {"s": 68935, "e": 69235, "t": "voice"}, {"s": 69255, "e": 69415, "t": "which"}, {"s": 69536, "e": 69556, "t": "I"}, {"s": 69616, "e": 69816, "t": "heard"}, {"s": 69836, "e": 69977, "t": "from"}, {"s": 70057, "e": 70297, "t": "heaven"}, {"s": 70397, "e": 70698, "t": "spake"}, {"s": 70718, "e": 70898, "t": "unto"}, {"s": 70958, "e": 71019, "t": "me"}, {"s": 71119, "e": 71459, "t": "again,"}, {"s": 71499, "e": 71600, "t": "and"}, {"s": 71680, "e": 71960, "t": "said,"}, {"s": 72622, "e": 72702, "t": "Go"}, {"s": 72802, "e": 72902, "t": "and", "i": 1}, {"s": 72942, "e": 73163, "t": "take"}, {"s": 73183, "e": 73263, "t": "the"}, {"s": 73303, "e": 73523, "t": "little"}, {"s": 73563, "e": 73784, "t": "book"}, {"s": 73844, "e": 74004, "t": "which"}, {"s": 74024, "e": 74125, "t": "is"}, {"s": 74185, "e": 74425, "t": "open"}, {"s": 74485, "e": 74545, "t": "in"}, {"s": 74565, "e": 74625, "t": "the"}, {"s": 74686, "e": 74966, "t": "hand"}, {"s": 74986, "e": 75046, "t": "of"}, {"s": 75086, "e": 75167, "t": "the"}, {"s": 75287, "e": 75627, "t": "angel"}, {"s": 75667, "e": 75828, "t": "which"}, {"s": 75888, "e": 76309, "t": "standeth"}, {"s": 76329, "e": 76549, "t": "upon"}, {"s": 76589, "e": 76669, "t": "the"}, {"s": 76770, "e": 77010, "t": "sea"}, {"s": 77631, "e": 77731, "t": "and"}, {"s": 77751, "e": 77972, "t": "upon"}, {"s": 77992, "e": 78092, "t": "the"}, {"s": 78192, "e": 78493, "t": "earth."}, {"s": 79334, "e": 79434, "t": "And", "v": 9}, {"s": 79534, "e": 79554, "t": "I"}, {"s": 79635, "e": 79795, "t": "went"}, {"s": 79855, "e": 80035, "t": "unto"}, {"s": 80075, "e": 80175, "t": "the"}, {"s": 80295, "e": 80636, "t": "angel,"}, {"s": 80796, "e": 80896, "t": "and"}, {"s": 80976, "e": 81157, "t": "said"}, {"s": 81197, "e": 81377, "t": "unto"}, {"s": 81457, "e": 81657, "t": "him,"}, {"s": 82519, "e": 82679, "t": "Give"}, {"s": 82699, "e": 82759, "t": "me"}, {"s": 82819, "e": 82899, "t": "the"}, {"s": 82959, "e": 83179, "t": "little"}, {"s": 83219, "e": 83460, "t": "book."}, {"s": 84121, "e": 84202, "t": "And"}, {"s": 84222, "e": 84282, "t": "he"}, {"s": 84382, "e": 84543, "t": "said"}, {"s": 84583, "e": 84783, "t": "unto"}, {"s": 84843, "e": 84904, "t": "me,"}, {"s": 85245, "e": 85505, "t": "Take"}, {"s": 85545, "e": 85626, "t": "it,", "i": 1}, {"s": 85726, "e": 85846, "t": "and"}, {"s": 86007, "e": 86107, "t": "eat"}, {"s": 86167, "e": 86227, "t": "it"}, {"s": 86287, "e": 86428, "t": "up;"}, {"s": 86648, "e": 86749, "t": "and"}, {"s": 86769, "e": 86849, "t": "it"}, {"s": 86909, "e": 87090, "t": "shall"}, {"s": 87110, "e": 87310, "t": "make"}, {"s": 87330, "e": 87471, "t": "thy"}, {"s": 87551, "e": 87772, "t": "belly"}, {"s": 87892, "e": 88133, "t": "bitter,"}, {"s": 88774, "e": 88895, "t": "but"}, {"s": 88915, "e": 88975, "t": "it"}, {"s": 89035, "e": 89216, "t": "shall"}, {"s": 89256, "e": 89356, "t": "be"}, {"s": 89436, "e": 89516, "t": "in"}, {"s": 89536, "e": 89677, "t": "thy"}, {"s": 89737, "e": 89998, "t": "mouth"}, {"s": 90058, "e": 90299, "t": "sweet"}, {"s": 90359, "e": 90459, "t": "as"}, {"s": 90519, "e": 90740, "t": "honey."}, {"s": 91261, "e": 91361, "t": "And", "v": 10}, {"s": 91421, "e": 91441, "t": "I"}, {"s": 91481, "e": 91641, "t": "took"}, {"s": 91701, "e": 91782, "t": "the"}, {"s": 91822, "e": 92042, "t": "little"}, {"s": 92062, "e": 92242, "t": "book"}, {"s": 92302, "e": 92423, "t": "out"}, {"s": 92443, "e": 92503, "t": "of"}, {"s": 92523, "e": 92603, "t": "the"}, {"s": 92663, "e": 92983, "t": "angel's"}, {"s": 93024, "e": 93324, "t": "hand,"}, {"s": 93464, "e": 93564, "t": "and"}, {"s": 93645, "e": 93765, "t": "ate"}, {"s": 93785, "e": 93865, "t": "it"}, {"s": 93925, "e": 94065, "t": "up;"}, {"s": 94446, "e": 94526, "t": "and"}, {"s": 94526, "e": 94586, "t": "it"}, {"s": 94606, "e": 94706, "t": "was"}, {"s": 94746, "e": 94826, "t": "in"}, {"s": 94866, "e": 95007, "t": "my"}, {"s": 95047, "e": 95287, "t": "mouth"}, {"s": 95367, "e": 95628, "t": "sweet"}, {"s": 95648, "e": 95748, "t": "as"}, {"s": 95828, "e": 96068, "t": "honey:"}, {"s": 96529, "e": 96629, "t": "and"}, {"s": 96669, "e": 96750, "t": "as"}, {"s": 96810, "e": 96970, "t": "soon"}, {"s": 96990, "e": 97070, "t": "as"}, {"s": 97170, "e": 97190, "t": "I"}, {"s": 97230, "e": 97330, "t": "had"}, {"s": 97391, "e": 97571, "t": "eaten"}, {"s": 97631, "e": 97711, "t": "it,"}, {"s": 97931, "e": 98032, "t": "my"}, {"s": 98132, "e": 98372, "t": "belly"}, {"s": 98432, "e": 98552, "t": "was"}, {"s": 98633, "e": 98873, "t": "bitter."}, {"s": 99674, "e": 99775, "t": "And", "v": 11}, {"s": 99795, "e": 99855, "t": "he"}, {"s": 99975, "e": 100176, "t": "said"}, {"s": 100196, "e": 100376, "t": "unto"}, {"s": 100436, "e": 100536, "t": "me,"}, {"s": 101117, "e": 101258, "t": "Thou"}, {"s": 101278, "e": 101478, "t": "must"}, {"s": 101538, "e": 102119, "t": "prophesy"}, {"s": 102180, "e": 102480, "t": "again"}, {"s": 102540, "e": 102861, "t": "before"}, {"s": 102881, "e": 103081, "t": "many"}, {"s": 103162, "e": 103663, "t": "peoples,"}, {"s": 103843, "e": 103943, "t": "and"}, {"s": 103983, "e": 104484, "t": "nations,"}, {"s": 104604, "e": 104705, "t": "and"}, {"s": 104745, "e": 105166, "t": "tongues,"}, {"s": 105206, "e": 105306, "t": "and"}, {"s": 105366, "e": 105827, "t": "kings."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=W.map((w,i)=>{
+ if(w.v){const s=document.createElement('sup');s.className='vn';s.textContent=w.v;
+  s.title='verse '+w.v;s.onclick=()=>{a.currentTime=w.s/1000;a.play()};t.appendChild(s);}
+ const e=document.createElement('span');
+ e.className='w'+(w.i?' it':'');e.textContent=w.t+' ';
+ e.onclick=()=>{a.currentTime=w.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+// LEAD = ms the highlight runs AHEAD of the heard audio.
+// Default 180 = 60ms CTC-lag correction (MMS emits late) + 120ms eye-voice lead.
+let LEAD=+(localStorage.getItem('snailLead')||180);
+const lv=document.getElementById('lv');
+function showLead(){lv.innerHTML=LEAD+'&thinsp;ms';localStorage.setItem('snailLead',LEAD);}
+document.getElementById('lm').onclick=()=>{LEAD=Math.max(-300,LEAD-20);showLead();};
+document.getElementById('lp').onclick=()=>{LEAD=Math.min(900,LEAD+20);showLead();};
+showLead();
+
+// --- Rank 4: hardware (Bluetooth/buffer) latency, read from a bare AudioContext.
+// We don't route audio through it (element keeps its own output) — we only read the
+// device's output/base latency so the clock reflects what the EAR hears, not the buffer.
+let hwLat=0;
+try{const C=window.AudioContext||window.webkitAudioContext;
+ if(C){const ctx=new C();
+  const rd=()=>{hwLat=(ctx.baseLatency||0)+(ctx.outputLatency||0);};rd();
+  a.addEventListener('play',()=>{if(ctx.state==='suspended')ctx.resume().then(rd);else rd();});}
+}catch(e){}
+
+// --- Rank 3 core: a smoothed media clock. a.currentTime updates in coarse chunks
+// (same value for several frames, then jumps), so we extrapolate between updates with
+// performance.now() for a continuous playhead, then subtract hardware latency.
+let baseCT=-1,baseWall=0;
+function playheadMs(){
+ const ct=a.currentTime,now=performance.now();
+ if(ct!==baseCT){baseCT=ct;baseWall=now;}
+ const adv=a.paused?0:(now-baseWall)/1000*(a.playbackRate||1);
+ return (baseCT+adv-hwLat)*1000;
+}
+
+function find(ms){ // cursor-forward scan; jump-safe fallback
+ if(cur>=0&&ms>=W[cur].s&&ms<W[cur].e)return cur;
+ if(cur>=0&&ms>=W[cur].e){for(let i=cur+1;i<W.length;i++){
+   if(ms<W[i].e)return ms>=W[i].s?i:i-1>=cur?i-1:cur;}return W.length-1;}
+ for(let i=0;i<W.length;i++)if(ms<W[i].e)return ms>=W[i].s?i:Math.max(0,i-1);
+ return W.length-1;}
+
+let lastScroll=0;
+function paint(i){
+ if(i===cur)return;
+ if(i>cur){for(let k=Math.max(0,cur);k<i;k++)spans[k].classList.add('read');}
+ else{for(let k=i;k<=cur&&k<spans.length;k++)spans[k].classList.remove('read');}
+ if(cur>=0)spans[cur].classList.remove('active');
+ cur=i;
+ if(i>=0){spans[i].classList.remove('read');spans[i].classList.add('active');
+  const now=performance.now();           // throttle smooth-scroll so it doesn't fight itself
+  if(now-lastScroll>200){lastScroll=now;
+   spans[i].scrollIntoView({block:'center',behavior:'smooth'});}}}
+
+// --- Rank 3: 60/120Hz render loop, decoupled from the ~4Hz timeupdate event.
+function loop(){paint(find(playheadMs()+LEAD));requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+
+// speed buttons only (scoped to [data-r] so this does NOT clobber the lead buttons)
+document.querySelectorAll('.spd button[data-r]').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button[data-r]').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

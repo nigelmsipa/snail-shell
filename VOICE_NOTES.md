@@ -1,5 +1,9 @@
 # Voice Preferences
 
+## Voice assignment by content type (standing default)
+- **Davis** → theology / sacred: **Bible**, Spirit of Prophecy (SOP), and proper scripture-grade text.
+- **Carter** → research papers, commentary — basically everything else.
+
 ## VibeVoice-Realtime-0.5B (preferred engine — ~1× RTF on CPU, no GPU needed)
 - ✅ **Mike** — liked
 - ✅ **Carter** — liked  

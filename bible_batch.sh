@@ -9,7 +9,7 @@ cd /home/nigel/snail-shell
 BOOK="$1"; FIRST="$2"; LAST="$3"; VOICE="${4:-Davis}"
 RENDER_PY=/home/nigel/.kokoro-render-venv/bin/python
 ALIGN_PY=/home/nigel/.snail-align-venv/bin/python
-SLUG=$(echo "$BOOK" | tr '[:upper:]' '[:lower:]')
+SLUG=$(echo "$BOOK" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
 
 c="$FIRST"
 while [ "$c" -le "$LAST" ]; do

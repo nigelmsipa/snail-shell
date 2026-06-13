@@ -9,7 +9,7 @@ import os, re, sys, json, glob
 
 def main():
     book = sys.argv[1] if len(sys.argv) > 1 else "Revelation"
-    slug = book.lower()
+    slug = book.lower().replace(" ", "")
     chapters = []
     for vm in sorted(glob.glob("%s-*.versemap.json" % slug)):
         m = re.search(r"-(\d+)\.versemap\.json$", vm)

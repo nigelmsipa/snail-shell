@@ -81,7 +81,8 @@ def main():
     if len(sys.argv) < 3:
         sys.exit('usage: bible_build.py "Book" CHAPTER [outbase]')
     book, ch = sys.argv[1], int(sys.argv[2])
-    base = sys.argv[3] if len(sys.argv) > 3 else "%s-%02d" % (book.lower(), ch)
+    base = sys.argv[3] if len(sys.argv) > 3 else \
+        "%s-%02d" % (book.lower().replace(" ", ""), ch)
 
     verses = load_chapter(book, ch)
     if not verses:

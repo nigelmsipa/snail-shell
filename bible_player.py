@@ -96,7 +96,7 @@ def main():
         W.append(o)
 
     title = "%s %d" % (vmap["book"], vmap["chapter"])
-    slug = vmap["book"].lower()
+    slug = vmap["book"].lower().replace(" ", "")
     audio = aligned.get("audio", base + ".opus")
     payload = json.dumps(W, ensure_ascii=False)
     nav = build_nav(vmap["book"], slug, vmap["chapter"])

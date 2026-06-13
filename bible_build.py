@@ -40,6 +40,18 @@ def num_word(n):
     return h + " Hundred" + (" " + num_word(rem) if rem else "")
 
 
+def chapter_count(book):
+    pref = book + " "
+    chs = set()
+    with open(KJV, encoding="utf-8") as f:
+        for line in f:
+            if line.startswith(pref):
+                c = line[len(pref):].split(":", 1)[0]
+                if c.isdigit():
+                    chs.add(int(c))
+    return len(chs)
+
+
 def load_chapter(book, ch):
     pref = "%s %d:" % (book, ch)
     verses = []
@@ -75,7 +87,9 @@ def main():
     if not verses:
         sys.exit("no verses found for %s %d in %s" % (book, ch, KJV))
 
-    ann = "%s, Chapter %s." % (book, num_word(ch))
+    # single-chapter books (Jude, Philemon, Obadiah, 2/3 John...) read just the name
+    ann = ("%s." % book) if chapter_count(book) == 1 else \
+          ("%s, Chapter %s." % (book, num_word(ch)))
     words = WORD.findall(ann)
     italic = [False] * len(words)
     versemap = []

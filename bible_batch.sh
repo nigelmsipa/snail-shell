@@ -25,7 +25,9 @@ while [ "$c" -le "$LAST" ]; do
     "/home/nigel/snail-shell/$base.txt" \
     "/home/nigel/snail-shell/$base.opus" "$VOICE" >"/tmp/$base-render.log" 2>&1
   echo "=== [$base] align ==="
-  nice -n 19 "$ALIGN_PY" align_words.py "$base.json" >"/tmp/$base-align.log" 2>&1
+  # single-threaded: torch CPU forced-align segfaults intermittently when multi-threaded
+  OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+    nice -n 19 "$ALIGN_PY" align_words.py "$base.json" >"/tmp/$base-align.log" 2>&1
   echo "=== [$base] player ==="
   python3 bible_player.py "$base"
   echo "=== [$base] DONE ==="

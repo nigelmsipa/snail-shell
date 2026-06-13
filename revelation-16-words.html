@@ -25,8 +25,16 @@
    margin:0 .12em 0 .04em;cursor:pointer;user-select:none}
  .vn:hover{color:#8a5e2a}
  .w.it{font-style:italic}
+ .bnav{display:flex;align-items:center;gap:.4rem;margin-bottom:.55rem;font-size:.9rem}
+ .navbtn{text-decoration:none;color:var(--fg);background:#fbf7ee;border:1px solid #ccc3b2;
+   border-radius:.4rem;padding:.18rem .62rem;cursor:pointer;font:inherit}
+ .navbtn:hover{background:var(--hi);border-color:#e0c050}
+ .navbtn.off{opacity:.32;pointer-events:none}
+ .bnav select{font:inherit;background:#fbf7ee;border:1px solid #ccc3b2;border-radius:.4rem;
+   padding:.2rem .4rem;color:var(--fg);cursor:pointer}
+ .bnav .home{margin-left:auto;color:var(--vn);font-weight:600}
 </style></head><body>
-<header><audio id="a" src="revelation-16.opus" controls preload="metadata"></audio>
+<header><nav class="bnav"><a class="navbtn" href="revelation-15-words.html">‹</a><select id="chsel"><option value="revelation-01-words.html">Revelation 1</option><option value="revelation-02-words.html">Revelation 2</option><option value="revelation-03-words.html">Revelation 3</option><option value="revelation-04-words.html">Revelation 4</option><option value="revelation-05-words.html">Revelation 5</option><option value="revelation-06-words.html">Revelation 6</option><option value="revelation-07-words.html">Revelation 7</option><option value="revelation-08-words.html">Revelation 8</option><option value="revelation-09-words.html">Revelation 9</option><option value="revelation-10-words.html">Revelation 10</option><option value="revelation-11-words.html">Revelation 11</option><option value="revelation-12-words.html">Revelation 12</option><option value="revelation-13-words.html">Revelation 13</option><option value="revelation-14-words.html">Revelation 14</option><option value="revelation-15-words.html">Revelation 15</option><option value="revelation-16-words.html" selected>Revelation 16</option><option value="revelation-17-words.html">Revelation 17</option><option value="revelation-18-words.html">Revelation 18</option><option value="revelation-19-words.html">Revelation 19</option><option value="revelation-20-words.html">Revelation 20</option><option value="revelation-21-words.html">Revelation 21</option><option value="revelation-22-words.html">Revelation 22</option></select><a class="navbtn" href="revelation-17-words.html">›</a><a class="navbtn home" href="revelation-index.html">✦ Revelation</a></nav><audio id="a" src="revelation-16.opus" controls preload="metadata"></audio>
 <div class="spd">Speed:
  <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
  <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div>
@@ -101,4 +109,4 @@ requestAnimationFrame(loop);
 document.querySelectorAll('.spd button[data-r]').forEach(b=>b.onclick=()=>{
  a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
  document.querySelectorAll('.spd button[data-r]').forEach(x=>x.classList.toggle('on',x===b))});
-</script></body></html>
+var _cs=document.getElementById('chsel');if(_cs)_cs.onchange=function(e){location.href=e.target.value};</script></body></html>

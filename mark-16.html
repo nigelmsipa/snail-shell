@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mark-16</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="mark-16.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>mark-16</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 2267, "t": "Mark, Chapter Sixteen."}, {"s": 2267, "e": 11733, "t": "And when the sabbath was past, Mary Magdalene, and Mary the mother of James, and Salome, had bought sweet spices, that they might come and anoint him."}, {"s": 11733, "e": 17467, "t": "And very early in the morning the first day of the week, they came unto the sepulchre at the rising of the sun."}, {"s": 17467, "e": 23067, "t": "And they said among themselves, Who shall roll us away the stone from the door of the sepulchre?"}, {"s": 23067, "e": 27733, "t": "And when they looked, they saw that the stone was rolled away: for it was very great."}, {"s": 27733, "e": 36800, "t": "And entering into the sepulchre, they saw a young man sitting on the right side, clothed in a long white garment; and they were affrighted."}, {"s": 36800, "e": 47867, "t": "And he saith unto them, Be not affrighted: Ye seek Jesus of Nazareth, which was crucified: he is risen; he is not here: behold the place where they laid him."}, {"s": 47867, "e": 55333, "t": "But go your way, tell his disciples and Peter that he goeth before you into Galilee: there shall ye see him, as he said unto you."}, {"s": 55333, "e": 64400, "t": "And they went out quickly, and fled from the sepulchre; for they trembled and were amazed: neither said they any thing to any man; for they were afraid."}, {"s": 64400, "e": 71600, "t": "Now when Jesus was risen early the first day of the week, he appeared first to Mary Magdalene, out of whom he had cast seven devils."}, {"s": 71600, "e": 75333, "t": "And she went and told them that had been with him, as they mourned and wept."}, {"s": 75333, "e": 80400, "t": "And they, when they had heard that he was alive, and had been seen of her, believed not."}, {"s": 80400, "e": 85600, "t": "After that he appeared in another form unto two of them, as they walked, and went into the country."}, {"s": 85600, "e": 90000, "t": "And they went and told it unto the residue: neither believed they them."}, {"s": 90000, "e": 100667, "t": "Afterward he appeared unto the eleven as they sat at meat, and upbraided them with their unbelief and hardness of heart, because they believed not them which had seen him after he was risen."}, {"s": 100667, "e": 106000, "t": "And he said unto them, Go ye into all the world, and preach the gospel to every creature."}, {"s": 106000, "e": 112400, "t": "He that believeth and is baptized shall be saved; but he that believeth not shall be damned."}, {"s": 112400, "e": 127067, "t": "And these signs shall follow them that believe; In my name shall they cast out devils; they shall speak with new tongues; They shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover."}, {"s": 127067, "e": 133733, "t": "So then after the Lord had spoken unto them, he was received up into heaven, and sat on the right hand of God."}, {"s": 133733, "e": 140133, "t": "And they went forth, and preached every where, the Lord working with them, and confirming the word with signs following."}, {"s": 140133, "e": 141200, "t": "Amen."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

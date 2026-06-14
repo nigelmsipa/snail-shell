@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>john-02</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="john-02.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>john-02</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 1200, "t": "John, Chapter Two."}, {"s": 1200, "e": 10533, "t": "And the third day there was a marriage in Cana of Galilee; and the mother of Jesus was there: And both Jesus was called, and his disciples, to the marriage."}, {"s": 10533, "e": 15333, "t": "And when they wanted wine, the mother of Jesus saith unto him, They have no wine."}, {"s": 15333, "e": 18800, "t": "Jesus saith unto her, Woman, what have I to do with thee?"}, {"s": 18800, "e": 20667, "t": "mine hour is not yet come."}, {"s": 20667, "e": 25867, "t": "His mother saith unto the servants, Whatsoever he saith unto you, do it."}, {"s": 25867, "e": 34667, "t": "And there were set there six waterpots of stone, after the manner of the purifying of the Jews, containing two or three firkins apiece."}, {"s": 34667, "e": 38533, "t": "Jesus saith unto them, Fill the waterpots with water."}, {"s": 38533, "e": 40400, "t": "And they filled them up to the brim."}, {"s": 40400, "e": 45733, "t": "And he saith unto them, Draw out now, and bear unto the governor of the feast."}, {"s": 45733, "e": 47467, "t": "And they bare it."}, {"s": 47467, "e": 64533, "t": "When the ruler of the feast had tasted the water that was made wine, and knew not whence it was: (but the servants which drew the water knew;) the governor of the feast called the bridegroom, And saith unto him, Every man at the beginning doth set forth good wine; and when men have well drunk,"}, {"s": 64533, "e": 68533, "t": "then that which is worse: but thou hast kept the good wine until now."}, {"s": 68533, "e": 76667, "t": "This beginning of miracles did Jesus in Cana of Galilee, and manifested forth his glory; and his disciples believed on him."}, {"s": 76667, "e": 84933, "t": "After this he went down to Capernaum, he, and his mother, and his brethren, and his disciples: and they continued there not many days."}, {"s": 84933, "e": 102267, "t": "And the Jews' passover was at hand, and Jesus went up to Jerusalem, And found in the temple those that sold oxen and sheep and doves, and the changers of money sitting: And when he had made a scourge of small cords, he drove them all out of the temple, and the sheep, and the oxen;"}, {"s": 102267, "e": 112400, "t": "and poured out the changers' money, and overthrew the tables; And said unto them that sold doves, Take these things hence; make not my Father's house an house of merchandise."}, {"s": 112400, "e": 117733, "t": "And his disciples remembered that it was written, The zeal of thine house hath eaten me up."}, {"s": 117733, "e": 124533, "t": "Then answered the Jews and said unto him, What sign shewest thou unto us, seeing that thou doest these things?"}, {"s": 124533, "e": 129867, "t": "Jesus answered and said unto them, Destroy this temple, and in three days I will raise it up."}, {"s": 129867, "e": 136800, "t": "Then said the Jews, Forty and six years was this temple in building, and wilt thou rear it up in three days?"}, {"s": 136800, "e": 139067, "t": "But he spake of the temple of his body."}, {"s": 139067, "e": 147867, "t": "When therefore he was risen from the dead, his disciples remembered that he had said this unto them; and they believed the scripture, and the word which Jesus had said."}, {"s": 147867, "e": 155067, "t": "Now when he was in Jerusalem at the passover, in the feast day, many believed in his name, when they saw the miracles which he did."}, {"s": 155067, "e": 164133, "t": "But Jesus did not commit himself unto them, because he knew all men, And needed not that any should testify of man: for he knew what was in man."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

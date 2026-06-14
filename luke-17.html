@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>luke-17</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="luke-17.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>luke-17</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 2267, "t": "Luke, Chapter Seventeen."}, {"s": 2267, "e": 9867, "t": "Then said he unto the disciples, It is impossible but that offences will come: but woe unto him, through whom they come!"}, {"s": 9867, "e": 17467, "t": "It were better for him that a millstone were hanged about his neck, and he cast into the sea, than that he should offend one of these little ones."}, {"s": 17467, "e": 24400, "t": "Take heed to yourselves: If thy brother trespass against thee, rebuke him; and if he repent, forgive him."}, {"s": 24400, "e": 33333, "t": "And if he trespass against thee seven times in a day, and seven times in a day turn again to thee, saying, I repent; thou shalt forgive him."}, {"s": 33333, "e": 36667, "t": "And the apostles said unto the Lord, Increase our faith."}, {"s": 36667, "e": 47600, "t": "And the Lord said, If ye had faith as a grain of mustard seed, ye might say unto this sycamine tree, Be thou plucked up by the root, and be thou planted in the sea; and it should obey you."}, {"s": 47600, "e": 56400, "t": "But which of you, having a servant plowing or feeding cattle, will say unto him by and by, when he is come from the field, Go and sit down to meat?"}, {"s": 56400, "e": 66533, "t": "And will not rather say unto him, Make ready wherewith I may sup, and gird thyself, and serve me, till I have eaten and drunken; and afterward thou shalt eat and drink?"}, {"s": 66533, "e": 70400, "t": "Doth he thank that servant because he did the things that were commanded him?"}, {"s": 70400, "e": 71733, "t": "I trow not."}, {"s": 71733, "e": 82400, "t": "So likewise ye, when ye shall have done all those things which are commanded you, say, We are unprofitable servants: we have done that which was our duty to do."}, {"s": 82400, "e": 88000, "t": "And it came to pass, as he went to Jerusalem, that he passed through the midst of Samaria and Galilee."}, {"s": 88000, "e": 98533, "t": "And as he entered into a certain village, there met him ten men that were lepers, which stood afar off: And they lifted up their voices, and said, Jesus, Master, have mercy on us."}, {"s": 98533, "e": 102933, "t": "And when he saw them, he said unto them, Go shew yourselves unto the priests."}, {"s": 102933, "e": 107200, "t": "And it came to pass, that, as they went, they were cleansed."}, {"s": 107200, "e": 125067, "t": "And one of them, when he saw that he was healed, turned back, and with a loud voice glorified God, And fell down on his face at his feet, giving him thanks: and he was a Samaritan."}, {"s": 125067, "e": 128933, "t": "And Jesus answering said, Were there not ten cleansed?"}, {"s": 128933, "e": 130800, "t": "but where are the nine?"}, {"s": 130800, "e": 135600, "t": "There are not found that returned to give glory to God, save this stranger."}, {"s": 135600, "e": 140000, "t": "And he said unto him, Arise, go thy way: thy faith hath made thee whole."}, {"s": 140000, "e": 151600, "t": "And when he was demanded of the Pharisees, when the kingdom of God should come, he answered them and said, The kingdom of God cometh not with observation: Neither shall they say, Lo here!"}, {"s": 151600, "e": 152400, "t": "or, lo there!"}, {"s": 152400, "e": 155067, "t": "for, behold, the kingdom of God is within you."}, {"s": 155067, "e": 164400, "t": "And he said unto the disciples, The days will come, when ye shall desire to see one of the days of the Son of man, and ye shall not see it."}, {"s": 164400, "e": 171333, "t": "And they shall say to you, See here; or, see there: go not after them, nor follow them."}, {"s": 171333, "e": 180667, "t": "For as the lightning, that lighteneth out of the one part under heaven, shineth unto the other part under heaven; so shall also the Son of man be in his day."}, {"s": 180667, "e": 185467, "t": "But first must he suffer many things, and be rejected of this generation."}, {"s": 185467, "e": 190400, "t": "And as it was in the days of Noe, so shall it be also in the days of the Son of man."}, {"s": 190400, "e": 199200, "t": "They did eat, they drank, they married wives, they were given in marriage, until the day that Noe entered into the ark, and the flood came, and destroyed them all."}, {"s": 199200, "e": 211867, "t": "Likewise also as it was in the days of Lot; they did eat, they drank, they bought, they sold, they planted, they builded; But the same day that Lot went out of Sodom it rained fire and brimstone from heaven, and destroyed them all."}, {"s": 211867, "e": 216400, "t": "Even thus shall it be in the day when the Son of man is revealed."}, {"s": 216400, "e": 228000, "t": "In that day, he which shall be upon the housetop, and his stuff in the house, let him not come down to take it away: and he that is in the field, let him likewise not return back."}, {"s": 228000, "e": 229467, "t": "Remember Lot's wife."}, {"s": 229467, "e": 235467, "t": "Whosoever shall seek to save his life shall lose it; and whosoever shall lose his life shall preserve it."}, {"s": 235467, "e": 243733, "t": "I tell you, in that night there shall be two men in one bed; the one shall be taken, and the other shall be left."}, {"s": 243733, "e": 248933, "t": "Two women shall be grinding together; the one shall be taken, and the other left."}, {"s": 248933, "e": 253467, "t": "Two men shall be in the field; the one shall be taken, and the other left."}, {"s": 253467, "e": 257067, "t": "And they answered and said unto him, Where, Lord?"}, {"s": 257067, "e": 262533, "t": "And he said unto them, Wheresoever the body is, thither will the eagles be gathered together."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>luke-21</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="luke-21.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>luke-21</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 1200, "t": "Luke, Chapter Twenty-One."}, {"s": 1200, "e": 5067, "t": "And he looked up, and saw the rich men casting their gifts into the treasury."}, {"s": 5067, "e": 9067, "t": "And he saw also a certain poor widow casting in thither two mites."}, {"s": 9067, "e": 25333, "t": "And he said, Of a truth I say unto you, that this poor widow hath cast in more than they all: For all these have of their abundance cast in unto the offerings of God: but she of her penury hath cast in all the living that she had."}, {"s": 25333, "e": 39733, "t": "And as some spake of the temple, how it was adorned with goodly stones and gifts, he said, As for these things which ye behold, the days will come, in the which there shall not be left one stone upon another, that shall not be thrown down."}, {"s": 39733, "e": 44133, "t": "And they asked him, saying, Master, but when shall these things be?"}, {"s": 44133, "e": 47600, "t": "and what sign will there be when these things shall come to pass?"}, {"s": 47600, "e": 59067, "t": "And he said, Take heed that ye be not deceived: for many shall come in my name, saying, I am Christ; and the time draweth near: go ye not therefore after them."}, {"s": 59067, "e": 68000, "t": "But when ye shall hear of wars and commotions, be not terrified: for these things must first come to pass; but the end is not by and by."}, {"s": 68000, "e": 81867, "t": "Then said he unto them, Nation shall rise against nation, and kingdom against kingdom: And great earthquakes shall be in divers places, and famines, and pestilences; and fearful sights and great signs shall there be from heaven."}, {"s": 81867, "e": 92533, "t": "But before all these, they shall lay their hands on you, and persecute you, delivering you up to the synagogues, and into prisons, being brought before kings and rulers for my name's sake."}, {"s": 92533, "e": 95200, "t": "And it shall turn to you for a testimony."}, {"s": 95200, "e": 106667, "t": "Settle it therefore in your hearts, not to meditate before what ye shall answer: For I will give you a mouth and wisdom, which all your adversaries shall not be able to gainsay nor resist."}, {"s": 106667, "e": 114933, "t": "And ye shall be betrayed both by parents, and brethren, and kinsfolks, and friends; and some of you shall they cause to be put to death."}, {"s": 114933, "e": 117867, "t": "And ye shall be hated of all men for my name's sake."}, {"s": 117867, "e": 120800, "t": "But there shall not an hair of your head perish."}, {"s": 120800, "e": 123867, "t": "In your patience possess ye your souls."}, {"s": 123867, "e": 130400, "t": "And when ye shall see Jerusalem compassed with armies, then know that the desolation thereof is nigh."}, {"s": 130400, "e": 139067, "t": "Then let them which are in Judaea flee to the mountains; and let them which are in the midst of it depart out; and let not them that are in the countries enter thereinto."}, {"s": 139067, "e": 143600, "t": "For these be the days of vengeance, that all things which are written may be fulfilled."}, {"s": 143600, "e": 148400, "t": "But woe unto them that are with child, and to them that give suck, in those days!"}, {"s": 148400, "e": 152800, "t": "for there shall be great distress in the land, and wrath upon this people."}, {"s": 152800, "e": 163333, "t": "And they shall fall by the edge of the sword, and shall be led away captive into all nations: and Jerusalem shall be trodden down of the Gentiles, until the times of the Gentiles be fulfilled."}, {"s": 163333, "e": 178933, "t": "And there shall be signs in the sun, and in the moon, and in the stars; and upon the earth distress of nations, with perplexity; the sea and the waves roaring; Men's hearts failing them for fear, and for looking after those things which are coming on the earth:"}, {"s": 178933, "e": 180933, "t": "for the powers of heaven shall be shaken."}, {"s": 180933, "e": 185600, "t": "And then shall they see the Son of man coming in a cloud with power and great glory."}, {"s": 185600, "e": 193333, "t": "And when these things begin to come to pass, then look up, and lift up your heads; for your redemption draweth nigh."}, {"s": 193333, "e": 204267, "t": "And he spake to them a parable; Behold the fig tree, and all the trees; When they now shoot forth, ye see and know of your own selves that summer is now nigh at hand."}, {"s": 204267, "e": 211200, "t": "So likewise ye, when ye see these things come to pass, know ye that the kingdom of God is nigh at hand."}, {"s": 211200, "e": 217333, "t": "Verily I say unto you, This generation shall not pass away, till all be fulfilled."}, {"s": 217333, "e": 222133, "t": "Heaven and earth shall pass away: but my words shall not pass away."}, {"s": 222133, "e": 232000, "t": "And take heed to yourselves, lest at any time your hearts be overcharged with surfeiting, and drunkenness, and cares of this life, and so that day come upon you unawares."}, {"s": 232000, "e": 236800, "t": "For as a snare shall it come on all them that dwell on the face of the whole earth."}, {"s": 236800, "e": 246000, "t": "Watch ye therefore, and pray always, that ye may be accounted worthy to escape all these things that shall come to pass, and to stand before the Son of man."}, {"s": 246000, "e": 253600, "t": "And in the day time he was teaching in the temple; and at night he went out, and abode in the mount that is called the mount of Olives."}, {"s": 253600, "e": 258133, "t": "And all the people came early in the morning to him in the temple, for to hear him."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>john-03</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="john-03.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>john-03</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 2000, "t": "John, Chapter Three."}, {"s": 2000, "e": 17467, "t": "There was a man of the Pharisees, named Nicodemus, a ruler of the Jews: The same came to Jesus by night, and said unto him, Rabbi, we know that thou art a teacher come from God: for no man can do these miracles that thou doest, except God be with him."}, {"s": 17467, "e": 25467, "t": "Jesus answered and said unto him, Verily, verily, I say unto thee, Except a man be born again, he cannot see the kingdom of God."}, {"s": 25467, "e": 29867, "t": "Nicodemus saith unto him, How can a man be born when he is old?"}, {"s": 29867, "e": 34000, "t": "can he enter the second time into his mother's womb, and be born?"}, {"s": 34000, "e": 42800, "t": "Jesus answered, Verily, verily, I say unto thee, Except a man be born of water and of the Spirit, he cannot enter into the kingdom of God."}, {"s": 42800, "e": 49067, "t": "That which is born of the flesh is flesh; and that which is born of the Spirit is spirit."}, {"s": 49067, "e": 53067, "t": "Marvel not that I said unto thee, Ye must be born again."}, {"s": 53067, "e": 62933, "t": "The wind bloweth where it listeth, and thou hearest the sound thereof, but canst not tell whence it cometh, and whither it goeth: so is every one that is born of the Spirit."}, {"s": 62933, "e": 66667, "t": "Nicodemus answered and said unto him, How can these things be?"}, {"s": 66667, "e": 72133, "t": "Jesus answered and said unto him, Art thou a master of Israel, and knowest not these things?"}, {"s": 72133, "e": 80133, "t": "Verily, verily, I say unto thee, We speak that we do know, and testify that we have seen; and ye receive not our witness."}, {"s": 80133, "e": 87200, "t": "If I have told you earthly things, and ye believe not, how shall ye believe, if I tell you of heavenly things?"}, {"s": 87200, "e": 93333, "t": "And no man hath ascended up to heaven, but he that came down from heaven, even the Son of man which is in heaven."}, {"s": 93333, "e": 103600, "t": "And as Moses lifted up the serpent in the wilderness, even so must the Son of man be lifted up: That whosoever believeth in him should not perish, but have eternal life."}, {"s": 103600, "e": 112533, "t": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."}, {"s": 112533, "e": 118667, "t": "For God sent not his Son into the world to condemn the world; but that the world through him might be saved."}, {"s": 118667, "e": 128133, "t": "He that believeth on him is not condemned: but he that believeth not is condemned already, because he hath not believed in the name of the only begotten Son of God."}, {"s": 128133, "e": 137067, "t": "And this is the condemnation, that light is come into the world, and men loved darkness rather than light, because their deeds were evil."}, {"s": 137067, "e": 143467, "t": "For every one that doeth evil hateth the light, neither cometh to the light, lest his deeds should be reproved."}, {"s": 143467, "e": 150533, "t": "But he that doeth truth cometh to the light, that his deeds may be made manifest, that they are wrought in God."}, {"s": 150533, "e": 157067, "t": "After these things came Jesus and his disciples into the land of Judaea; and there he tarried with them, and baptized."}, {"s": 157067, "e": 164800, "t": "And John also was baptizing in AEnon near to Salim, because there was much water there: and they came, and were baptized."}, {"s": 164800, "e": 167333, "t": "For John was not yet cast into prison."}, {"s": 167333, "e": 172533, "t": "Then there arose a question between some of John's disciples and the Jews about purifying."}, {"s": 172533, "e": 182400, "t": "And they came unto John, and said unto him, Rabbi, he that was with thee beyond Jordan, to whom thou barest witness, behold, the same baptizeth, and all men come to him."}, {"s": 182400, "e": 188933, "t": "John answered and said, A man can receive nothing, except it be given him from heaven."}, {"s": 188933, "e": 194800, "t": "Ye yourselves bear me witness, that I said, I am not the Christ, but that I am sent before him."}, {"s": 194800, "e": 206400, "t": "He that hath the bride is the bridegroom: but the friend of the bridegroom, which standeth and heareth him, rejoiceth greatly because of the bridegroom's voice: this my joy therefore is fulfilled."}, {"s": 206400, "e": 208933, "t": "He must increase, but I must decrease."}, {"s": 208933, "e": 217333, "t": "He that cometh from above is above all: he that is of the earth is earthly, and speaketh of the earth: he that cometh from heaven is above all."}, {"s": 217333, "e": 223333, "t": "And what he hath seen and heard, that he testifieth; and no man receiveth his testimony."}, {"s": 223333, "e": 228133, "t": "He that hath received his testimony hath set to his seal that God is true."}, {"s": 228133, "e": 234933, "t": "For he whom God hath sent speaketh the words of God: for God giveth not the Spirit by measure unto him."}, {"s": 234933, "e": 239600, "t": "The Father loveth the Son, and hath given all things into his hand."}, {"s": 239600, "e": 247867, "t": "He that believeth on the Son hath everlasting life: and he that believeth not the Son shall not see life; but the wrath of God abideth on him."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>john-14</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="john-14.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>john-14</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 1467, "t": "John, Chapter Fourteen."}, {"s": 1467, "e": 6400, "t": "Let not your heart be troubled: ye believe in God, believe also in me."}, {"s": 6400, "e": 11467, "t": "In my Father's house are many mansions: if it were not so, I would have told you."}, {"s": 11467, "e": 13867, "t": "I go to prepare a place for you."}, {"s": 13867, "e": 20933, "t": "And if I go and prepare a place for you, I will come again, and receive you unto myself; that where I am, there ye may be also."}, {"s": 20933, "e": 24267, "t": "And whither I go ye know, and the way ye know."}, {"s": 24267, "e": 30133, "t": "Thomas saith unto him, Lord, we know not whither thou goest; and how can we know the way?"}, {"s": 30133, "e": 37867, "t": "Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me."}, {"s": 37867, "e": 44533, "t": "If ye had known me, ye should have known my Father also: and from henceforth ye know him, and have seen him."}, {"s": 44533, "e": 49333, "t": "Philip saith unto him, Lord, shew us the Father, and it sufficeth us."}, {"s": 49333, "e": 55467, "t": "Jesus saith unto him, Have I been so long time with you, and yet hast thou not known me, Philip?"}, {"s": 55467, "e": 60667, "t": "he that hath seen me hath seen the Father; and how sayest thou then, Shew us the Father?"}, {"s": 60667, "e": 64933, "t": "Believest thou not that I am in the Father, and the Father in me?"}, {"s": 64933, "e": 71733, "t": "the words that I speak unto you I speak not of myself: but the Father that dwelleth in me, he doeth the works."}, {"s": 71733, "e": 78000, "t": "Believe me that I am in the Father, and the Father in me: or else believe me for the very works' sake."}, {"s": 78000, "e": 88133, "t": "Verily, verily, I say unto you, He that believeth on me, the works that I do shall he do also; and greater works than these shall he do; because I go unto my Father."}, {"s": 88133, "e": 93867, "t": "And whatsoever ye shall ask in my name, that will I do, that the Father may be glorified in the Son."}, {"s": 93867, "e": 97467, "t": "If ye shall ask any thing in my name, I will do it."}, {"s": 97467, "e": 100267, "t": "If ye love me, keep my commandments."}, {"s": 100267, "e": 116133, "t": "And I will pray the Father, and he shall give you another Comforter, that he may abide with you for ever; Even the Spirit of truth; whom the world cannot receive, because it seeth him not, neither knoweth him: but ye know him; for he dwelleth with you, and shall be in you."}, {"s": 116133, "e": 119600, "t": "I will not leave you comfortless: I will come to you."}, {"s": 119600, "e": 126267, "t": "Yet a little while, and the world seeth me no more; but ye see me: because I live, ye shall live also."}, {"s": 126267, "e": 132000, "t": "At that day ye shall know that I am in my Father, and ye in me, and I in you."}, {"s": 132000, "e": 143733, "t": "He that hath my commandments, and keepeth them, he it is that loveth me: and he that loveth me shall be loved of my Father, and I will love him, and will manifest myself to him."}, {"s": 143733, "e": 150800, "t": "Judas saith unto him, not Iscariot, Lord, how is it that thou wilt manifest thyself unto us, and not unto the world?"}, {"s": 150800, "e": 159600, "t": "Jesus answered and said unto him, If a man love me, he will keep my words: and my Father will love him, and we will come unto him, and make our abode with him."}, {"s": 159600, "e": 166400, "t": "He that loveth me not keepeth not my sayings: and the word which ye hear is not mine, but the Father's which sent me."}, {"s": 166400, "e": 170533, "t": "These things have I spoken unto you, being yet present with you."}, {"s": 170533, "e": 181067, "t": "But the Comforter, which is the Holy Ghost, whom the Father will send in my name, he shall teach you all things, and bring all things to your remembrance, whatsoever I have said unto you."}, {"s": 181067, "e": 186267, "t": "Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you."}, {"s": 186267, "e": 190267, "t": "Let not your heart be troubled, neither let it be afraid."}, {"s": 190267, "e": 195067, "t": "Ye have heard how I said unto you, I go away, and come again unto you."}, {"s": 195067, "e": 202800, "t": "If ye loved me, ye would rejoice, because I said, I go unto the Father: for my Father is greater than I."}, {"s": 202800, "e": 209333, "t": "And now I have told you before it come to pass, that, when it is come to pass, ye might believe."}, {"s": 209333, "e": 215600, "t": "Hereafter I will not talk much with you: for the prince of this world cometh, and hath nothing in me."}, {"s": 215600, "e": 221867, "t": "But that the world may know that I love the Father; and as the Father gave me commandment, even so I do."}, {"s": 221867, "e": 223867, "t": "Arise, let us go hence."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

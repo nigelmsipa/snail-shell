@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mark-02</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="mark-02.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>mark-02</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 1333, "t": "Mark, Chapter Two."}, {"s": 1333, "e": 6933, "t": "And again he entered into Capernaum, after some days; and it was noised that he was in the house."}, {"s": 6933, "e": 16533, "t": "And straightway many were gathered together, insomuch that there was no room to receive them, no, not so much as about the door: and he preached the word unto them."}, {"s": 16533, "e": 21867, "t": "And they come unto him, bringing one sick of the palsy, which was borne of four."}, {"s": 21867, "e": 32933, "t": "And when they could not come nigh unto him for the press, they uncovered the roof where he was: and when they had broken it up, they let down the bed wherein the sick of the palsy lay."}, {"s": 32933, "e": 38933, "t": "When Jesus saw their faith, he said unto the sick of the palsy, Son, thy sins be forgiven thee."}, {"s": 38933, "e": 45733, "t": "But there were certain of the scribes sitting there, and reasoning in their hearts, Why doth this man thus speak blasphemies?"}, {"s": 45733, "e": 48533, "t": "who can forgive sins but God only?"}, {"s": 48533, "e": 57467, "t": "And immediately when Jesus perceived in his spirit that they so reasoned within themselves, he said unto them, Why reason ye these things in your hearts?"}, {"s": 57467, "e": 65467, "t": "Whether is it easier to say to the sick of the palsy, Thy sins be forgiven thee; or to say, Arise, and take up thy bed, and walk?"}, {"s": 65467, "e": 77600, "t": "But that ye may know that the Son of man hath power on earth to forgive sins, (he saith to the sick of the palsy,) I say unto thee, Arise, and take up thy bed, and go thy way into thine house."}, {"s": 77600, "e": 87200, "t": "And immediately he arose, took up the bed, and went forth before them all; insomuch that they were all amazed, and glorified God, saying, We never saw it on this fashion."}, {"s": 87200, "e": 93333, "t": "And he went forth again by the sea side; and all the multitude resorted unto him, and he taught them."}, {"s": 93333, "e": 100400, "t": "And as he passed by, he saw Levi the son of Alphaeus sitting at the receipt of custom, and said unto him, Follow me."}, {"s": 100400, "e": 102400, "t": "And he arose and followed him."}, {"s": 102400, "e": 114933, "t": "And it came to pass, that, as Jesus sat at meat in his house, many publicans and sinners sat also together with Jesus and his disciples: for there were many, and they followed him."}, {"s": 114933, "e": 124133, "t": "And when the scribes and Pharisees saw him eat with publicans and sinners, they said unto his disciples, How is it that he eateth and drinketh with publicans and sinners?"}, {"s": 124133, "e": 134133, "t": "When Jesus heard it, he saith unto them, They that are whole have no need of the physician, but they that are sick: I came not to call the righteous, but sinners to repentance."}, {"s": 134133, "e": 145467, "t": "And the disciples of John and of the Pharisees used to fast: and they come and say unto him, Why do the disciples of John and of the Pharisees fast, but thy disciples fast not?"}, {"s": 145467, "e": 150933, "t": "And Jesus said unto them, Can the children of the bridechamber fast, while the bridegroom is with them?"}, {"s": 150933, "e": 154267, "t": "as long as they have the bridegroom with them, they cannot fast."}, {"s": 154267, "e": 160533, "t": "But the days will come, when the bridegroom shall be taken away from them, and then shall they fast in those days."}, {"s": 160533, "e": 169600, "t": "No man also seweth a piece of new cloth on an old garment: else the new piece that filled it up taketh away from the old, and the rent is made worse."}, {"s": 169600, "e": 180667, "t": "And no man putteth new wine into old bottles: else the new wine doth burst the bottles, and the wine is spilled, and the bottles will be marred: but new wine must be put into new bottles."}, {"s": 180667, "e": 189733, "t": "And it came to pass, that he went through the corn fields on the sabbath day; and his disciples began, as they went, to pluck the ears of corn."}, {"s": 189733, "e": 194800, "t": "And the Pharisees said unto him, Behold, why do they on the sabbath day that which is not lawful?"}, {"s": 194800, "e": 203467, "t": "And he said unto them, Have ye never read what David did, when he had need, and was an hungred, he, and they that were with him?"}, {"s": 203467, "e": 214133, "t": "How he went into the house of God in the days of Abiathar the high priest, and did eat the shewbread, which is not lawful to eat but for the priests, and gave also to them which were with him?"}, {"s": 214133, "e": 223467, "t": "And he said unto them, The sabbath was made for man, and not man for the sabbath: Therefore the Son of man is Lord also of the sabbath."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

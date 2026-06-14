@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mark-03</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="mark-03.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>mark-03</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 1067, "t": "Mark, Chapter Three."}, {"s": 1067, "e": 5733, "t": "And he entered again into the synagogue; and there was a man there which had a withered hand."}, {"s": 5733, "e": 11467, "t": "And they watched him, whether he would heal him on the sabbath day; that they might accuse him."}, {"s": 11467, "e": 15467, "t": "And he saith unto the man which had the withered hand, Stand forth."}, {"s": 15467, "e": 20400, "t": "And he saith unto them, Is it lawful to do good on the sabbath days, or to do evil?"}, {"s": 20400, "e": 22667, "t": "to save life, or to kill?"}, {"s": 22667, "e": 24267, "t": "But they held their peace."}, {"s": 24267, "e": 32533, "t": "And when he had looked round about on them with anger, being grieved for the hardness of their hearts, he saith unto the man, Stretch forth thine hand."}, {"s": 32533, "e": 37467, "t": "And he stretched it out: and his hand was restored whole as the other."}, {"s": 37467, "e": 43467, "t": "And the Pharisees went forth, and straightway took counsel with the Herodians against him, how they might destroy him."}, {"s": 43467, "e": 61733, "t": "But Jesus withdrew himself with his disciples to the sea: and a great multitude from Galilee followed him, and from Judaea, And from Jerusalem, and from Idumaea, and from beyond Jordan; and they about Tyre and Sidon, a great multitude, when they had heard what great things he did, came unto him."}, {"s": 61733, "e": 68667, "t": "And he spake to his disciples, that a small ship should wait on him because of the multitude, lest they should throng him."}, {"s": 68667, "e": 75200, "t": "For he had healed many; insomuch that they pressed upon him for to touch him, as many as had plagues."}, {"s": 75200, "e": 82133, "t": "And unclean spirits, when they saw him, fell down before him, and cried, saying, Thou art the Son of God."}, {"s": 82133, "e": 85200, "t": "And he straitly charged them that they should not make him known."}, {"s": 85200, "e": 92133, "t": "And he goeth up into a mountain, and calleth unto him whom he would: and they came unto him."}, {"s": 92133, "e": 111200, "t": "And he ordained twelve, that they should be with him, and that he might send them forth to preach, And to have power to heal sicknesses, and to cast out devils: And Simon he surnamed Peter; And James the son of Zebedee, and John the brother of James; and he surnamed them Boanerges, which is,"}, {"s": 111200, "e": 126400, "t": "The sons of thunder: And Andrew, and Philip, and Bartholomew, and Matthew, and Thomas, and James the son of Alphaeus, and Thaddaeus, and Simon the Canaanite, And Judas Iscariot, which also betrayed him: and they went into an house."}, {"s": 126400, "e": 130267, "t": "And the multitude cometh together again, so that they could not so much as eat bread."}, {"s": 130267, "e": 137067, "t": "And when his friends heard of it, they went out to lay hold on him: for they said, He is beside himself."}, {"s": 137067, "e": 145067, "t": "And the scribes which came down from Jerusalem said, He hath Beelzebub, and by the prince of the devils casteth he out devils."}, {"s": 145067, "e": 151333, "t": "And he called them unto him, and said unto them in parables, How can Satan cast out Satan?"}, {"s": 151333, "e": 156000, "t": "And if a kingdom be divided against itself, that kingdom cannot stand."}, {"s": 156000, "e": 159867, "t": "And if a house be divided against itself, that house cannot stand."}, {"s": 159867, "e": 165467, "t": "And if Satan rise up against himself, and be divided, he cannot stand, but hath an end."}, {"s": 165467, "e": 174000, "t": "No man can enter into a strong man's house, and spoil his goods, except he will first bind the strong man; and then he will spoil his house."}, {"s": 174000, "e": 192667, "t": "Verily I say unto you, All sins shall be forgiven unto the sons of men, and blasphemies wherewith soever they shall blaspheme: But he that shall blaspheme against the Holy Ghost hath never forgiveness, but is in danger of eternal damnation: Because they said, He hath an unclean spirit."}, {"s": 192667, "e": 198533, "t": "There came then his brethren and his mother, and, standing without, sent unto him, calling him."}, {"s": 198533, "e": 204667, "t": "And the multitude sat about him, and they said unto him, Behold, thy mother and thy brethren without seek for thee."}, {"s": 204667, "e": 208533, "t": "And he answered them, saying, Who is my mother, or my brethren?"}, {"s": 208533, "e": 214533, "t": "And he looked round about on them which sat about him, and said, Behold my mother and my brethren!"}, {"s": 214533, "e": 220667, "t": "For whosoever shall do the will of God, the same is my brother, and my sister, and mother."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hebrews-13</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="hebrews-13.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>hebrews-13</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 2000, "t": "Hebrews, Chapter Thirteen."}, {"s": 2000, "e": 3067, "t": "Let brotherly love continue."}, {"s": 3067, "e": 8800, "t": "Be not forgetful to entertain strangers: for thereby some have entertained angels unawares."}, {"s": 8800, "e": 18267, "t": "Remember them that are in bonds, as bound with them; and them which suffer adversity, as being yourselves also in the body."}, {"s": 18267, "e": 24533, "t": "Marriage is honourable in all, and the bed undefiled: but whoremongers and adulterers God will judge."}, {"s": 24533, "e": 34000, "t": "Let your conversation be without covetousness; and be content with such things as ye have: for he hath said, I will never leave thee, nor forsake thee."}, {"s": 34000, "e": 40133, "t": "So that we may boldly say, The Lord is my helper, and I will not fear what man shall do unto me."}, {"s": 40133, "e": 48267, "t": "Remember them which have the rule over you, who have spoken unto you the word of God: whose faith follow, considering the end of their conversation."}, {"s": 48267, "e": 52667, "t": "Jesus Christ the same yesterday, and to day, and for ever."}, {"s": 52667, "e": 56000, "t": "Be not carried about with divers and strange doctrines."}, {"s": 56000, "e": 64133, "t": "For it is a good thing that the heart be established with grace; not with meats, which have not profited them that have been occupied therein."}, {"s": 64133, "e": 68667, "t": "We have an altar, whereof they have no right to eat which serve the tabernacle."}, {"s": 68667, "e": 75867, "t": "For the bodies of those beasts, whose blood is brought into the sanctuary by the high priest for sin, are burned without the camp."}, {"s": 75867, "e": 81600, "t": "Wherefore Jesus also, that he might sanctify the people with his own blood, suffered without the gate."}, {"s": 81600, "e": 86533, "t": "Let us go forth therefore unto him without the camp, bearing his reproach."}, {"s": 86533, "e": 90800, "t": "For here have we no continuing city, but we seek one to come."}, {"s": 90800, "e": 98133, "t": "By him therefore let us offer the sacrifice of praise to God continually, that is, the fruit of our lips giving thanks to his name."}, {"s": 98133, "e": 103867, "t": "But to do good and to communicate forget not: for with such sacrifices God is well pleased."}, {"s": 103867, "e": 117200, "t": "Obey them that have the rule over you, and submit yourselves: for they watch for your souls, as they that must give account, that they may do it with joy, and not with grief: for that is unprofitable for you."}, {"s": 117200, "e": 122800, "t": "Pray for us: for we trust we have a good conscience, in all things willing to live honestly."}, {"s": 122800, "e": 127467, "t": "But I beseech you the rather to do this, that I may be restored to you the sooner."}, {"s": 127467, "e": 143067, "t": "Now the God of peace, that brought again from the dead our Lord Jesus, that great shepherd of the sheep, through the blood of the everlasting covenant, Make you perfect in every good work to do his will, working in you that which is wellpleasing in his sight, through Jesus Christ;"}, {"s": 143067, "e": 145600, "t": "to whom be glory for ever and ever."}, {"s": 145600, "e": 146667, "t": "Amen."}, {"s": 146667, "e": 152533, "t": "And I beseech you, brethren, suffer the word of exhortation: for I have written a letter unto you in few words."}, {"s": 152533, "e": 158933, "t": "Know ye that our brother Timothy is set at liberty; with whom, if he come shortly, I will see you."}, {"s": 158933, "e": 163200, "t": "Salute all them that have the rule over you, and all the saints."}, {"s": 163200, "e": 165200, "t": "They of Italy salute you."}, {"s": 165200, "e": 166933, "t": "Grace be with you all."}, {"s": 166933, "e": 167467, "t": "Amen."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

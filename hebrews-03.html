@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hebrews-03</title>
+<style>
+ :root{--bg:#f4efe6;--fg:#2b2b2b;--hi:#ffe08a;--dim:#9a9388}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--fg);
+   font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+   line-height:1.7;font-size:1.15rem}
+ header{position:sticky;top:0;background:var(--bg);padding:.6rem 1rem;
+   border-bottom:1px solid #ddd5c7;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+ audio{width:100%}
+ main{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 40vh}
+ h1{font-size:1.1rem;color:var(--dim);font-weight:600;margin:.2rem 0 1rem}
+ .s{cursor:pointer;border-radius:.25rem;padding:.02em 0;transition:background .12s}
+ .s:hover{background:#eadfc8}
+ .s.active{background:var(--hi);box-shadow:0 0 0 .15em var(--hi)}
+ .spd{margin-top:.45rem;font-size:.85rem;color:var(--dim)}
+ .spd button{font:inherit;margin:0 .12rem;padding:.18rem .55rem;border:1px solid #ccc3b2;
+   background:#fbf7ee;color:var(--fg);border-radius:.4rem;cursor:pointer}
+ .spd button.on{background:var(--hi);border-color:#e0c050}
+</style></head><body>
+<header><audio id="a" src="hebrews-03.opus" controls preload="metadata"></audio>
+<div class="spd">Speed:
+ <button data-r="1" class="on">1&times;</button><button data-r="1.25">1.25&times;</button>
+ <button data-r="1.5">1.5&times;</button><button data-r="2">2&times;</button></div></header>
+<main><h1>hebrews-03</h1><p id="t"></p></main>
+<script>
+const S=[{"s": 0, "e": 2667, "t": "Hebrews, Chapter Three."}, {"s": 2667, "e": 15733, "t": "Wherefore, holy brethren, partakers of the heavenly calling, consider the Apostle and High Priest of our profession, Christ Jesus; Who was faithful to him that appointed him, as also Moses was faithful in all his house."}, {"s": 15733, "e": 24000, "t": "For this man was counted worthy of more glory than Moses, inasmuch as he who hath builded the house hath more honour than the house."}, {"s": 24000, "e": 30000, "t": "For every house is builded by some man; but he that built all things is God."}, {"s": 30000, "e": 46933, "t": "And Moses verily was faithful in all his house, as a servant, for a testimony of those things which were to be spoken after; But Christ as a son over his own house; whose house are we, if we hold fast the confidence and the rejoicing of the hope firm unto the end."}, {"s": 46933, "e": 61467, "t": "Wherefore (as the Holy Ghost saith, To day if ye will hear his voice, Harden not your hearts, as in the provocation, in the day of temptation in the wilderness: When your fathers tempted me, proved me, and saw my works forty years."}, {"s": 61467, "e": 68800, "t": "Wherefore I was grieved with that generation, and said, They do alway err in their heart; and they have not known my ways."}, {"s": 68800, "e": 80400, "t": "So I sware in my wrath, They shall not enter into my rest.) Take heed, brethren, lest there be in any of you an evil heart of unbelief, in departing from the living God."}, {"s": 80400, "e": 88267, "t": "But exhort one another daily, while it is called To day; lest any of you be hardened through the deceitfulness of sin."}, {"s": 88267, "e": 99733, "t": "For we are made partakers of Christ, if we hold the beginning of our confidence stedfast unto the end; While it is said, To day if ye will hear his voice, harden not your hearts, as in the provocation."}, {"s": 99733, "e": 105333, "t": "For some, when they had heard, did provoke: howbeit not all that came out of Egypt by Moses."}, {"s": 105333, "e": 108133, "t": "But with whom was he grieved forty years?"}, {"s": 108133, "e": 112400, "t": "was it not with them that had sinned, whose carcases fell in the wilderness?"}, {"s": 112400, "e": 118267, "t": "And to whom sware he that they should not enter into his rest, but to them that believed not?"}, {"s": 118267, "e": 121333, "t": "So we see that they could not enter in because of unbelief."}],a=document.getElementById('a'),t=document.getElementById('t');
+const spans=S.map((c,i)=>{const e=document.createElement('span');
+ e.className='s';e.textContent=c.t+' ';e.onclick=()=>{a.currentTime=c.s/1000;a.play()};
+ t.appendChild(e);return e});
+let cur=-1;
+function find(ms){if(cur>=0&&ms>=S[cur].s&&ms<S[cur].e)return cur;
+ for(let i=0;i<S.length;i++)if(ms>=S[i].s&&ms<S[i].e)return i;return -1}
+a.addEventListener('timeupdate',()=>{const ms=a.currentTime*1000,i=find(ms);
+ if(i===cur)return; if(cur>=0)spans[cur].classList.remove('active');
+ cur=i; if(i>=0){spans[i].classList.add('active');
+  spans[i].scrollIntoView({block:'center',behavior:'smooth'})}});
+document.querySelectorAll('.spd button').forEach(b=>b.onclick=()=>{
+ a.playbackRate=parseFloat(b.dataset.r); a.preservesPitch=true;
+ document.querySelectorAll('.spd button').forEach(x=>x.classList.toggle('on',x===b))});
+</script></body></html>

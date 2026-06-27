@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>KJV read-along frame — design</title>
+<style>
+ :root{
+   /* ---- locked shared shell: NORD theme (off-white, the decided read-along ground) ---- */
+   --paper:#fcfcfc;          /* nord off-white paper, constant across all translations */
+   --ink:#2e3440;            /* nord polar-night ink */
+   --read:#cdd3da;           /* nord read/receded words (cool grey) */
+   --ahead:#2e3440;          /* unread words = full ink */
+   --metadata:#9a9388;       /* book/chapter sub, wordmark */
+   --rule:#e7e3db;           /* faint hairlines on white */
+   /* ---- KJV accent (1611, hue 42, warm gold) ---- */
+   --accent:hsl(42 40% 50%);          /* #B3944D verse marks, rule, lemma */
+   --hl:hsl(42 45% 82%);              /* highlighter wash behind active word */
+   --hltext:#3a3120;                  /* text sitting on the highlighter */
+   --muted-accent:hsl(42 26% 60%);    /* third tier — quiet accent */
+   --serif:"Source Serif 4","Source Serif Pro",Georgia,serif;
+   --sans:"IBM Plex Sans","IBM Plex Sans Var",system-ui,sans-serif;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html,body{width:1920px;height:1080px;background:#0c0b0a;overflow:hidden}
+ #stage{width:1920px;height:1080px;position:relative;
+   background:var(--paper);color:var(--ink);overflow:hidden;font-family:var(--serif)}
+ /* paper grain — feTurbulence, no image files */
+ #stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>");
+   mix-blend-mode:multiply;opacity:.55}
+ /* faint warm vignette */
+ #stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:radial-gradient(ellipse 80% 72% at 50% 46%,transparent 58%,rgba(70,52,25,.13) 100%)}
+
+ /* top-left identifier: book/chapter + translation (sans) */
+ .mark{position:absolute;top:64px;left:96px;z-index:5;font-family:var(--sans)}
+ .mark .t{font-size:25px;font-weight:600;letter-spacing:.20em;text-transform:uppercase}
+ .mark .s{font-size:15px;font-weight:500;color:var(--metadata);margin-top:7px;letter-spacing:.20em;text-transform:uppercase}
+
+ /* top-right pericope (passage title) — serif italic + gold rule */
+ .pericope{position:absolute;top:66px;right:96px;z-index:5;max-width:460px;text-align:right}
+ .pericope .pt{font-family:var(--serif);font-style:italic;font-size:27px;font-weight:500;
+   line-height:1.22;color:var(--ink);opacity:.66}
+ .pericope .pr{width:90px;height:2px;background:var(--accent);opacity:.7;margin:16px 0 0 auto}
+
+ /* the foothold — a FEW verses, large, centered (mobile-legible) */
+ #foothold{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+   justify-content:center;padding:0 17%;text-align:left}
+ #flow{font-size:66px;line-height:1.5;letter-spacing:-.004em;font-weight:400}
+ .w{color:var(--ahead)}
+ .w.read{color:var(--read)}
+ .w.active{background:var(--hl);color:var(--hltext);padding:.04em .16em;border-radius:.30em;
+   box-decoration-break:clone;-webkit-box-decoration-break:clone}
+ .vn{font-family:var(--sans);font-weight:700;font-size:30px;color:var(--accent);
+   vertical-align:.55em;margin:0 .32em 0 .12em;opacity:.75}
+
+ /* snail wordmark bottom-right */
+ .snail{position:absolute;bottom:60px;right:96px;z-index:5;font-family:var(--sans);
+   font-size:15px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+   color:var(--metadata);opacity:.6}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="mark"><div class="t">Genesis 1</div><div class="s">King James Version</div></div>
+  <div class="pericope"><div class="pt">Prologue: The Primal State</div><div class="pr"></div></div>
+
+  <div id="foothold"><div id="flow">
+    <span class="vn">1</span><span class="w read">In</span> <span class="w read">the</span> <span class="w read">beginning</span> <span class="w read">God</span> <span class="w active">created</span> <span class="w">the</span> <span class="w">heaven</span> <span class="w">and</span> <span class="w">the</span> <span class="w">earth.</span>
+    <span class="vn">2</span><span class="w">And</span> <span class="w">the</span> <span class="w">earth</span> <span class="w">was</span> <span class="w">without</span> <span class="w">form,</span> <span class="w">and</span> <span class="w">void;</span> <span class="w">and</span> <span class="w">darkness</span> <span class="w">was</span> <span class="w">upon</span> <span class="w">the</span> <span class="w">face</span> <span class="w">of</span> <span class="w">the</span> <span class="w">deep.</span> <span class="w">And</span> <span class="w">the</span> <span class="w">Spirit</span> <span class="w">of</span> <span class="w">God</span> <span class="w">moved</span> <span class="w">upon</span> <span class="w">the</span> <span class="w">face</span> <span class="w">of</span> <span class="w">the</span> <span class="w">waters.</span>
+  </div></div>
+
+  <div class="snail">Snail</div>
+</div>
+</body></html>

@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>Book bookends — opener + closer (dirty paper)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=IBM+Plex+Sans:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --paper:#fcfcfc; --ink:#2e3440; --metadata:#9a9388; --gold:hsl(42 40% 50%);
+   --serif:"Source Serif 4",Georgia,serif;
+   --display:"DM Serif Display",Georgia,serif;
+   --sans:"IBM Plex Sans",system-ui,sans-serif;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+ body{background:#e7e3da;font-family:var(--sans);padding:54px 54px 90px}
+
+ .tn{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--paper);
+   border-radius:5px;box-shadow:0 14px 40px rgba(0,0,0,.13);margin-bottom:40px}
+ .tn::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.45;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+ .seclbl{max-width:1920px;margin:6px auto 14px;font-family:var(--sans);font-size:13px;font-weight:700;
+   letter-spacing:.18em;text-transform:uppercase;color:#8a8678}
+
+ /* PAGE — KJV lore (centered card) */
+ .lore{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 240px;height:100%}
+ .lore .lbl{font-size:21px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .lore .name{font-family:var(--display);font-weight:400;font-size:140px;line-height:.95;color:var(--ink);margin-top:18px}
+ .lore .yr{font-family:var(--serif);font-style:italic;font-size:40px;color:var(--metadata);margin-top:6px}
+ .lore .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:40px 0 36px}
+ .lore p{font-family:var(--serif);font-size:33px;line-height:1.58;color:#4f535a;max-width:1180px}
+
+ /* PAGE — whole-book contents */
+ .toc{position:absolute;inset:0;z-index:3;padding:96px 130px}
+ .toc .head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e6e2d8;padding-bottom:26px;margin-bottom:40px}
+ .toc .book{font-family:var(--display);font-weight:400;font-size:104px;line-height:.9;color:var(--ink)}
+ .toc .hr{text-align:right}
+ .toc .hr .t{font-size:20px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+ .toc .hr .s{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--metadata);margin-top:8px}
+ .cols{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+ .act{font-size:18px;font-weight:600;letter-spacing:.20em;text-transform:uppercase;color:var(--metadata);margin-bottom:14px}
+ .act b{color:var(--ink)}
+ .arc{display:flex;align-items:baseline;gap:22px;padding:13px 0;border-top:1px solid #efece4}
+ .arc .l{flex:0 0 26px;font-family:var(--display);font-size:34px;color:var(--gold);line-height:1}
+ .arc .t{flex:1;font-family:var(--serif);font-size:30px;color:var(--ink)}
+ .arc .c{font-size:18px;font-weight:500;letter-spacing:.06em;color:var(--metadata)}
+ /* credits, mirroring the contents layout */
+ .credit{font-family:var(--serif);font-size:42px;color:var(--ink);margin-top:4px;line-height:1.2}
+ .creditsub{font-family:var(--serif);font-size:26px;color:var(--metadata);margin-top:16px;line-height:1.5;max-width:600px}
+
+ /* PAGE — credits (quiet end card) */
+ .cred{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%;padding:0 200px}
+ .cred .lbl{font-size:21px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .cred .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:30px 0 48px}
+ .crow{margin-bottom:34px}
+ .crow .k{font-size:17px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--metadata)}
+ .crow .v{font-family:var(--serif);font-size:34px;color:var(--ink);margin-top:8px;line-height:1.35}
+ .cred .foot{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--metadata);margin-top:26px}
+
+ /* PAGE — next book invitation */
+ .next{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%}
+ .next .lbl{font-size:21px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .next .book{font-family:var(--display);font-weight:400;font-size:200px;line-height:.92;color:var(--ink);margin-top:14px}
+ .next .tease{font-family:var(--serif);font-style:italic;font-size:38px;color:#5b5f66;margin-top:18px;max-width:1100px}
+ .next .cta{font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+   color:var(--gold);margin-top:48px}
+</style>
+</head>
+<body>
+
+  <div class="seclbl">Opening window</div>
+  <div class="tn">
+    <div class="lore">
+      <div class="lbl">The Translation</div>
+      <div class="name">King James Version</div>
+      <div class="yr">Authorized, 1611</div>
+      <div class="rule"></div>
+      <p>In 1604 King James I commissioned a new English Bible. Forty-seven scholars, working in six companies at Oxford, Cambridge, and Westminster, labored seven years — building on Tyndale's pioneering work and the Bishops' Bible. What they made was not merely a text but a cadence: English at its most stately and rhythmic. Four centuries on, it remains the most printed and most enduring book in the language.</p>
+    </div>
+  </div>
+
+  <div class="tn">
+    <div class="toc">
+      <div class="head">
+        <div class="book">Genesis</div>
+        <div class="hr"><div class="t">King James Version</div><div class="s">The book in eleven movements</div></div>
+      </div>
+      <div class="cols">
+        <div>
+          <div class="act"><b>I · Primordial Dawn</b> &nbsp;·&nbsp; Chapters 1–11</div>
+          <div class="arc"><span class="l">A</span><span class="t">The Cosmic Creation &amp; Sabbath</span><span class="c">1</span></div>
+          <div class="arc"><span class="l">B</span><span class="t">The Eden Narrative &amp; the Fall</span><span class="c">2–3</span></div>
+          <div class="arc"><span class="l">C</span><span class="t">Cain &amp; Abel</span><span class="c">4</span></div>
+          <div class="arc"><span class="l">D</span><span class="t">The Generations of Adam</span><span class="c">5</span></div>
+          <div class="arc"><span class="l">E</span><span class="t">The Flood</span><span class="c">6–9</span></div>
+          <div class="arc"><span class="l">F</span><span class="t">The Table of Nations</span><span class="c">10</span></div>
+          <div class="arc"><span class="l">G</span><span class="t">The Tower of Babel</span><span class="c">11</span></div>
+        </div>
+        <div>
+          <div class="act"><b>II · Patriarchal Promise</b> &nbsp;·&nbsp; Chapters 11–50</div>
+          <div class="arc"><span class="l">H</span><span class="t">The Abraham Cycle</span><span class="c">11–25</span></div>
+          <div class="arc"><span class="l">I</span><span class="t">The Jacob Cycle</span><span class="c">25–35</span></div>
+          <div class="arc"><span class="l">J</span><span class="t">The Line of Esau</span><span class="c">36</span></div>
+          <div class="arc"><span class="l">K</span><span class="t">The Joseph Novella</span><span class="c">37–50</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="seclbl">Closing window</div>
+  <div class="tn">
+    <div class="toc">
+      <div class="head">
+        <div class="book">Credits</div>
+        <div class="hr"><div class="t">King James Version</div><div class="s">Genesis</div></div>
+      </div>
+      <div class="cols">
+        <div>
+          <div class="act"><b>Translation</b></div>
+          <div class="credit">King James Version · 1611</div>
+          <div class="creditsub">Forty-seven translators, commissioned by King James I of England.</div>
+        </div>
+        <div>
+          <div class="act"><b>Narration</b></div>
+          <div class="credit">Davis · a synthetic voice</div>
+          <div class="creditsub">VibeVoice, by Microsoft.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tn">
+    <div class="next">
+      <div class="lbl">Continue the story</div>
+      <div class="book">Exodus</div>
+      <div class="tease">Bondage, deliverance, and a people bound in covenant.</div>
+      <div class="cta">Watch next →</div>
+    </div>
+  </div>
+
+  <div style="max-width:1920px;margin:0 auto;font-family:var(--sans);color:#7a776d;font-size:14.5px">
+    Book bookends · dirty paper — opener (lore + contents) + closer (credits + next book). Shown once each; structure stays invisible during the reading. Iterations kept here.
+  </div>
+</body></html>

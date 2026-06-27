@@ -1,0 +1,160 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snail-Shell — Design Shelf</title>
+<style>
+ :root{
+   --paper:#f4efe4; --ink:#2d3038; --metadata:#8b8b84; --rule:#d8d2c5;
+   --accent:hsl(42 40% 50%);   /* KJV gold — the house accent for the shell itself */
+   --serif:"Source Serif 4","Source Serif Pro",Georgia,serif;
+   --sans:"IBM Plex Sans","IBM Plex Sans Var",system-ui,sans-serif;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+   line-height:1.5;position:relative;min-height:100vh}
+ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+   mix-blend-mode:multiply;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+ .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:64px 28px 110px}
+
+ header{border-bottom:1px solid var(--rule);padding-bottom:26px;margin-bottom:14px}
+ header .kick{font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--metadata)}
+ header h1{font-family:var(--serif);font-size:46px;font-weight:500;margin:8px 0 6px;letter-spacing:-.01em}
+ header p{max-width:640px;color:#5e5d56;font-size:16px}
+ header .rule{width:90px;height:2px;background:var(--accent);opacity:.7;margin-top:18px}
+
+ h2{font-family:var(--serif);font-size:26px;font-weight:500;margin:54px 0 4px}
+ h2 .n{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.16em;
+   text-transform:uppercase;color:var(--metadata);margin-left:10px;vertical-align:middle}
+ .note{color:#66645c;font-size:14.5px;max-width:680px;margin-bottom:22px}
+
+ .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:18px}
+ .card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.42);
+   border:1px solid var(--rule);border-radius:9px;overflow:hidden;
+   box-shadow:0 10px 30px rgba(45,48,56,.05);transition:transform .14s ease,box-shadow .14s ease}
+ .card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(45,48,56,.12)}
+ .thumb{aspect-ratio:16/9;background:#e9e2d2 center/cover no-repeat;border-bottom:1px solid var(--rule);
+   display:flex;align-items:center;justify-content:center}
+ .thumb.placeholder{background:linear-gradient(135deg,#efe9db,#e6dfce)}
+ .thumb.placeholder span{font-family:var(--serif);font-style:italic;color:var(--metadata);font-size:15px}
+ .cbody{padding:14px 16px 16px}
+ .cbody .ttl{font-weight:600;font-size:15px}
+ .cbody .sub{color:#7a786f;font-size:12.5px;margin-top:4px;line-height:1.45}
+ .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+   color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:1px 8px;margin-top:9px;opacity:.8}
+ .tag.old{color:var(--metadata);border-color:var(--rule)}
+ footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);color:var(--metadata);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kick">Snail-Shell</div>
+    <h1>Design Shelf</h1>
+    <p>A poor man's Paper. One local page that links to every read-along design — open, ponder, come back to it. No MCP, no rate limit, no subscription; just files and hyperlinks. Click any card to open it live in the browser.</p>
+    <div class="rule"></div>
+  </header>
+
+  <h2>Current direction <span class="n">locked</span></h2>
+  <div class="note">Where we landed: chronological color system (hue = publication year) + the few-verses foothold frame, typeset to stay legible on mobile and in landscape.</div>
+  <div class="grid">
+    <a class="card" href="kjv-frame-design.html">
+      <div class="thumb" style="background-image:url('kjv-frame-design.png')"></div>
+      <div class="cbody"><div class="ttl">KJV read-along frame</div>
+        <div class="sub">Genesis 1:1–2 foothold · gold accent · mobile-legible type pass.</div>
+        <span class="tag">new</span></div>
+    </a>
+    <a class="card" href="kjv-frame-mobile.png">
+      <div class="thumb" style="background-image:url('kjv-frame-mobile.png')"></div>
+      <div class="cbody"><div class="ttl">KJV frame — mobile shrink-test</div>
+        <div class="sub">Same frame at ~390px phone-feed width. Proof it survives the shrink.</div>
+        <span class="tag">new</span></div>
+    </a>
+    <a class="card" href="thumbnail.html">
+      <div class="thumb" style="background-image:url('thumbnail.png')"></div>
+      <div class="cbody"><div class="ttl">Thumbnail — dirty paper</div>
+        <div class="sub">DM Serif Display, book + version, off-white. Iterations kept in one file.</div>
+        <span class="tag">new</span></div>
+    </a>
+    <a class="card" href="bookends.html">
+      <div class="thumb" style="background-image:url('bookends-2-contents.png')"></div>
+      <div class="cbody"><div class="ttl">Book bookends — dirty paper</div>
+        <div class="sub">Whole-book video opener (KJV lore + Genesis contents) & closer (credits + next book).</div>
+        <span class="tag">new</span></div>
+    </a>
+    <a class="card" href="mock-phone.html">
+      <div class="thumb" style="background-image:url('mock-phone.png');background-position:left center"></div>
+      <div class="cbody"><div class="ttl">Phone mockup — true scale</div>
+        <div class="sub">KJV frame in a real phone: portrait in-feed + landscape fullscreen.</div>
+        <span class="tag">new</span></div>
+    </a>
+    <a class="card" href="snail-bible-colors.html">
+      <div class="thumb" style="background-image:url('glm-color-board-preview.png')"></div>
+      <div class="cbody"><div class="ttl">Color system — the constitution</div>
+        <div class="sub">11 translations, hue by year, locked S/L. The canonical accent map.</div>
+        <span class="tag">locked</span></div>
+    </a>
+  </div>
+
+  <h2>Color explorations</h2>
+  <div class="note">The two vision boards that settled it — Claude's chronological axis won as the constitution; Codex contributed the muted tier + posture-as-label.</div>
+  <div class="grid">
+    <a class="card" href="../Downloads/claude%20bible%20colors%20vision.html">
+      <div class="thumb placeholder"><span>Claude vision</span></div>
+      <div class="cbody"><div class="ttl">Claude — chronological axis</div>
+        <div class="sub">Hue = publication year, warm→cool. The winning system.</div></div>
+    </a>
+    <a class="card" href="../Downloads/codex%20bible%20colors%20vision.html">
+      <div class="thumb placeholder"><span>Codex vision</span></div>
+      <div class="cbody"><div class="ttl">Codex — posture axis</div>
+        <div class="sub">Color = translation role. Tasteful, but kept only as labels.</div></div>
+    </a>
+  </div>
+
+  <h2>Genesis 1 — frame explorations</h2>
+  <div class="note">Earlier layout/treatment trials on Genesis 1. PERI-SCENE is the live motion engine (pericope title swaps at scene boundaries).</div>
+  <div class="grid">
+    <a class="card" href="genesis-01-PERI-SCENE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">PERI-SCENE</div><div class="sub">Motion engine · scene titles by word index.</div><span class="tag old">engine</span></div></a>
+    <a class="card" href="genesis-01-PERI-EVOCATIVE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">PERI-EVOCATIVE</div><div class="sub">Story-title variant.</div></div></a>
+    <a class="card" href="genesis-01-NORD-PERICOPE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">NORD-PERICOPE</div><div class="sub">Nord theme + pericope title.</div></div></a>
+    <a class="card" href="genesis-01-NORD.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">NORD</div><div class="sub">Base nord theme.</div></div></a>
+    <a class="card" href="genesis-01-NORD-NORULE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">NORD-NORULE</div><div class="sub">Hairline rule off.</div></div></a>
+    <a class="card" href="genesis-01-UNITS.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">UNITS</div><div class="sub">Lettered memory-unit overlay.</div></div></a>
+    <a class="card" href="genesis-01-FRAMEB.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">FRAMEB</div><div class="sub">Frame treatment B.</div></div></a>
+  </div>
+
+  <h2>Psalm 23 — theme studies</h2>
+  <div class="note">Where most of the look was dialed in — paper tones, highlighter styles, redline reader, YouTube passage layouts.</div>
+  <div class="grid">
+    <a class="card" href="psalm-23-NORD.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">NORD</div><div class="sub">The chosen look base.</div></div></a>
+    <a class="card" href="psalm-23-yt-passage-SECTION.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">YT passage — SECTION</div></div></a>
+    <a class="card" href="psalm-23-yt-passage-UNIFORM.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">YT passage — UNIFORM</div></div></a>
+    <a class="card" href="psalm-23-WARM-MINIMAL.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">WARM-MINIMAL</div></div></a>
+    <a class="card" href="psalm-23-THEME-linen.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">THEME — linen</div></div></a>
+    <a class="card" href="psalm-23-THEME-parchment.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">THEME — parchment</div></div></a>
+    <a class="card" href="psalm-23-THEME-sepia.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">THEME — sepia</div></div></a>
+    <a class="card" href="psalm-23-THEME-spectral.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">THEME — spectral</div></div></a>
+    <a class="card" href="psalm-23-THEME-plex.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">THEME — plex</div></div></a>
+    <a class="card" href="psalm-23-REDLINE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">REDLINE</div><div class="sub">Highlight-changes doc reader.</div></div></a>
+    <a class="card" href="psalm-23-REDLINE-MINIMAL.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">REDLINE-MINIMAL</div></div></a>
+    <a class="card" href="psalm-23-FRAMEB.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">FRAMEB</div></div></a>
+    <a class="card" href="psalm-23-EXP-CLASSIC-RED.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">EXP — classic red</div></div></a>
+    <a class="card" href="psalm-23-EXP-DARK.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">EXP — dark</div></div></a>
+    <a class="card" href="psalm-23-EXP-IVORY.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">EXP — ivory</div></div></a>
+    <a class="card" href="psalm-23-EXP-SEPIA-UNDERLINE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">EXP — sepia underline</div></div></a>
+    <a class="card" href="psalm-23-SEPIA-BLUE.html"><div class="thumb placeholder"><span>play ▸</span></div><div class="cbody"><div class="ttl">SEPIA-BLUE</div></div></a>
+  </div>
+
+  <h2>Strong's</h2>
+  <div class="note">Strong's lexicon entry treatment (lemma-forward, no narrator label).</div>
+  <div class="grid">
+    <a class="card" href="strongs-H157-entry.html">
+      <div class="thumb" style="background-image:url('claude-snail-ref.png')"></div>
+      <div class="cbody"><div class="ttl">Strong's H157 entry</div><div class="sub">Lemma-forward lexicon card.</div></div>
+    </a>
+  </div>
+
+  <footer>Snail-Shell design shelf · curated from ~/snail-shell · regenerate when new design files land · production chapter renders intentionally excluded.</footer>
+</div>
+</body></html>

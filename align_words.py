@@ -27,7 +27,7 @@ from torchaudio.pipelines import MMS_FA as bundle
 from add_words import PLAYER, word_spans  # reuse the player + proportional fallback
 
 SR = bundle.sample_rate          # 16000
-DEVICE = "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 _M = _T = _A = None
 
 

@@ -165,6 +165,10 @@ THEMES = {
                 "hl": "#c9ecbf", "ac": "#36b94a", "hltext": "#13391b",
                 "serif": '"Inter",Helvetica,Arial,sans-serif', "sans": '"Inter",Helvetica,Arial,sans-serif',
                 "fonts": _F + "&family=Inter:wght@300;400;500;600;700&display=swap"},
+    "kjv":     {"bg": "#fcfcfc", "fg": "#2e3440", "read": "#cdd3da",
+                "hl": "hsl(42 45% 80%)", "ac": "#B3944D", "hltext": "#3a3120",
+                "serif": '"Source Serif 4",Georgia,serif', "sans": '"IBM Plex Sans",sans-serif',
+                "fonts": _F + _SRCSERIF},
 }
 
 
@@ -297,9 +301,13 @@ PLAYER = r"""<!doctype html><html lang="en"><head>
  /* pericope (passage title) — the editorial layer a real Bible page gives. Serif italic,
     distinct from the sans book/chapter identifier. When present it OWNS the upper-right
     and the redundant verse counter steps aside (verse already lives inline as superscript). */
- .pericope{display:none;position:absolute;top:62px;right:84px;z-index:5;
-   max-width:420px;text-align:right;font-family:var(--serif);font-style:italic;
-   font-size:23px;font-weight:500;line-height:1.22;color:var(--fg);opacity:.62}
+ .pericope{display:none;position:absolute;top:66px;right:96px;z-index:5;
+   max-width:520px;text-align:right}
+ .pericope .story{font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:.22em;
+   text-transform:uppercase;color:var(--hi);opacity:.6;margin-bottom:14px}
+ .pericope .pt{font-family:var(--serif);font-style:italic;font-size:27px;font-weight:500;
+   line-height:1.22;color:var(--fg);opacity:.66}
+ .pericope .pr{width:90px;height:2px;background:var(--hi);opacity:.7;margin:16px 0 0 auto}
  body.haspericope .verse{display:none}
  body.haspericope .pericope{display:block}
  /* lettered memory unit (A/B/C…) — SUBTLE: a quiet letter + faint thought-cue, monochrome
@@ -433,8 +441,7 @@ PLAYER = r"""<!doctype html><html lang="en"><head>
    <div class="sub">__MARK_S__</div>
    <div class="book">__BOOK__</div>
    <div class="chap">__CHAP__</div>
-   <div class="rule"></div>
-   <div class="hint">tap to begin</div></div></div>
+   <div class="rule"></div></div></div>
  <audio id="a" src="__AUDIO__" preload="auto"></audio>
 </div></div>
 <script>
@@ -464,7 +471,7 @@ function showScene(wi){ if(!SCENES.length||!peri) return; let idx=-1;
   for(let k=0;k<SCENES.length;k++){ if(wi>=SCENES[k].word) idx=k; else break; }
   if(idx<0||idx===lastScene) return; lastScene=idx;
   const L=String.fromCharCode(65+idx);   // just a letter address in front of the title
-  peri.textContent = SCENETIER==='scene' ? (L+'.  '+SCENES[idx].scene) : SCENES[idx].story; }
+  peri.innerHTML = '<div class="story">' + SCENES[idx].story + '</div><div class="pt">' + L + '. ' + SCENES[idx].scene + '</div><div class="pr"></div>'; }
 
 // subtle lettered memory unit: swap the quiet A/B/C badge at each unit's first word.
 const UNITS=__UNITS__;
@@ -559,6 +566,14 @@ function loop(){
 }
 if(ISPASSAGE) buildPassage();
 requestAnimationFrame(loop);
+
+window.renderFrame = function(ms) {
+    const i = find(ms);
+    if(i !== cur && i >= 0) {
+        cur = i;
+        paint(i);
+    }
+};
 
 veil.onclick=()=>{veil.classList.add('hide');a.play();};
 a.addEventListener('ended',()=>{bar.style.width='100%';});

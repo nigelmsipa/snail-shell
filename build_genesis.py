@@ -234,7 +234,11 @@ def main():
                         draw.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=INK, anchor="ls")
                     cursor_x += iw + space_w
                     
-        p.stdin.write(img.tobytes())
+        try:
+            p.stdin.write(img.tobytes())
+        except BrokenPipeError:
+            print("FFmpeg closed pipe early (likely due to -shortest).")
+            break
         
         if frame % 300 == 0:
             print(f"Rendered {frame}/{total_frames} frames...")

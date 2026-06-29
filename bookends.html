@@ -30,6 +30,22 @@
  .lore .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:40px 0 36px}
  .lore p{font-family:var(--serif);font-size:33px;line-height:1.58;color:#4f535a;max-width:1180px}
 
+ /* lore v2 — the "is this your Bible?" fit panel */
+ .lore.v2{padding:0 200px}
+ .lore.v2 p{font-size:30px;max-width:1120px}
+ .fit{width:100%;max-width:980px;margin-top:46px}
+ .fit .fl{font-size:18px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:30px}
+ .spec{margin-bottom:30px}
+ .spec .ends{display:flex;justify-content:space-between;font-family:var(--sans);
+   font-size:19px;font-weight:600;letter-spacing:.02em;color:var(--metadata)}
+ .spec .ends .hot{color:var(--ink)}
+ .spec .track{position:relative;height:3px;background:#e7e2d6;margin-top:14px;border-radius:2px}
+ .spec .dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--gold);
+   transform:translate(-50%,-50%);box-shadow:0 0 0 6px rgba(179,148,77,.16)}
+ .bestfor{margin-top:42px;font-family:var(--serif);font-size:31px;line-height:1.5;color:#3f434a}
+ .bestfor b{font-style:normal;font-weight:600}
+ .bestfor .note{display:block;font-size:23px;font-style:italic;color:var(--metadata);margin-top:14px}
+
  /* PAGE — whole-book contents */
  .toc{position:absolute;inset:0;z-index:3;padding:96px 130px}
  .toc .head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e6e2d8;padding-bottom:26px;margin-bottom:40px}
@@ -44,6 +60,8 @@
  .arc .l{flex:0 0 26px;font-family:var(--display);font-size:34px;color:var(--gold);line-height:1}
  .arc .t{flex:1;font-family:var(--serif);font-size:30px;color:var(--ink)}
  .arc .c{font-size:18px;font-weight:500;letter-spacing:.06em;color:var(--metadata)}
+ /* a second act-group inside the same column needs air above it */
+ .arc + .act{margin-top:36px}
  /* credits, mirroring the contents layout */
  .credit{font-family:var(--serif);font-size:42px;color:var(--ink);margin-top:4px;line-height:1.2}
  .creditsub{font-family:var(--serif);font-size:26px;color:var(--metadata);margin-top:16px;line-height:1.5;max-width:600px}
@@ -130,11 +148,51 @@
   </div>
 
   <div class="tn">
-    <div class="next">
-      <div class="lbl">Continue the story</div>
-      <div class="book">Exodus</div>
-      <div class="tease">Bondage, deliverance, and a people bound in covenant.</div>
-      <div class="cta">Watch next →</div>
+    <div class="toc">
+      <div class="head">
+        <div class="book">Exodus</div>
+        <div class="hr"><div class="t">Continue the story</div><div class="s">The book in three movements</div></div>
+      </div>
+      <div class="cols">
+        <div>
+          <div class="act"><b>I · Out of Egypt</b> &nbsp;·&nbsp; Chapters 1–18</div>
+          <div class="arc"><span class="l">A</span><span class="t">The Deliverance</span><span class="c">1–18</span></div>
+          <div class="act"><b>II · The Covenant</b> &nbsp;·&nbsp; Chapters 19–24</div>
+          <div class="arc"><span class="l">B</span><span class="t">The Sinai Covenant</span><span class="c">19–24</span></div>
+        </div>
+        <div>
+          <div class="act"><b>III · The Dwelling</b> &nbsp;·&nbsp; Chapters 25–40</div>
+          <div class="arc"><span class="l">C</span><span class="t">The Dwelling Instructions</span><span class="c">25–31</span></div>
+          <div class="arc"><span class="l">D</span><span class="t">The Breach &amp; Renewal</span><span class="c">32–34</span></div>
+          <div class="arc"><span class="l">E</span><span class="t">The Dwelling Constructed</span><span class="c">35–40</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:84px;font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)">Watch next →</div>
+    </div>
+  </div>
+
+  <div class="seclbl">Opener lore · v2 — adds the "is this your Bible?" fit panel (tangible self-select, not just history)</div>
+  <div class="tn">
+    <div class="lore v2">
+      <div class="lbl">The Translation</div>
+      <div class="name">King James Version</div>
+      <div class="yr">Authorized, 1611</div>
+      <div class="rule"></div>
+      <p>Commissioned by King James I and rendered by forty-seven scholars over seven years, building on Tyndale's pioneering work. Four centuries on, it remains the most printed and quoted book in the English language — Scripture at its most stately and rhythmic.</p>
+      <div class="fit">
+        <div class="fl">Is this your Bible?</div>
+        <div class="spec">
+          <div class="ends"><span class="hot">Word&#8209;for&#8209;word</span><span>Thought&#8209;for&#8209;thought</span></div>
+          <div class="track"><div class="dot" style="left:14%"></div></div>
+        </div>
+        <div class="spec">
+          <div class="ends"><span class="hot">Traditional English</span><span>Plain &amp; modern</span></div>
+          <div class="track"><div class="dot" style="left:8%"></div></div>
+        </div>
+        <div class="bestfor"><b>Best for</b> &nbsp;readers who want the majestic, traditional text — and the cadence that has made it the most memorized Bible in English.
+          <span class="note">Early-modern English (thee, thou, &#8209;eth) — a richer read, not the simplest first Bible.</span>
+        </div>
+      </div>
     </div>
   </div>
 

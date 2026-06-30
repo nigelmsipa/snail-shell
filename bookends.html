@@ -24,7 +24,7 @@
 
  /* PAGE — KJV lore (centered card) */
  .lore{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 240px;height:100%}
- .lore .lbl{font-size:21px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .lore .lbl{font-size:28px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
  .lore .name{font-family:var(--display);font-weight:400;font-size:140px;line-height:.95;color:var(--ink);margin-top:18px}
  .lore .yr{font-family:var(--serif);font-style:italic;font-size:40px;color:var(--metadata);margin-top:6px}
  .lore .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:40px 0 36px}
@@ -52,16 +52,16 @@
  .toc .book{font-family:var(--display);font-weight:400;font-size:104px;line-height:.9;color:var(--ink)}
  .toc .hr{text-align:right}
  .toc .hr .t{font-size:20px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
- .toc .hr .s{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--metadata);margin-top:8px}
+ .toc .hr .s{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--metadata);margin-top:8px}
  .cols{display:grid;grid-template-columns:1fr 1fr;gap:80px}
- .act{font-size:18px;font-weight:600;letter-spacing:.20em;text-transform:uppercase;color:var(--metadata);margin-bottom:14px}
+ .act{font-size:24px;font-weight:600;letter-spacing:.20em;text-transform:uppercase;color:var(--metadata);margin-bottom:20px}
  .act b{color:var(--ink)}
  .arc{display:flex;align-items:baseline;gap:22px;padding:13px 0;border-top:1px solid #efece4}
  .arc .l{flex:0 0 26px;font-family:var(--display);font-size:34px;color:var(--gold);line-height:1}
- .arc .t{flex:1;font-family:var(--serif);font-size:30px;color:var(--ink)}
- .arc .c{font-size:18px;font-weight:500;letter-spacing:.06em;color:var(--metadata)}
+ .arc .t{flex:1;font-family:var(--serif);font-size:34px;color:var(--ink)}
+ .arc .c{font-size:24px;font-weight:500;letter-spacing:.06em;color:var(--metadata)}
  /* a second act-group inside the same column needs air above it */
- .arc + .act{margin-top:36px}
+ .arc + .act{margin-top:40px}
  /* credits, mirroring the contents layout */
  .credit{font-family:var(--serif);font-size:42px;color:var(--ink);margin-top:4px;line-height:1.2}
  .creditsub{font-family:var(--serif);font-size:26px;color:var(--metadata);margin-top:16px;line-height:1.5;max-width:600px}
@@ -88,12 +88,26 @@
 
   <div class="seclbl">Opening window</div>
   <div class="tn">
-    <div class="lore">
+    <div class="lore v2">
       <div class="lbl">The Translation</div>
       <div class="name">King James Version</div>
       <div class="yr">Authorized, 1611</div>
       <div class="rule"></div>
-      <p>In 1604 King James I commissioned a new English Bible. Forty-seven scholars, working in six companies at Oxford, Cambridge, and Westminster, labored seven years — building on Tyndale's pioneering work and the Bishops' Bible. What they made was not merely a text but a cadence: English at its most stately and rhythmic. Four centuries on, it remains the most printed and most enduring book in the language.</p>
+      <p>Commissioned by King James I and rendered by forty-seven scholars over seven years, building on Tyndale's pioneering work. Four centuries on, it remains the most printed and quoted book in the English language — Scripture at its most stately and rhythmic.</p>
+      <div class="fit">
+        <div class="fl">Is this your Bible?</div>
+        <div class="spec">
+          <div class="ends"><span class="hot">Word&#8209;for&#8209;word</span><span>Thought&#8209;for&#8209;thought</span></div>
+          <div class="track"><div class="dot" style="left:14%"></div></div>
+        </div>
+        <div class="spec">
+          <div class="ends"><span class="hot">Traditional English</span><span>Plain &amp; modern</span></div>
+          <div class="track"><div class="dot" style="left:8%"></div></div>
+        </div>
+        <div class="bestfor"><b>Best for</b> &nbsp;readers who want the majestic, traditional text — and the cadence that has made it the most memorized Bible in English.
+          <span class="note">Early-modern English (thee, thou, &#8209;eth) — a richer read, not the simplest first Bible.</span>
+        </div>
+      </div>
     </div>
   </div>
 

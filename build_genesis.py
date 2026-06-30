@@ -139,13 +139,21 @@ def main():
 
     mask = Image.new("L", (W, H), 255)
     draw_mask = ImageDraw.Draw(mask)
+    
+    fade_top = 260
     fade_len = 350
-    for y in range(fade_len):
-        alpha = int((y / fade_len) ** 1.5 * 255)
+    for y in range(fade_top):
+        draw_mask.line([(0, y), (W, y)], fill=0)
+    for y in range(fade_top, fade_top + fade_len):
+        alpha = int(((y - fade_top) / fade_len) ** 1.5 * 255)
         draw_mask.line([(0, y), (W, y)], fill=alpha)
-    for y in range(H - fade_len, H):
-        alpha = int(((H - y) / fade_len) ** 1.5 * 255)
+        
+    fade_bottom = H - 200
+    for y in range(fade_bottom - fade_len, fade_bottom):
+        alpha = int(((fade_bottom - y) / fade_len) ** 1.5 * 255)
         draw_mask.line([(0, y), (W, y)], fill=alpha)
+    for y in range(fade_bottom, H):
+        draw_mask.line([(0, y), (W, y)], fill=0)
 
     print("Encoding reading.mp4...")
     p = subprocess.Popen([
@@ -240,8 +248,13 @@ def main():
                     cursor_x += iw + space_w
                     
         # Composite text layer over base background using alpha mask
+        from PIL import ImageChops
+        r, g, b, a = text_layer.split()
+        a = ImageChops.multiply(a, mask)
+        faded_text = Image.merge("RGBA", (r, g, b, a))
+        
         img = bg_img.copy()
-        img.paste(text_layer, (0,0), mask)
+        img.paste(faded_text, (0,0), faded_text)
         
         # Draw Scene Title on top of everything
         draw = ImageDraw.Draw(img)

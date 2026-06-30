@@ -148,12 +148,9 @@ def main():
         alpha = int(((y - fade_top) / fade_len) ** 1.5 * 255)
         draw_mask.line([(0, y), (W, y)], fill=alpha)
         
-    fade_bottom = H - 200
-    for y in range(fade_bottom - fade_len, fade_bottom):
-        alpha = int(((fade_bottom - y) / fade_len) ** 1.5 * 255)
+    for y in range(H - fade_len, H):
+        alpha = int(((H - y) / fade_len) ** 1.5 * 255)
         draw_mask.line([(0, y), (W, y)], fill=alpha)
-    for y in range(fade_bottom, H):
-        draw_mask.line([(0, y), (W, y)], fill=0)
 
     print("Encoding reading.mp4...")
     p = subprocess.Popen([

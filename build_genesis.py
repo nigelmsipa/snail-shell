@@ -136,6 +136,17 @@ def main():
     draw_bg.text((W - 192 - brand_w, H - 120), brand_text, font=SANS_BRAND, fill=META)
     draw_bg.rectangle([W - 192 - 180, 260, W - 192, 264], fill=ACCENT)
 
+
+    mask = Image.new("L", (W, H), 255)
+    draw_mask = ImageDraw.Draw(mask)
+    fade_len = 350
+    for y in range(fade_len):
+        alpha = int((y / fade_len) ** 1.5 * 255)
+        draw_mask.line([(0, y), (W, y)], fill=alpha)
+    for y in range(H - fade_len, H):
+        alpha = int(((H - y) / fade_len) ** 1.5 * 255)
+        draw_mask.line([(0, y), (W, y)], fill=alpha)
+
     print("Encoding reading.mp4...")
     p = subprocess.Popen([
         "ffmpeg", "-y",
@@ -146,7 +157,7 @@ def main():
         "-r", str(FPS),
         "-i", "-",
         "-i", AUDIO,
-        "-c:v", "libx264", "-preset", "ultrafast", "-crf", "18",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
         "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
         "-shortest",
@@ -192,16 +203,10 @@ def main():
         unit_idx = word_to_unit_idx.get(max(3, active_w), 0)
         unit = units[unit_idx]
         
-        # Start with the static background
-        img = bg_img.copy()
-        draw = ImageDraw.Draw(img)
+        # Text Layer
+        text_layer = Image.new("RGBA", (W, H), (0,0,0,0))
+        draw_text = ImageDraw.Draw(text_layer)
         
-        # Draw Scene Title (only scene, no story)
-        scene_text = f"{unit['letter']} · {unit['title']}"
-        scene_w = draw.textlength(scene_text, font=SERIF_SCENE)
-        draw.text((W - 192 - scene_w, 180), scene_text, font=SERIF_SCENE, fill=(130, 135, 145))
-
-        # Draw lines that are visible
         base_y = start_y_offset - current_scroll_y
         
         for line_idx, line in enumerate(lines):
@@ -217,7 +222,7 @@ def main():
             for item in line:
                 itype, itext, iw, ref = item
                 if itype == 'vn':
-                    draw.text((cursor_x + space_w*0.1, baseline - 75), itext, font=SANS_VN, fill=ACCENT, anchor="ls")
+                    draw_text.text((cursor_x + space_w*0.1, baseline - 75), itext, font=SANS_VN, fill=ACCENT, anchor="ls")
                     cursor_x += iw + space_w
                 else:
                     w_idx = ref
@@ -226,14 +231,24 @@ def main():
                         hy1 = baseline - 132 * 0.85
                         hx2 = cursor_x + iw + 20
                         hy2 = baseline + 132 * 0.25
-                        draw.rounded_rectangle([hx1, hy1, hx2, hy2], radius=12, fill=HL)
-                        draw.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=HLTEXT, anchor="ls")
+                        draw_text.rounded_rectangle([hx1, hy1, hx2, hy2], radius=12, fill=HL)
+                        draw_text.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=HLTEXT, anchor="ls")
                     elif active_w != -1 and w_idx < active_w:
-                        draw.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=READ, anchor="ls")
+                        draw_text.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=READ, anchor="ls")
                     else:
-                        draw.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=INK, anchor="ls")
+                        draw_text.text((cursor_x, baseline), itext, font=SERIF_BODY, fill=INK, anchor="ls")
                     cursor_x += iw + space_w
                     
+        # Composite text layer over base background using alpha mask
+        img = bg_img.copy()
+        img.paste(text_layer, (0,0), mask)
+        
+        # Draw Scene Title on top of everything
+        draw = ImageDraw.Draw(img)
+        scene_text = f"{unit['letter']} · {unit['title']}"
+        scene_w = draw.textlength(scene_text, font=SERIF_SCENE)
+        draw.text((W - 192 - scene_w, 180), scene_text, font=SERIF_SCENE, fill=(130, 135, 145))
+        
         try:
             p.stdin.write(img.tobytes())
         except BrokenPipeError:
@@ -265,12 +280,13 @@ def main():
 
     parts = [
         make_static_video("thumbnail.png", 3, "thumbnail.mp4"),
-        make_static_video("bookends-1-lore.png", 4, "lore.mp4"),
-        make_static_video("bookends-2-contents.png", 4, "contents.mp4"),
+        make_static_video("bookends-1.png", 4, "lore.mp4"),
+        make_static_video("bookends-2.png", 4, "contents.mp4"),
         OUTPUT_DIR / "reading_scroll.mp4",
-        make_static_video("memory-card.png", 10, "memory.mp4"),
-        make_static_video("bookends-3-credits.png", 3, "credits.mp4"),
-        make_static_video("bookends-4-next.png", 4, "next.mp4")
+        make_static_video("memory-card-1.png", 7, "memory1.mp4"),
+        make_static_video("memory-card-2.png", 7, "memory2.mp4"),
+        make_static_video("bookends-3.png", 3, "credits.mp4"),
+        make_static_video("bookends-4.png", 4, "next.mp4")
     ]
 
     final_txt = OUTPUT_DIR / "final_scroll_concat.txt"

@@ -20,11 +20,11 @@ LH = 198
 
 # Colors
 BG = (252, 252, 252)
-INK = (46, 52, 64)
-READ = (205, 211, 218)
+INK = (58, 49, 32)
+READ = (163, 155, 139)
 META = (154, 147, 136)
 ACCENT = (179, 148, 77)
-HL = (227, 213, 181)
+HL = (233, 210, 162)
 HLTEXT = (58, 49, 32)
 MUTED_ACCENT = (180, 150, 90)
 
@@ -175,7 +175,7 @@ def main():
     current_scroll_y = 0.0
     
     for frame in range(total_frames):
-        t_ms = (frame / FPS) * 1000.0
+        t_ms = (frame / FPS) * 1000.0 + 180.0
         
         active_w = -1
         for i, w in enumerate(words):

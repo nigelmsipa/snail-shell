@@ -5,15 +5,15 @@
  :root{
    /* ---- locked shared shell: NORD theme (off-white, the decided read-along ground) ---- */
    --paper:#fcfcfc;          /* nord off-white paper, constant across all translations */
-   --ink:#2e3440;            /* nord polar-night ink */
+   --ink:#26324f;            /* nord polar-night ink */
    --read:#cdd3da;           /* nord read/receded words (cool grey) */
-   --ahead:#2e3440;          /* unread words = full ink */
+   --ahead:#26324f;          /* unread words = full ink */
    --metadata:#9a9388;       /* book/chapter sub, wordmark */
    --rule:#e7e3db;           /* faint hairlines on white */
    /* ---- KJV accent (1611, hue 42, warm gold) ---- */
    --accent:hsl(42 40% 50%);          /* #B3944D verse marks, rule, lemma */
-   --hl:hsl(42 45% 82%);              /* highlighter wash behind active word */
-   --hltext:#3a3120;                  /* text sitting on the highlighter */
+   --hl:#f4d999;              /* highlighter wash behind active word */
+   --hltext:#26324f;                  /* text sitting on the highlighter */
    --muted-accent:hsl(42 26% 60%);    /* third tier — quiet accent */
    --serif:"Source Serif 4","Source Serif Pro",Georgia,serif;
    --sans:"IBM Plex Sans","IBM Plex Sans Var",system-ui,sans-serif;
@@ -63,7 +63,7 @@
 
  /* ===== highlighter studies — the active-word treatment, decoupled from the gold accent ===== */
  /* 1 · gold wash (current baseline) */
- .hl-wash .w.active{background:hsl(42 45% 82%);color:#3a3120}
+ .hl-wash .w.active{background:#f4d999;color:#26324f}
  /* 2 · gold underline marker (no fill — lighter on white) */
  .hl-underline .w.active{background:none;color:var(--ink);
    box-shadow:inset 0 -.14em 0 0 hsl(42 50% 52%);border-radius:0;padding:.04em .04em}
@@ -76,7 +76,7 @@
  .hl-bold .w.read{color:#d3d8de}
  .hl-bold .w.active{background:none;color:var(--ink);font-weight:600}
  /* 6 · kraft + gold underline — faint warm paper card under the word, gold stroke */
- .hl-kraft .w.active{background:hsl(38 30% 88%);color:#3a3120;
+ .hl-kraft .w.active{background:hsl(38 30% 88%);color:#26324f;
    box-shadow:inset 0 -.12em 0 0 hsl(42 55% 50%)}
 
  /* ===== Gruvbox Light theme study — retro-warm palette (candidate for the older/warm translations) ===== */

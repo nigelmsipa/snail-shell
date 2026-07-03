@@ -14,3 +14,6 @@ frames/
 wordtest/
 ylt-test/
 bakeoff/
+
+# design iteration / sticky-note mockups — source of truth is ~/open-design
+design/

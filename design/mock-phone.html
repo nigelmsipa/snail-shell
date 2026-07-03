@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>KJV frame — phone mockup (true scale)</title>
+<style>
+ :root{
+   --sans:"IBM Plex Sans","IBM Plex Sans Var",system-ui,sans-serif;
+   --accent:hsl(42 40% 50%);
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:#e7e4dd;font-family:var(--sans);padding:56px;
+   display:flex;gap:72px;align-items:flex-start;justify-content:center}
+ .col{display:flex;flex-direction:column;align-items:center;gap:18px}
+ .caption{font-size:15px;font-weight:600;letter-spacing:.04em;color:#4a4842}
+ .caption small{display:block;font-weight:400;color:#86837b;font-size:12.5px;margin-top:3px;text-align:center}
+
+ /* ---- phone shell ---- */
+ .phone{background:#0d0d0f;border-radius:46px;padding:13px;
+   box-shadow:0 30px 70px rgba(0,0,0,.28),0 4px 12px rgba(0,0,0,.18);position:relative}
+ .screen{background:#fff;border-radius:34px;overflow:hidden;position:relative}
+
+ /* PORTRAIT phone (in-feed, YouTube app) */
+ .portrait .screen{width:390px;height:844px}
+ .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:128px;height:30px;
+   background:#0d0d0f;border-radius:0 0 18px 18px;z-index:30}
+ .statusbar{height:46px;display:flex;align-items:flex-end;justify-content:space-between;
+   padding:0 24px 8px;font-size:13px;font-weight:600;color:#111}
+ /* the 16:9 video at real in-feed size: 390 wide -> ~219 tall */
+ .video{width:390px;height:219px;background:#000 center/cover no-repeat;
+   background-image:url('kjv-frame-design.png');position:relative}
+ .vbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25)}
+ .vbar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:34%;background:#f00}
+ .meta{padding:14px 16px 0}
+ .vtitle{font-size:16px;font-weight:600;color:#0f0f0f;line-height:1.3}
+ .vstats{font-size:13px;color:#606060;margin-top:5px}
+ .chan{display:flex;align-items:center;gap:10px;margin:14px 0 4px}
+ .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent)}
+ .chan .nm{font-size:14px;font-weight:600;color:#0f0f0f}
+ .chan .sub{font-size:12.5px;color:#606060}
+ .subbtn{margin-left:auto;background:#0f0f0f;color:#fff;font-size:13px;font-weight:600;
+   padding:8px 16px;border-radius:18px}
+ .row{display:flex;gap:12px;padding:16px;border-top:1px solid #eee;margin-top:12px}
+ .rthumb{width:150px;height:84px;border-radius:8px;background:#d9d3c6 center/cover no-repeat;flex:none}
+ .rmeta .rt{font-size:13.5px;font-weight:600;color:#0f0f0f;line-height:1.3}
+ .rmeta .rs{font-size:12px;color:#606060;margin-top:4px}
+ .navbar{position:absolute;bottom:0;left:0;right:0;height:54px;border-top:1px solid #eee;
+   display:flex;justify-content:space-around;align-items:center;background:#fff;font-size:11px;color:#606060}
+ .navbar span{display:flex;flex-direction:column;align-items:center;gap:3px}
+ .dot{width:18px;height:18px;border-radius:5px;background:#c9c9c9}
+
+ /* LANDSCAPE phone (fullscreen playback) */
+ .landscape .screen{width:844px;height:390px;background:#000 center/cover no-repeat;
+   background-image:url('kjv-frame-design.png');background-size:cover}
+ .landscape .phone{border-radius:46px}
+ .ctrls{position:absolute;inset:0;display:flex;align-items:flex-end;
+   background:linear-gradient(to top,rgba(0,0,0,.28),transparent 32%)}
+ .scrub{position:absolute;left:24px;right:24px;bottom:22px;height:4px;background:rgba(255,255,255,.3);border-radius:2px}
+ .scrub::before{content:"";position:absolute;left:0;top:0;bottom:0;width:34%;background:#f00;border-radius:2px}
+ .scrub::after{content:"";position:absolute;left:34%;top:50%;width:13px;height:13px;border-radius:50%;
+   background:#f00;transform:translate(-50%,-50%)}
+</style>
+</head>
+<body>
+
+  <!-- PORTRAIT: how it looks scrolling the YouTube feed -->
+  <div class="col">
+    <div class="phone portrait">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="statusbar"><span>9:41</span><span>5G ▪ 84%</span></div>
+        <div class="video"><div class="vbar"></div></div>
+        <div class="meta">
+          <div class="vtitle">Genesis 1 — King James Version · Read-Along</div>
+          <div class="vstats">2,418 views · 2 days ago</div>
+          <div class="chan">
+            <div class="avatar"></div>
+            <div><div class="nm">Snail</div><div class="sub">12.4K subscribers</div></div>
+            <div class="subbtn">Subscribe</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="rthumb" style="background-image:url('kjv-frame-design.png')"></div>
+          <div class="rmeta"><div class="rt">Psalm 23 — KJV Read-Along</div><div class="rs">Snail · 9.1K views</div></div>
+        </div>
+        <div class="navbar">
+          <span><div class="dot"></div>Home</span>
+          <span><div class="dot"></div>Shorts</span>
+          <span><div class="dot"></div>Subs</span>
+          <span><div class="dot"></div>You</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">Portrait · in the feed<small>video at true size — 390&times;219 px</small></div>
+  </div>
+
+  <!-- LANDSCAPE: fullscreen playback -->
+  <div class="col">
+    <div class="phone landscape">
+      <div class="screen">
+        <div class="ctrls"><div class="scrub"></div></div>
+      </div>
+    </div>
+    <div class="caption">Landscape · fullscreen<small>frame fills the screen edge to edge</small></div>
+  </div>
+
+</body></html>

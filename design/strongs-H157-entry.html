@@ -1,0 +1,272 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strong's H157 — אָהַב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Same chrome/body typefaces as the Bible paper screens (IBM Plex Sans + Source Serif 4).
+     Add Noto Serif Hebrew for reliable POINTED Hebrew; Source Serif covers polytonic Greek,
+     Noto Serif is the fallback for full polytonic. -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=Noto+Serif+Hebrew:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+   /* --- inherited Bible "paper / Nord" tokens, unchanged --- */
+   --bg:#fcfcfc; --fg:#2e3440;
+   --hi:#6e8b4f;                 /* sage accent: numbers, rule, active emphasis */
+   --hl:#d6e3c2;                 /* highlighter wash */
+   --hltext:#36402a;
+   --read:#cdd3da; --ghost:#bdb39e; --dim:#9a9388;
+   --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans",sans-serif;
+   --hebrew:"Noto Serif Hebrew","Source Serif 4",serif;
+   /* --- NEW: per-language accent (the Strong's analogue of per-translation accent) --- */
+   --lang-ink:#6e8b4f;           /* Hebrew = sage (default). Greek run overrides to indigo. */
+ }
+ body.greek{ --lang-ink:#5a6b9e; }   /* Greek entries shift accent, like a translation swap */
+
+ *{box-sizing:border-box;margin:0;padding:0}
+ html,body{width:100%;height:100%;background:#0c0b0a;overflow:hidden}
+ #fit{position:fixed;inset:0;display:grid;place-items:center}
+ #stage{width:1920px;height:1080px;position:relative;
+   background:var(--bg);color:var(--fg);overflow:hidden;
+   font-family:var(--serif);box-shadow:0 0 80px rgba(0,0,0,.5);transform-origin:center}
+ /* identical paper grain + vignette as the Bible screens */
+ #stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>");
+   mix-blend-mode:multiply;opacity:.6}
+ #stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:radial-gradient(ellipse 78% 70% at 50% 45%,transparent 56%,rgba(60,45,25,.16) 100%)}
+
+ /* ===== upper-left identifier — SAME slot as Bible "Genesis 1 / Berean Standard Bible".
+    Here it carries the Strong's number + which dictionary. ===== */
+ .mark{position:absolute;top:58px;left:84px;z-index:5;font-family:var(--sans)}
+ .mark .id{font-size:34px;font-weight:700;letter-spacing:.04em;color:var(--lang-ink);
+   font-variant-numeric:tabular-nums;line-height:1}
+ .mark .src{font-size:15px;font-weight:600;color:var(--dim);margin-top:7px;
+   letter-spacing:.20em;text-transform:uppercase}
+
+ /* ===== upper-right — the slot the Bible uses for the changing PERICOPE title.
+    For Strong's it holds the English gloss/headword: same serif-italic editorial voice,
+    answering "what does this word mean" at a glance. ===== */
+ .gloss{position:absolute;top:58px;right:84px;z-index:5;max-width:620px;text-align:right;
+   font-family:var(--serif);font-style:italic;font-size:31px;font-weight:500;
+   line-height:1.18;color:var(--fg);opacity:.82}
+
+ /* language badge — NEW component. Small pill under the gloss, native script + label. */
+ .langbadge{position:absolute;top:128px;right:84px;z-index:5;display:flex;gap:10px;
+   align-items:center;justify-content:flex-end;font-family:var(--sans);
+   font-size:14px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+ .langbadge .dot{width:9px;height:9px;border-radius:50%;background:var(--lang-ink)}
+
+ /* ===== center column — the entry body, vertically composed like the Bible "cur" line ===== */
+ #col{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+   justify-content:center;align-items:center;padding:140px 12% 120px;text-align:center}
+
+ /* HERO: the original-script lemma is the visual anchor (Bible analogue: the active line). */
+ .lemma{font-family:var(--hebrew);font-size:172px;font-weight:500;line-height:1.05;
+   color:var(--fg);padding:.04em .22em;border-radius:.14em;
+   transition:background .5s ease,color .5s ease,text-shadow .5s ease}
+ /* focal moment: while the NATIVE voice speaks, the lemma gets the highlighter wash glow */
+ body.phase-native .lemma{background:var(--hl);color:var(--hltext);
+   text-shadow:0 1px 0 rgba(255,255,255,.4)}
+
+ .pron{margin-top:26px;display:flex;gap:30px;align-items:baseline;justify-content:center;
+   font-family:var(--sans);opacity:.92}
+ .pron .translit{font-size:34px;font-weight:600;color:var(--fg)}
+ .pron .resp{font-size:26px;font-weight:500;color:var(--dim);letter-spacing:.02em}
+ .pron .resp::before{content:"·";margin-right:30px;color:var(--ghost)}
+
+ /* derivation / etymology — quiet line above the definition, links shown as related entries */
+ .deriv{margin-top:40px;font-family:var(--sans);font-size:20px;color:var(--dim);
+   letter-spacing:.04em}
+ .deriv .reflink{color:var(--lang-ink);font-weight:600;border-bottom:1.5px solid var(--hl);
+   cursor:pointer;text-decoration:none}
+
+ /* FULL definition (never truncated) — word-level read-along, same states as the Bible flow */
+ .def{margin-top:30px;max-width:1180px;font-family:var(--serif);font-size:46px;
+   line-height:1.5;color:var(--fg)}
+ .def .w{color:var(--fg);padding:.02em .1em;border-radius:.28em;
+   transition:color .18s ease-out,background .22s ease-out}
+ body.phase-native .def .w,.def .w.ahead{color:var(--fg);opacity:.34}  /* unread = dimmed */
+ .def .w.read{color:var(--read);opacity:1}                              /* read = recedes */
+ .def .w.active{background:var(--hl);color:var(--hltext);opacity:1}     /* active = wash */
+
+ /* "In the King James" — discrete TERMS (chips), never a comma sentence. */
+ .kjv{margin-top:54px;opacity:0;transform:translateY(8px);
+   transition:opacity .5s ease,transform .5s ease}
+ body.phase-kjv .kjv,body.phase-done .kjv{opacity:1;transform:none}
+ .kjv .lbl{font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:.20em;
+   text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+ /* discrete TERMS, list cadence — NOT bordered buttons and NOT a comma sentence.
+    A thin middot separates them (matches the spoken "love; like; friend").
+    They follow the ONE read-along rule: full ink at rest, a single transient wash
+    only on the term being spoken — never all-lit-at-once. */
+ .kjv .chips{display:flex;gap:0;justify-content:center;align-items:baseline;flex-wrap:wrap}
+ .kjv .term{font-family:var(--serif);font-size:40px;font-weight:500;color:var(--fg);
+   padding:.04em .16em;border-radius:.28em;
+   transition:color .18s ease-out,background .22s ease-out}
+ .kjv .term + .term::before{content:"·";color:var(--ghost);margin:0 .52em;
+   font-weight:400;background:none!important}
+ .kjv .term.active{background:var(--hl);color:var(--hltext)}   /* only one, only while spoken */
+
+ /* ===== now-playing voice strip — bottom-left. Only surfaces the two-voice fact to
+    explain the native-speaker pronunciation; quiet otherwise. ===== */
+ .voicebar{position:absolute;bottom:54px;left:84px;z-index:5;display:flex;gap:14px;
+   align-items:center;font-family:var(--sans);font-size:15px;font-weight:600;
+   letter-spacing:.10em;text-transform:uppercase;color:var(--dim);opacity:.85}
+ .voicebar .pulse{width:11px;height:11px;border-radius:50%;background:var(--lang-ink);
+   box-shadow:0 0 0 0 rgba(110,139,79,.5);animation:pl 1.6s infinite}
+ @keyframes pl{0%{box-shadow:0 0 0 0 rgba(110,139,79,.45)}70%{box-shadow:0 0 0 12px rgba(110,139,79,0)}100%{box-shadow:0 0 0 0 rgba(110,139,79,0)}}
+ body.greek .voicebar .pulse{box-shadow:0 0 0 0 rgba(90,107,158,.5);animation:plg 1.6s infinite}
+ @keyframes plg{0%{box-shadow:0 0 0 0 rgba(90,107,158,.45)}70%{box-shadow:0 0 0 12px rgba(90,107,158,0)}100%{box-shadow:0 0 0 0 rgba(90,107,158,0)}}
+
+ /* prev / next entry + back to results — bottom-right, sans, quiet */
+ .nav{position:absolute;bottom:50px;right:84px;z-index:5;display:flex;gap:26px;
+   align-items:center;font-family:var(--sans);font-size:16px;font-weight:600;
+   letter-spacing:.10em;text-transform:uppercase;color:var(--dim)}
+ .nav a{color:var(--dim);text-decoration:none;cursor:pointer}
+ .nav a:hover{color:var(--lang-ink)}
+ .nav .num{color:var(--lang-ink);font-variant-numeric:tabular-nums}
+
+ .snail{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);z-index:5;
+   font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.26em;
+   text-transform:uppercase;color:var(--dim);opacity:.45}
+
+ /* opening title card — same pattern/animation as the Bible veil */
+ #veil{position:absolute;inset:0;z-index:9;display:grid;place-items:center;
+   background:var(--bg);cursor:pointer;text-align:center;transition:opacity .9s ease}
+ #veil.hide{opacity:0;pointer-events:none}
+ #card .sub{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.34em;
+   text-transform:uppercase;color:var(--dim)}
+ #card .clem{font-family:var(--hebrew);font-size:150px;font-weight:500;line-height:1.05;
+   margin:.10em 0 .04em;color:var(--fg)}
+ #card .cid{font-family:var(--sans);font-size:30px;font-weight:600;color:var(--lang-ink);
+   letter-spacing:.06em}
+ #card .rule{width:120px;height:2px;background:var(--lang-ink);opacity:.5;margin:42px auto 0}
+ #card .hint{font-family:var(--sans);font-size:15px;letter-spacing:.18em;text-transform:uppercase;
+   color:var(--dim);opacity:.6;margin-top:26px}
+
+ @media (prefers-reduced-motion:reduce){
+   *{transition-duration:.001s!important;animation:none!important}
+ }
+</style></head>
+<body>
+<div id="fit"><div id="stage">
+
+ <div class="mark"><div class="id">H157</div><div class="src">Strong's Hebrew</div></div>
+
+ <div class="gloss">to have affection for</div>
+ <div class="langbadge"><span class="dot"></span><span>עברית · Hebrew</span></div>
+
+ <div id="col">
+   <div class="lemma" id="lemma">אָהַב</div>
+   <div class="pron">
+     <span class="translit">ʼâhab</span>
+     <span class="resp">aw-hab′</span>
+   </div>
+   <!-- full definition, never truncated; words get read-along emphasis.
+        derivation lives inside the sentence (matches the spoken script, no duplicate line) -->
+   <div class="def" id="def"></div>
+   <div class="kjv">
+     <div class="lbl">In the King James</div>
+     <div class="chips" id="chips">
+       <span class="term">love</span>
+       <span class="term">like</span>
+       <span class="term">friend</span>
+     </div>
+   </div>
+ </div>
+
+ <div class="voicebar" id="voicebar"><span class="pulse"></span><span id="vlabel">Davis · English</span></div>
+ <div class="nav">
+   <a id="prev">‹ H156</a><span class="num">H157 · 8674</span><a id="next">H158 ›</a>
+ </div>
+ <div class="snail">Snail 🐌 word study</div>
+
+ <div id="veil"><div id="card">
+   <div class="sub">Strong's Concordance · Hebrew</div>
+   <div class="clem">אָהַב</div>
+   <div class="cid">H157</div>
+   <div class="rule"></div>
+   <div class="hint">tap to begin</div>
+ </div></div>
+
+ <audio id="a" src="../strongs-src/strongs_hybrid_H157_sample.opus" preload="auto"></audio>
+</div></div>
+
+<script>
+/* ----- entry data (real H157) ----- */
+const DEF = "A primitive root, meaning to have affection for, sexually or otherwise.";
+const KJV = ["love","like","friend"];
+
+/* The read-along is driven by the same segment model the stitched audio uses:
+   intro (Davis "Hebrew 157") -> native (Google Hebrew voice speaks אָהַב) ->
+   definition (Davis) -> "In the King James" close (Davis, chips light in list cadence). */
+const T = { intro:[0,2100], native:[2100,4300], def:[4300,13800], kjv:[13800,20200] };
+
+/* lay out definition words for word-level highlight */
+const def = document.getElementById('def');
+const words = DEF.split(/\s+/);
+def.innerHTML = words.map(w=>`<span class="w">${w}</span>`).join(' ');
+const W = [...def.querySelectorAll('.w')];
+
+const body = document.body, lemma = document.getElementById('lemma');
+const vlabel = document.getElementById('vlabel'), terms=[...document.querySelectorAll('#chips .term')];
+const a = document.getElementById('a'), veil=document.getElementById('veil'), stage=document.getElementById('stage');
+
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+s+')';}
+addEventListener('resize',fit);fit();
+
+function phase(ms){
+  if(ms<T.native[0]) return 'intro';
+  if(ms<T.native[1]) return 'native';
+  if(ms<T.def[1])    return 'def';
+  if(ms<T.kjv[1])    return 'kjv';
+  return 'done';
+}
+let cur='';
+function setPhase(p){
+  if(p===cur) return; cur=p;
+  body.className = body.classList.contains('greek') ? 'greek' : '';
+  body.classList.add('phase-'+p);
+  vlabel.textContent = (p==='native') ? 'Native speaker · Hebrew' : 'Davis · English';
+}
+function paintDef(ms){
+  // map definition window to word progress
+  const [s,e]=T.def, frac=Math.max(0,Math.min(1,(ms-s)/(e-s)));
+  const idx=Math.floor(frac*W.length);
+  W.forEach((w,i)=>{ w.classList.toggle('read',i<idx-1);
+    w.classList.toggle('active',i===idx-1); w.classList.toggle('ahead',i>=idx); });
+}
+function paintKjv(ms){
+  // the close is "In the King James:" (lead-in) then the terms in list cadence.
+  // reserve the lead-in, then give each term one slot; only the CURRENT term is washed.
+  const [s,e]=T.kjv, frac=Math.max(0,Math.min(1,(ms-s)/(e-s))), lead=0.34;
+  const idx = frac<lead ? -1 : Math.floor(((frac-lead)/(1-lead))*terms.length);
+  terms.forEach((t,i)=>t.classList.toggle('active', i===idx));
+}
+function settle(){ // clean, fully-legible dictionary card at rest — nothing greyed or washed
+  W.forEach(w=>w.classList.remove('read','active','ahead'));
+  terms.forEach(t=>t.classList.remove('active'));
+}
+let raf;
+function tick(){
+  const ms=a.currentTime*1000;
+  const p=phase(ms); setPhase(p);
+  if(p==='def') paintDef(ms);
+  if(p==='def'){ W.forEach(w=>w.classList.remove('ahead')); }
+  if(p==='kjv'){ W.forEach(w=>{w.classList.remove('active');w.classList.add('read');}); paintKjv(ms); }
+  if(p==='done'){ settle(); }
+  if(p==='intro'||p==='native'){ W.forEach(w=>{w.classList.remove('read','active');w.classList.add('ahead');}); }
+  raf=requestAnimationFrame(tick);
+}
+veil.addEventListener('click',()=>{
+  veil.classList.add('hide');
+  a.play().catch(()=>{});         // if no audio file, the timeline still runs off a fake clock
+  if(!a.duration){ // fallback clock
+    const t0=performance.now();
+    Object.defineProperty(a,'currentTime',{get:()=>(performance.now()-t0)/1000});
+  }
+  cancelAnimationFrame(raf); tick();
+});
+a.addEventListener('ended',()=>{cancelAnimationFrame(raf);setPhase('done');settle();});
+</script>
+</body></html>

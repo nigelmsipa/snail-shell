@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>Color decisions — ink & KJV highlighter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=IBM+Plex+Sans:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --paper:#fcfcfc; --read:#a39b8b; --meta:#9a9388; --accent:#B3944D; --hltext:#3a3120;
+   --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",monospace;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:#2a2622;font-family:var(--sans);color:#e8e2d6;padding:40px 40px 80px}
+ h2{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c9b98f;margin:34px 0 4px}
+ .note{font-size:14px;color:#9a9186;margin-bottom:20px;max-width:900px;line-height:1.5}
+ .row{display:flex;gap:24px;flex-wrap:wrap}
+ .panel{flex:1;min-width:360px;background:var(--paper);border-radius:8px;overflow:hidden;position:relative;
+   box-shadow:0 10px 30px rgba(0,0,0,.35)}
+ .panel::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.4;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+ .lab{position:relative;z-index:2;padding:16px 30px 0;font-family:var(--mono);font-size:13px;color:var(--meta)}
+ .lab b{color:var(--accent);font-weight:600}
+ .body{position:relative;z-index:2;padding:22px 30px 40px}
+ .kick{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+ .rule{width:70px;height:2px;background:var(--accent);opacity:.8;margin:10px 0 20px}
+ .line{font-family:var(--serif);font-size:30px;line-height:1.5;color:var(--ink)}
+ .v{font-family:var(--sans);font-size:.4em;font-weight:600;color:var(--accent);vertical-align:.85em;margin-right:.15em}
+ .read{color:var(--read)}
+ .act{color:var(--hltext);background:linear-gradient(var(--hl),var(--hl));
+   background-size:100% 64%;background-position:0 82%;background-repeat:no-repeat;box-decoration-break:clone;border-radius:3px;padding:0 .12em}
+</style></head>
+<body>
+
+<h2>Decision 1 · Ink — warm vs cool</h2>
+<div class="note">Same paper, gold accent, and the CHOSEN highlighter (#f4d999). Only the body ink (the "upcoming" words) changes. Already-read words stay grey; that never changes.</div>
+<div class="row">
+  <div class="panel" style="--ink:#3a3120;--hl:#f4d999">
+    <div class="lab">ink <b>#3a3120</b> · warm (the live render)</div>
+    <div class="body">
+      <div class="kick">Genesis 1 · King James Version</div><div class="rule"></div>
+      <div class="line"><span class="v">1</span><span class="read">In the beginning God</span> <span class="act">created</span> the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep.</div>
+    </div>
+  </div>
+  <div class="panel" style="--ink:#2e3440;--hl:#f4d999">
+    <div class="lab">ink <b>#2e3440</b> · cool (the frame + design deck)</div>
+    <div class="body">
+      <div class="kick">Genesis 1 · King James Version</div><div class="rule"></div>
+      <div class="line"><span class="v">1</span><span class="read">In the beginning God</span> <span class="act">created</span> the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Decision 2 · KJV highlighter — three candidates</h2>
+<div class="note">Same paper and (warm) ink. Only the wash behind the active word "created" changes. Watch how gold vs pale it reads.</div>
+<div class="row">
+  <div class="panel" style="--ink:#3a3120;--hl:hsl(42 45% 82%)">
+    <div class="lab">hl <b>hsl(42 45% 82%)</b> · the frame value</div>
+    <div class="body">
+      <div class="kick">Genesis 1 · King James Version</div><div class="rule"></div>
+      <div class="line"><span class="v">1</span><span class="read">In the beginning God</span> <span class="act">created</span> the heaven and the earth. And the earth was without form, and void.</div>
+    </div>
+  </div>
+  <div class="panel" style="--ink:#3a3120;--hl:#e9d2a2">
+    <div class="lab">hl <b>#e9d2a2</b> · the live render</div>
+    <div class="body">
+      <div class="kick">Genesis 1 · King James Version</div><div class="rule"></div>
+      <div class="line"><span class="v">1</span><span class="read">In the beginning God</span> <span class="act">created</span> the heaven and the earth. And the earth was without form, and void.</div>
+    </div>
+  </div>
+  <div class="panel" style="--ink:#3a3120;--hl:#f4d999">
+    <div class="lab">hl <b>#f4d999</b> · the design deck (most golden)</div>
+    <div class="body">
+      <div class="kick">Genesis 1 · King James Version</div><div class="rule"></div>
+      <div class="line"><span class="v">1</span><span class="read">In the beginning God</span> <span class="act">created</span> the heaven and the earth. And the earth was without form, and void.</div>
+    </div>
+  </div>
+</div>
+
+</body></html>

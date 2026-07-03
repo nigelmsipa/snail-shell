@@ -1,0 +1,336 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>Snail Shell — design v2 (thumbnail-grade system)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=IBM+Plex+Sans:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SNAIL SHELL — DESIGN SYSTEM v2
+   North star = thumbnail.html. One idea per board. Air is the design.
+   Design canvas = 1920×1080 (16:9). Everything scales cleanly to 4K.
+   ============================================================ */
+ :root{
+   /* palette — lifted straight from the thumbnail, unified everywhere */
+   --paper:#fcfcfc;         /* off-white ground */
+   --ink:#26324f;           /* primary text */
+   --ink-soft:#4f535a;      /* body prose */
+   --metadata:#9a9388;      /* labels, sublines, "already read" */
+   --faint:#c9c3b7;         /* dividers, ghost text */
+   --gold:hsl(42 40% 50%);  /* the single accent — used sparingly */
+   --gold-wash:#f4d999;     /* active-word highlight (reader) */
+
+   /* type */
+   --display:"DM Serif Display",Georgia,serif;
+   --serif:"Source Serif 4",Georgia,serif;
+   --sans:"IBM Plex Sans",system-ui,sans-serif;
+   --mono:"IBM Plex Mono",monospace;
+
+   /* the FORMULA — a modular scale so nothing is arbitrary */
+   --hero:200px;    /* book name / recall string  */
+   --h1:104px;      /* contents book title        */
+   --h2:60px;       /* section titles             */
+   --lede:33px;     /* body prose, lh 1.58        */
+   --eyebrow:26px;  /* uppercase gold labels      */
+   --meta:19px;     /* small meta, refs           */
+   --pad:150px;     /* board safe-margin          */
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+ body{background:#e7e3da;font-family:var(--sans);padding:54px 54px 90px}
+
+ /* a board = one 1920×1080 screen. .cap is the harness caption, ignored in crop */
+ .board{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--paper);
+   border-radius:5px;box-shadow:0 14px 40px rgba(0,0,0,.13);margin-bottom:14px}
+ .board::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.42;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+ .cap{max-width:1920px;margin:6px auto 30px;font-size:13px;font-weight:700;letter-spacing:.18em;
+   text-transform:uppercase;color:#8a8678}
+ .stage{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column}
+ .center{align-items:center;justify-content:center;text-align:center;padding:0 var(--pad)}
+
+ /* shared atoms ------------------------------------------------ */
+ .eyebrow{font-family:var(--sans);font-size:var(--eyebrow);font-weight:600;letter-spacing:.30em;
+   text-transform:uppercase;color:var(--gold)}
+ .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:40px auto}
+ .subtle-rule{width:64px;height:2px;background:var(--faint);margin:0 auto}
+
+ /* 1 · TRANSLATION / LORE — Codex v3 "Alabaster Canon" layout -----
+    3-row grid: eyebrow rail · centered name+prose · two clean meters as a footer band */
+ .lore-a{position:absolute;inset:0;z-index:2;padding:122px 160px 118px;
+   display:grid;grid-template-rows:auto 1fr auto}
+ .lore-a .top{display:flex;align-items:center;justify-content:space-between}
+ .lore-a .smallcap{font-family:var(--sans);font-size:18px;font-weight:600;letter-spacing:.20em;
+   text-transform:uppercase;color:var(--metadata)}
+ .lore-a .main{align-self:center;justify-self:center;max-width:1260px;text-align:center}
+ .lore-a .main .name{font-family:var(--display);font-weight:400;font-size:146px;line-height:.95;color:var(--ink)}
+ .lore-a .main p{font-family:var(--serif);font-size:34px;line-height:1.56;color:var(--ink-soft);
+   max-width:1060px;margin:42px auto 0}
+ /* bottom band groups the self-select tool + its human verdict — informative, but structured */
+ .fitband{justify-self:center;width:1040px;text-align:center}
+ .fitband .fitlbl{font-family:var(--sans);font-size:16px;font-weight:600;letter-spacing:.22em;
+   text-transform:uppercase;color:var(--gold);margin-bottom:34px}
+ .meter{width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:76px}
+ .meter .mt{display:flex;justify-content:space-between;font-family:var(--sans);font-size:17px;
+   font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--metadata)}
+ .meter .mt b{color:var(--ink);font-weight:600}
+ .meter .ml{position:relative;height:8px;margin-top:18px;background:#e7e2d6;border-radius:5px}
+ .meter .ml .fill{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:5px}
+ .meter .ml span{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--gold);
+   border:3px solid var(--paper);transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(179,148,77,.22)}
+ .meter .cap2{margin-top:18px;font-family:var(--serif);font-style:italic;font-size:20px;color:var(--metadata)}
+ .verdict{max-width:940px;margin:40px auto 0;font-family:var(--serif);font-size:25px;line-height:1.5;color:var(--ink-soft)}
+ .verdict b{font-style:normal;font-weight:600;color:var(--ink)}
+
+ /* 2 · CONTENTS — the whole-book MAP on one page (a glance of the story to come) */
+ .map{position:absolute;inset:0;z-index:2;padding:96px 130px}
+ .map .head{display:flex;align-items:flex-end;justify-content:space-between;
+   border-bottom:1px solid #e6e2d8;padding-bottom:26px;margin-bottom:46px}
+ .map .book{font-family:var(--display);font-weight:400;font-size:104px;line-height:.9;color:var(--ink)}
+ .map .hr{text-align:right}
+ .map .hr .t{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.28em;
+   text-transform:uppercase;color:var(--gold)}
+ .map .hr .s{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--metadata);margin-top:8px}
+ .map .cols{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+ .map .act{font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:.18em;
+   text-transform:uppercase;color:var(--metadata);margin-bottom:18px}
+ .map .act b{color:var(--ink);font-weight:600}
+ .map .arc{display:flex;align-items:baseline;gap:22px;padding:13px 0;border-top:1px solid #efece4}
+ .map .arc .l{flex:0 0 26px;font-family:var(--display);font-size:34px;color:var(--gold);line-height:1}
+ .map .arc .t{flex:1;font-family:var(--serif);font-size:34px;color:var(--ink)}
+ .map .arc .c{font-family:var(--sans);font-size:24px;font-weight:500;letter-spacing:.06em;color:var(--metadata)}
+ .map .arc + .act{margin-top:38px}
+
+ /* 3 · READER — CENTERED + INLINE STRUCTURAL MARKERS (the KEPT reader; royal-KJV palette (navy + gold)). Pillow SPEC.
+    Witness side-rail + Georgia tested & shelved. Orientation lives IN the scroll (grayed apparatus),
+    not a corner label: eyes stay in one place, it foreshadows what's COMING, doubles as seam-breath,
+    and pre-labels the exact sections the end-of-chapter memory cards will test. */
+ .reader{padding:0}
+ /* top-left: fixed book anchor (book+chapter rarely change; story+scene are inline now) */
+ .reader .rID{position:absolute;top:58px;left:132px;z-index:4}
+ .reader .rID .bk{font-family:var(--sans);font-size:26px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:#26324f}
+ .reader .rID .ver{font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--metadata);margin-top:6px}
+ /* centered reading column, left-aligned text block */
+ .reader .col{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:1360px;
+   display:flex;flex-direction:column;justify-content:center;text-align:left}
+ .reader .ln{font-family:var(--serif);font-size:56px;line-height:1.42;color:#26324f;margin:0}
+ /* inline structural markers — grayed apparatus, scroll with the text, never scripture/gold/red */
+ .reader .mark{color:#b7ad9c;text-align:center}
+ .reader .mark.scene{font-family:var(--sans);font-size:25px;font-weight:600;letter-spacing:.22em;
+   text-transform:uppercase;padding:52px 0 40px}
+ .reader .mark.story{font-family:var(--serif);font-style:italic;font-size:44px;color:#a79c8a;padding:80px 0 60px}
+ .reader .mark.story::before{content:"";display:block;width:80px;height:2px;background:var(--faint);margin:0 auto 30px}
+ .reader .v{font-family:var(--sans);font-size:.36em;font-weight:600;color:var(--gold);vertical-align:.9em;margin-right:.12em}
+ .reader .read{color:#a39b8b}                    /* already spoken — recede */
+ .reader .read .v{color:#cabfa6}
+ .reader .ln b{font-weight:400;color:#2c2722;    /* active word — OUR gold wash */
+   background:linear-gradient(#f4d999,#f4d999);
+   background-size:100% 62%;background-position:0 82%;background-repeat:no-repeat;
+   box-decoration-break:clone;border-radius:4px;padding:0 .12em}
+ .reader .fade-top{position:absolute;top:0;left:0;right:0;height:300px;z-index:3;
+   background:linear-gradient(var(--paper),var(--paper) 40%,rgba(252,252,252,0))}
+ .reader .brand{position:absolute;right:132px;bottom:72px;z-index:4;font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.08em;color:var(--metadata)}
+
+ /* 4 · MEMORIZATION — first-letter recall SCROLL (reader-style: single column, in order, fixed header,
+    top fade). No pages. Bold drop-cap "scene" language. This board = a frozen frame of that scroll. */
+ .recall{position:absolute;inset:0;z-index:2}
+ /* narrow centered column of scenes (A→J), like the reader's measure — never full-width */
+ .recall .col{position:absolute;top:240px;left:50%;transform:translateX(-50%);width:1280px}
+ .recall .u{display:flex;gap:40px;margin-bottom:66px;align-items:flex-start}
+ .recall .ul{font-family:var(--display);font-size:120px;line-height:.66;color:var(--gold);flex:0 0 108px}
+ .recall .body{flex:1;min-width:0}
+ .recall .ut{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+   border-bottom:1px solid #e6e2d8;padding-bottom:14px}
+ .recall .utt{font-family:var(--serif);font-weight:600;font-size:40px;color:var(--ink)}
+ .recall .ur{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.04em;color:var(--metadata);white-space:nowrap}
+ .recall .sk{font-family:var(--mono);font-weight:500;font-size:31px;letter-spacing:.11em;color:#4b5360;line-height:1.66;margin-top:18px}
+ /* top fade — scenes vanish before the pinned header (reader mechanics) */
+ .recall .fade{position:absolute;top:196px;left:0;right:0;height:150px;z-index:4;pointer-events:none;
+   background:linear-gradient(var(--paper),var(--paper) 30%,rgba(252,252,252,0))}
+ /* pinned header — "Genesis 1" never leaves; no harsh rule (chrome-free like the reader) */
+ .recall .hd{position:absolute;top:60px;left:50%;transform:translateX(-50%);width:1280px;z-index:5;
+   display:flex;align-items:flex-end;justify-content:space-between}
+ .recall .hd .bk{font-family:var(--display);font-weight:400;font-size:80px;line-height:.9;color:var(--ink)}
+ .recall .hd .rt{text-align:right}
+ .recall .hd .rt .t{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+ .recall .hd .rt .s{font-family:var(--serif);font-style:italic;font-size:23px;color:var(--metadata);margin-top:7px}
+
+ /* 5 · OUTRO — Genesis (left) · credits + a BOLD "Next up · Exodus" on the SAME side as the credits.
+    Reverted to the balanced A5 pairing; credits recede to grey, gold + big display make Next-up the bold beat. */
+ .outro{position:absolute;inset:0;z-index:2;padding:130px 160px;display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:center}
+ .outro .left .eyebrow{font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .outro .left h3{font-family:var(--display);font-weight:400;font-size:176px;line-height:.9;color:var(--ink);margin-top:16px}
+ .outro .left .fine{font-family:var(--serif);font-style:italic;font-size:34px;color:var(--metadata);margin-top:22px}
+ .outro .credits{border-left:2px solid #ded8cd;padding-left:74px}
+ .outro .crow{margin:0 0 38px}
+ .outro .crow .k{font-family:var(--sans);font-size:18px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--metadata)}
+ .outro .crow .v{font-family:var(--serif);font-size:38px;line-height:1.2;color:var(--ink);margin-top:9px}
+ .outro .crow .v small{display:block;font-size:22px;color:var(--metadata);margin-top:5px}
+ /* the bold next-up — gold label + big display book + its narrative arcs (on-brand preview) */
+ .outro .nextup{margin-top:54px}
+ .outro .nextup .k{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+ .outro .nextup .en{font-family:var(--display);font-size:80px;line-height:.9;color:var(--ink);margin-top:10px}
+ .outro .nextup .arcs{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--metadata);margin-top:14px}
+
+ /* 6 · COLOR SYSTEM — one accent per translation, hue = publication YEAR (warm → cool) */
+ .colors{position:absolute;inset:0;z-index:2;padding:92px 120px;display:flex;flex-direction:column}
+ .colors .top{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e6e2d8;padding-bottom:20px}
+ .colors .top .bk{font-family:var(--display);font-weight:400;font-size:60px;line-height:.9;color:var(--ink)}
+ .colors .top .s{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--metadata);text-align:right}
+ .colors .strip{display:flex;gap:7px;margin-top:34px}
+ .colors .sw{flex:1;display:flex;flex-direction:column;align-items:center}
+ .colors .sw .bar{width:100%;height:320px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+ .colors .sw .code{font-family:var(--sans);font-size:17px;font-weight:700;letter-spacing:.04em;color:var(--ink);margin-top:14px}
+ .colors .sw .yr{font-family:var(--sans);font-size:13px;color:var(--metadata);margin-top:3px}
+ .colors .sw.flag .code{color:var(--gold)}
+ .colors .sw.flag .bar{box-shadow:inset 0 0 0 2px var(--gold)}
+ .colors .rulez{font-family:var(--serif);font-size:24px;line-height:1.5;color:var(--ink-soft);margin-top:42px;max-width:1360px}
+ .colors .rulez b{font-weight:600;color:var(--ink)}
+ .colors .field{display:flex;gap:36px;margin-top:32px}
+ .colors .fsw{display:flex;align-items:center;gap:12px;font-family:var(--sans);font-size:16px;color:var(--metadata)}
+ .colors .fsw i{width:26px;height:26px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+</style></head>
+<body>
+
+<!-- ===== 1 · TRANSLATION / LORE — Codex v3 "Alabaster Canon" ===== -->
+<div class="cap">1 · Translation / Lore — Codex v3 "Alabaster Canon": eyebrow rail · centered name · two clean meters</div>
+<div class="board"><div class="lore-a">
+  <div class="top">
+    <div class="eyebrow">The Translation</div>
+    <div class="smallcap">The Holy Bible</div>
+  </div>
+  <div class="main">
+    <div class="name">King James Version</div>
+    <p>Forty-seven scholars, seven years, built on Tyndale's smuggled English — and four centuries on it is still the most quoted book in the language. Scripture at its most stately: measured, rhythmic, and made to be read aloud.</p>
+  </div>
+  <div class="fitband">
+    <div class="fitlbl">Is this your Bible?</div>
+    <div class="meter">
+      <div>
+        <div class="mt"><b>Word for word</b><span>Thought for thought</span></div>
+        <div class="ml"><div class="fill" style="width:13%"></div><span style="left:13%"></span></div>
+        <div class="cap2">Leans strongly literal</div>
+      </div>
+      <div>
+        <div class="mt"><b>Traditional</b><span>Contemporary</span></div>
+        <div class="ml"><div class="fill" style="width:8%"></div><span style="left:8%"></span></div>
+        <div class="cap2">Classic, formal English</div>
+      </div>
+    </div>
+    <div class="verdict"><b>Best for</b> readers who want the majestic, traditional cadence — thee, thou, and all. A richer read, not the simplest first Bible.</div>
+  </div>
+</div></div>
+
+<!-- ===== 2 · CONTENTS — whole-book map on one page ===== -->
+<div class="cap">2 · Contents — the whole-book MAP on one page: a glance of the story to come</div>
+<div class="board"><div class="map">
+  <div class="head">
+    <div class="book">Genesis</div>
+    <div class="hr"><div class="t">King James Version</div><div class="s">The book in eleven stories</div></div>
+  </div>
+  <div class="cols">
+    <div>
+      <div class="act"><b>I · Primordial Dawn</b> &nbsp;·&nbsp; Chapters 1–11</div>
+      <div class="arc"><span class="l">A</span><span class="t">The Cosmic Creation &amp; Sabbath</span><span class="c">1</span></div>
+      <div class="arc"><span class="l">B</span><span class="t">The Eden Narrative &amp; the Fall</span><span class="c">2–3</span></div>
+      <div class="arc"><span class="l">C</span><span class="t">Cain &amp; Abel</span><span class="c">4</span></div>
+      <div class="arc"><span class="l">D</span><span class="t">The Generations of Adam</span><span class="c">5</span></div>
+      <div class="arc"><span class="l">E</span><span class="t">The Flood</span><span class="c">6–9</span></div>
+      <div class="arc"><span class="l">F</span><span class="t">The Table of Nations</span><span class="c">10</span></div>
+      <div class="arc"><span class="l">G</span><span class="t">The Tower of Babel</span><span class="c">11</span></div>
+    </div>
+    <div>
+      <div class="act"><b>II · Patriarchal Promise</b> &nbsp;·&nbsp; Chapters 11–50</div>
+      <div class="arc"><span class="l">H</span><span class="t">The Abraham Cycle</span><span class="c">11–25</span></div>
+      <div class="arc"><span class="l">I</span><span class="t">The Jacob Cycle</span><span class="c">25–35</span></div>
+      <div class="arc"><span class="l">J</span><span class="t">The Line of Esau</span><span class="c">36</span></div>
+      <div class="arc"><span class="l">K</span><span class="t">The Joseph Novella</span><span class="c">37–50</span></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== 3 · READER — CENTERED + inline structural markers (the kept reader) ===== -->
+<div class="cap">3 · Reader — CENTERED + inline scene/story markers scroll in the body (grayed) · royal-KJV (navy+gold) · gold-wash highlight (Pillow spec)</div>
+<div class="board"><div class="stage reader">
+  <div class="rID"><div class="bk">Genesis 1</div><div class="ver">King James Version</div></div>
+  <div class="fade-top"></div>
+  <div class="col">
+    <div class="ln read">the waters called he Seas: and God saw</div>
+    <div class="ln read">that it was good.</div>
+    <div class="mark scene">Day Three · Vegetation</div>
+    <div class="ln"><span class="v">11</span>And God said, Let the earth bring</div>
+    <div class="ln">forth grass, the herb yielding seed, and the</div>
+    <div class="ln">fruit tree yielding fruit <b>after</b> his kind,</div>
+    <div class="ln">whose seed is in itself, upon the earth: and</div>
+    <div class="ln">it was so.</div>
+  </div>
+  <div class="brand">W &amp; W</div>
+</div></div>
+
+<!-- ===== 4 · MEMORIZATION — first-letter recall SCROLL (single column, reader-style) ===== -->
+<div class="cap">4 · Memorization — first-letter recall SCROLL (reader-style: single column, in order, fixed header, top fade). Frozen frame; no pages</div>
+<div class="board"><div class="stage recall">
+  <div class="col">
+    <div class="u"><div class="ul">A</div><div class="body"><div class="ut"><span class="utt">Prologue: The Primal State</span><span class="ur">1–2</span></div><div class="sk">I t b G c t h a t e N t e w f a v a d w o t s o t d A t S o G w h o t s o t w</div></div></div>
+    <div class="u"><div class="ul">B</div><div class="body"><div class="ut"><span class="utt">Day 1: Creation of Light</span><span class="ur">3–5</span></div><div class="sk">A G s L t b l a t w l A G s t t l w g a H s t l f t d G c t l d a t d H c n A t w e a t w m f d</div></div></div>
+    <div class="u"><div class="ul">C</div><div class="body"><div class="ut"><span class="utt">Day 2: Firmament</span><span class="ur">6–8</span></div><div class="sk">A G s L t b a e b t w t s t w f t w S G m t e a s t w b i f t w a A i w s G c t e s A t w e a t w m s d</div></div></div>
+    <div class="u"><div class="ul">D</div><div class="body"><div class="ut"><span class="utt">Day 3a: Land and Seas</span><span class="ur">9–10</span></div><div class="sk">A G s L t w u t s b g i o p s t t d l m a A i w s G c t d l e a t g o w H c s A G s t i w g</div></div></div>
+  </div>
+  <div class="fade"></div>
+  <div class="hd"><div class="bk">Genesis 1</div>
+    <div class="rt"><div class="t">First-Letter Recall</div><div class="s">Pause on a scene &amp; memorize it</div></div></div>
+</div></div>
+
+<!-- ===== 5 · OUTRO — consolidated credits + next (Codex A5) ===== -->
+<div class="cap">5 · Outro — Genesis (left) · credits + a BOLD "Next up · Exodus" on the same side as the credits</div>
+<div class="board"><div class="stage outro">
+  <div class="left">
+    <div class="eyebrow">Complete</div>
+    <h3>Genesis</h3>
+    <div class="fine">Fifty chapters, eleven stories.</div>
+  </div>
+  <div class="credits">
+    <div class="crow"><div class="k">Translation</div><div class="v">King James Version<small>Authorized, 1611</small></div></div>
+    <div class="crow"><div class="k">Narration</div><div class="v">Davis<small>a synthetic voice · VibeVoice</small></div></div>
+    <div class="nextup"><div class="k">Next up</div><div class="en">Exodus</div><div class="arcs">Out of Egypt, The Covenant, The Dwelling</div></div>
+  </div>
+</div></div>
+
+<!-- ===== 6 · COLOR SYSTEM — accent per translation by year ===== -->
+<div class="cap">6 · Color system — one accent per translation, hue = publication YEAR (warm → cool). 17 translations; flagships KJV/BSB ringed in gold. Field is constant (royal navy ink + gold)</div>
+<div class="board"><div class="stage colors">
+  <div class="top"><div class="bk">The Color System</div>
+    <div class="s">one accent per translation · warm (old) → cool (new)</div></div>
+  <div class="strip">
+    <div class="sw"><div class="bar" style="background:#B37D56"></div><div class="code">GNV</div><div class="yr">1560</div></div>
+    <div class="sw flag"><div class="bar" style="background:#B3944D"></div><div class="code">KJV</div><div class="yr">1611</div></div>
+    <div class="sw"><div class="bar" style="background:#95A653"></div><div class="code">WBS</div><div class="yr">1833</div></div>
+    <div class="sw"><div class="bar" style="background:#749F56"></div><div class="code">YLT</div><div class="yr">1862</div></div>
+    <div class="sw"><div class="bar" style="background:#639B55"></div><div class="code">SLT</div><div class="yr">1876</div></div>
+    <div class="sw"><div class="bar" style="background:#5A9556"></div><div class="code">RV</div><div class="yr">1885</div></div>
+    <div class="sw"><div class="bar" style="background:#579457"></div><div class="code">DBY</div><div class="yr">1890</div></div>
+    <div class="sw"><div class="bar" style="background:#4F9270"></div><div class="code">ASV</div><div class="yr">1901</div></div>
+    <div class="sw"><div class="bar" style="background:#4F9272"></div><div class="code">WEY</div><div class="yr">1903</div></div>
+    <div class="sw"><div class="bar" style="background:#4D937C"></div><div class="code">JPS</div><div class="yr">1917</div></div>
+    <div class="sw"><div class="bar" style="background:#4C9492"></div><div class="code">BBE</div><div class="yr">1949</div></div>
+    <div class="sw"><div class="bar" style="background:#4F8EA1"></div><div class="code">MLV</div><div class="yr">1987</div></div>
+    <div class="sw"><div class="bar" style="background:#508CA5"></div><div class="code">AKJ</div><div class="yr">1999</div></div>
+    <div class="sw"><div class="bar" style="background:#5089A5"></div><div class="code">WEB</div><div class="yr">2000</div></div>
+    <div class="sw flag"><div class="bar" style="background:#5672B3"></div><div class="code">BSB</div><div class="yr">2016</div></div>
+    <div class="sw"><div class="bar" style="background:#7067AD"></div><div class="code">LSV</div><div class="yr">2020</div></div>
+    <div class="sw"><div class="bar" style="background:#8A6BA8"></div><div class="code">MSB</div><div class="yr">2022</div></div>
+  </div>
+  <div class="rulez"><b>Lock saturation &amp; lightness. Vary only the hue = year of first publication.</b> You read a Bible's era off its color. Only the accent + highlighter change per translation — the field stays constant:</div>
+  <div class="field">
+    <div class="fsw"><i style="background:#fcfcfc"></i> paper #fcfcfc</div>
+    <div class="fsw"><i style="background:#26324f"></i> ink · royal navy #26324f</div>
+    <div class="fsw"><i style="background:#a39b8b"></i> already-read #a39b8b</div>
+    <div class="fsw"><i style="background:#B3944D"></i> accent (KJV) #B3944D</div>
+    <div class="fsw"><i style="background:#f4d999"></i> highlighter (KJV) #f4d999</div>
+  </div>
+</div></div>
+
+<div style="max-width:1920px;margin:0 auto;font-family:var(--sans);color:#7a776d;font-size:14.5px">
+  Snail Shell design system v2 — thumbnail DNA (DM Serif Display · off-white · one gold accent · grain · radical air) applied to all five screen types. One idea per board.
+</div>
+</body></html>

@@ -1,0 +1,103 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>Memory scroll — fixed header + top fade, bold language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --paper:#fcfcfc; --ink:#2e3440; --metadata:#9a9388; --gold:hsl(42 40% 50%); --faint:#c9c3b7;
+   --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+   --mono:"IBM Plex Mono",monospace; --display:"DM Serif Display",Georgia,serif;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html,body{height:100%;background:#12100c;overflow:hidden}
+ body{display:grid;place-items:center;font-family:var(--sans)}
+ #scaler{width:1920px;height:1080px;transform-origin:center center}
+ .board{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--paper)}
+ .board::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.42;z-index:6;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+
+ /* fixed header — Genesis 1 never disappears */
+ .header{position:absolute;top:0;left:0;right:0;z-index:5;background:var(--paper);padding:60px 0 26px}
+ .header .row{max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between}
+ .header .bk{font-family:var(--display);font-size:80px;line-height:.9;color:var(--ink)}
+ .header .rt{text-align:right}
+ .header .rt .t{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+ .header .rt .s{font-family:var(--serif);font-style:italic;font-size:23px;color:var(--metadata);margin-top:7px}
+
+ /* top fade — cards vanish before they hit the header (reader-style) */
+ .fade{position:absolute;top:196px;left:0;right:0;height:150px;z-index:4;pointer-events:none;
+   background:linear-gradient(var(--paper),var(--paper) 30%,rgba(252,252,252,0))}
+
+ .viewport{position:absolute;inset:0;z-index:2;overflow:hidden}
+ #scroll{position:absolute;left:0;right:0;padding:240px 0 140px}
+ /* SINGLE COLUMN, in strict A→J order, NARROW & centered like the reader (never full-width) */
+ .grid{max-width:1280px;margin:0 auto}
+
+ /* BOLD card language: big gold drop-cap letter, heavy title, no boxes, full width */
+ .u{display:flex;gap:40px;margin-bottom:66px;align-items:flex-start}
+ .u .ul{font-family:var(--display);font-size:120px;line-height:.66;color:var(--gold);flex:0 0 108px}
+ .u .body{flex:1;min-width:0}
+ .u .ut{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+   border-bottom:1px solid #e6e2d8;padding-bottom:14px}
+ .u .utt{font-family:var(--serif);font-weight:600;font-size:40px;color:var(--ink)}
+ .u .ur{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.04em;color:var(--metadata);white-space:nowrap}
+ .u .sk{font-family:var(--mono);font-weight:500;font-size:31px;letter-spacing:.11em;color:#4b5360;line-height:1.66;margin-top:18px}
+
+ .cap{position:absolute;left:20px;bottom:12px;z-index:7;font-family:var(--sans);font-size:13px;color:var(--faint)}
+</style></head>
+<body>
+<div id="scaler"><div class="board">
+  <div class="viewport"><div id="scroll"><div class="grid" id="grid"></div></div></div>
+  <div class="fade"></div>
+  <div class="header"><div class="row">
+    <div class="bk">Genesis 1</div>
+    <div class="rt"><div class="t">First-Letter Recall</div><div class="s">Pause on a scene &amp; memorize it</div></div>
+  </div></div>
+  <div class="cap">scroll · fixed header + top fade · bold drop-cap language · loops</div>
+</div></div>
+
+<script>
+const UNITS = [
+ ["A","Prologue: The Primal State","1–2","I t b G c t h a t e N t e w f a v a d w o t s o t d A t S o G w h o t s o t w"],
+ ["B","Day 1: Creation of Light","3–5","A G s L t b l a t w l A G s t t l w g a H s t l f t d G c t l d a t d H c n A t w e a t w m f d"],
+ ["C","Day 2: Firmament","6–8","A G s L t b a e b t w t s t w f t w S G m t e a s t w b i f t w a A i w s G c t e s A t w e a t w m s d"],
+ ["D","Day 3a: Land and Seas","9–10","A G s L t w u t s b g i o p s t t d l m a A i w s G c t d l e a t g o w H c s A G s t i w g"],
+ ["E","Day 3b: Vegetation","11–13","T G s L t e b f v s p a f t e b f w s a t i k A i w s T e p v s p a t t k a t b f w s a t t k A G s t i w g A t w e a t w m t d"],
+ ["F","Day 4: Luminaries","14–19","A G s L t b l i t e o t s t d b t d a t n a l t b s t m t s a d a y A l t s a l i t e o t s t s u t e A i w s G m t g l t g l t r t d a t l l t r t n A H m t s a w G s t l i t e o t s t s u t e t p o t d a t n a t s t l f t d A G s t i w g A t w e a t w m f d"],
+ ["G","Day 5: Birds and Fish","20–23","A G s L t w t w l c a l b f a t e i t o e o t s S G c t g s c a e l t t m w w t w t a t t k a e w b a i k A G s t i w g T G b t a s B f a m a f t w o t s a l b m o t e A t w e a t w m f d"],
+ ["H","Day 6a: Land Animals","24–25","A G s L t e b f l c a t t k l l c a b o t e a t t k A i w s G m t b o t e a t t k t l a t t k a e t c u t e a t i k A G s t i w g"],
+ ["I","Day 6b: Humankind in God's Image","26–28","T G s L U m m i O i a O l t r o t f o t s a t b o t a o t l a o a t e i a e c t c u i S G c m i H o i i t i o G H c h m a f H c t G b t a s t t B f a m a f t e a s i r o t f o t s a t b o t a a e c t c u t e"],
+ ["J","Day 6c: The Green Provision","29–31","T G s B I h g y e s p o t f o a t e a e t w f c s T w b y f f A t e b o t e a e b o t a a e c t c u t e t h t b o l i i h g e g p f f A i w s A G l u a t H h m a i i w v g A t w e a t w m s d"],
+];
+document.getElementById('grid').innerHTML = UNITS.map(u=>
+  `<div class=u><div class=ul>${u[0]}</div><div class=body>`+
+  `<div class=ut><span class=utt>${u[1]}</span><span class=ur>${u[2]}</span></div>`+
+  `<div class=sk>${u[3]}</div></div></div>`).join("");
+
+const scroll=document.getElementById('scroll');
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);document.getElementById('scaler').style.transform=`scale(${s})`;}
+addEventListener('resize',fit); fit();
+
+const SPEED=95;             // px/sec
+const H=1080;
+let start=null, contentH=0;
+function measure(){ contentH = scroll.scrollHeight; }
+setTimeout(measure, 300);   // after fonts/layout
+function frame(ts){
+  if(start===null) start=ts;
+  measure();
+  // travel from just below the screen (+H) up to fully above it (-contentH):
+  // both ends are an EMPTY screen, so the loop wraps invisibly — no reappear,
+  // the only thing you ever see is the clean fade-out at the top.
+  const range = H + contentH;
+  const total = range / SPEED * 1000;
+  const p = ((ts - start) % total) / total;   // 0..1
+  const ty = H - p * range;
+  scroll.style.transform = `translateY(${ty}px)`;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body></html>

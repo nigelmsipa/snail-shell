@@ -1,0 +1,372 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --bg:#fcfcfc; --fg:#2e3440;           /* paper + ink (NORD theme — locked read-along ground) */
+   --hi:hsl(42 40% 50%);               /* KJV gold (1611) — verse numbers, rule, scene rule */
+   --hl:hsl(42 45% 82%);               /* gold highlighter wash (LIGHT — dark text stays readable) */
+   --read:#cdd3da; --ghost:#bdb39e; --dim:#9a9388;
+   --hltext:#3a3120;                /* text color sitting on the gold highlighter */
+   --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans",sans-serif; /* theme typefaces */
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html,body{width:100%;height:100%;background:#0c0b0a;overflow:hidden}
+ #fit{position:fixed;inset:0;display:grid;place-items:center}
+ #stage{width:1920px;height:1080px;position:relative;
+   background:var(--bg);color:var(--fg);overflow:hidden;
+   font-family:var(--serif);
+   box-shadow:0 0 80px rgba(0,0,0,.5);transform-origin:center}
+ #stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>");
+   mix-blend-mode:multiply;opacity:.6}
+ #stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+   background:radial-gradient(ellipse 78% 70% at 50% 45%,transparent 56%,rgba(60,45,25,.16) 100%)}
+
+ .mark{position:absolute;top:60px;left:84px;z-index:5;
+   font-family:var(--sans);letter-spacing:.22em;text-transform:uppercase;
+   padding-bottom:14px;border-bottom:1px solid rgba(43,43,43,.14)}
+ body.norule .mark{border-bottom:none;padding-bottom:0}  /* hairline under identifier off */
+ .mark .t{font-size:23px;font-weight:600}
+ .mark .s{font-size:15px;font-weight:500;color:var(--dim);margin-top:5px;letter-spacing:.18em}
+ /* verse marker — kept SEPARATE from the book/chapter (no "23:1" jumble), it pulses in
+    exactly at each verse boundary then fades. Distinct + transient, not a running counter. */
+ .verse{position:absolute;top:60px;right:84px;z-index:5;text-align:right;
+   font-family:var(--sans);opacity:0;transition:opacity .55s ease}
+ .verse .vl{display:block;font-size:13px;font-weight:600;letter-spacing:.26em;
+   text-transform:uppercase;color:var(--dim)}
+ .verse .vnum{display:block;font-size:30px;font-weight:700;line-height:1;
+   margin-top:5px;color:var(--hi)}
+ /* pericope (passage title) — the editorial layer a real Bible page gives. Serif italic,
+    distinct from the sans book/chapter identifier. When present it OWNS the upper-right
+    and the redundant verse counter steps aside (verse already lives inline as superscript). */
+ .pericope{display:none;position:absolute;top:64px;right:96px;z-index:5;
+   max-width:460px;text-align:right;font-family:var(--serif);font-style:italic;
+   font-size:27px;font-weight:500;line-height:1.22;color:var(--fg);opacity:.66}
+ .pericope::after{content:"";display:block;width:90px;height:2px;margin:16px 0 0 auto;
+   background:var(--hi);opacity:.7}              /* gold rule under the scene title (locked B frame) */
+ body.haspericope .verse{display:none}
+ body.haspericope .pericope{display:block}
+ /* lettered memory unit (A/B/C…) — SUBTLE: a quiet letter + faint thought-cue, monochrome
+    so it never competes with the moving highlighter. Completely ignorable; glanceable. */
+ .unit{display:none;position:absolute;top:58px;right:84px;z-index:5;
+   flex-direction:column;align-items:flex-end;font-family:var(--sans)}
+ .unit .ul{font-size:27px;font-weight:600;line-height:1;color:var(--fg);opacity:.5;
+   letter-spacing:.04em}
+ .unit .ut{font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+   color:var(--fg);opacity:.34;margin-top:8px;max-width:300px;text-align:right}
+ body.hasunits .unit{display:flex}
+ body.hasunits .verse,body.hasunits .pericope{display:none}
+ .snail{position:absolute;bottom:54px;right:84px;z-index:5;
+   font-family:var(--sans);font-size:14px;font-weight:600;
+   letter-spacing:.26em;text-transform:uppercase;color:var(--dim);opacity:.6}
+ /* progress bar retired — the YouTube scrubber already IS the progress bar */
+ #bar{display:none}
+ /* --minimal strips everything but the identifiers + the reading */
+ body.minimal .minimap,body.minimal .topbar{display:none}
+
+ /* ---- shared word states ---- */
+ .w{transition:color .14s ease-out,opacity .14s ease-out}
+ .w.read{color:var(--read)}
+ .w.ahead{color:var(--fg);opacity:.30}
+ .w.active{color:var(--hi)}
+
+ /* ===== layout: solo / window (the 3-line stack) ===== */
+ #lines{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+   justify-content:center;align-items:center;padding:0 13%;text-align:center}
+ .ln{width:100%;transition:opacity .5s ease,max-height .5s ease,margin .5s ease,font-size .5s ease}
+ .ln.side{font-size:50px;line-height:1.36;color:var(--ghost);opacity:.42;margin:22px 0}
+ .ln.cur{font-size:64px;line-height:1.36;font-weight:500;margin:30px 0}
+ body[data-layout="solo"] .ln.side{opacity:0;max-height:0;margin:0;overflow:hidden}
+ body[data-layout="passage"] #lines{display:none}
+
+ /* ===== layout: passage (whole chapter, web-style word dimming, auto-scroll) ===== */
+ #scrollwrap{position:absolute;inset:0;z-index:2;display:none;overflow:hidden;
+   /* fade text out near the top (under the title) and bottom so nothing collides */
+   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 19%,#000 84%,transparent 100%);
+   mask-image:linear-gradient(to bottom,transparent 0,#000 19%,#000 84%,transparent 100%)}
+ body[data-layout="passage"] #scrollwrap{display:block}
+ body[data-layout="redline"] #scrollwrap{display:block}
+ #flow{position:absolute;left:0;right:0;padding:0 19%;text-align:left;
+   font-size:64px;line-height:1.55;letter-spacing:-.004em;will-change:transform;
+   transition:transform .55s cubic-bezier(.33,0,.15,1)}
+ /* the whole chapter flows like a real Bible; read=recedes, ahead=full ink, active=red square */
+ #flow .w{color:var(--fg);padding:.04em .14em;border-radius:.32em;
+   transition:color .18s ease-out,background .22s ease-out}          /* unread = full ink */
+ #flow .w.read{color:var(--read)}                                    /* read = recedes */
+ #flow .w.active{background:var(--hl);color:var(--hltext)}           /* block: soft wash, rounded */
+ /* underline style: marker stroke under the word, no fill */
+ body[data-mark="underline"] #flow .w.active{background:none;color:var(--fg);
+   box-shadow:inset 0 -0.16em 0 0 var(--hl)}
+
+ /* ===== live highlighter studies (toggle while playing) ===== */
+ body.sim-wash      #flow .w.active{background:hsl(42 45% 82%);color:#3a3120;box-shadow:none}
+ body.sim-underline #flow .w.active{background:none;color:var(--fg);border-radius:0;
+   box-shadow:inset 0 -.14em 0 0 hsl(42 50% 52%)}
+ body.sim-butter    #flow .w.active{background:hsl(46 85% 80%);color:#473606;box-shadow:none}
+ body.sim-sage      #flow .w.active{background:hsl(95 28% 82%);color:#34402a;box-shadow:none}
+ body.sim-kraft     #flow .w.active{background:hsl(38 30% 88%);color:#3a3120;
+   box-shadow:inset 0 -.12em 0 0 hsl(42 55% 50%)}
+ body.sim-bold      #flow .w{color:#aeb4bc}
+ body.sim-bold      #flow .w.read{color:#d3d8de}
+ body.sim-bold      #flow .w.active{background:none;color:var(--fg);font-weight:600;box-shadow:none}
+ /* ground toggle: Gruvbox Light warm cream */
+ body.sim-gruv{--bg:#fbf1c7;--fg:#3c3836;--read:#bdae93;--ghost:#a89984;--dim:#7c6f64;
+   --hi:#b57614;--hl:#f4d999;--hltext:#4a3a0a}
+
+ /* simulator control strip (not part of the video — just the lab) */
+ #ctl{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;
+   display:flex;gap:7px;align-items:center;padding:8px 12px;border-radius:30px;
+   background:rgba(20,20,22,.82);backdrop-filter:blur(8px);font-family:var(--sans);
+   box-shadow:0 8px 28px rgba(0,0,0,.4)}
+ #ctl button{font:600 13px var(--sans);letter-spacing:.02em;color:#d7d7d7;cursor:pointer;
+   background:transparent;border:1px solid rgba(255,255,255,.16);border-radius:18px;
+   padding:6px 12px;transition:all .12s}
+ #ctl button:hover{border-color:rgba(255,255,255,.4);color:#fff}
+ #ctl button.on{background:var(--hi);border-color:var(--hi);color:#1a1a1a}
+ #ctl .sep{width:1px;height:22px;background:rgba(255,255,255,.18);margin:0 4px}
+ #ctl .lbl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#8b8b8b;padding:0 2px}
+ .vn{font-family:var(--sans);font-weight:700;font-size:26px;
+   color:var(--hi);vertical-align:.6em;margin:0 .35em 0 .15em;opacity:.7}
+
+ /* ===== layout: redline (recreation of the "Highlight Changes" document reader) ===== */
+ .sidepanel,.minimap,.topbar{display:none}
+ body[data-layout="redline"]{}
+ body[data-layout="redline"] .mark,
+ body[data-layout="redline"] .verse,
+ body[data-layout="redline"] .snail{display:none}     /* sidebar replaces the chrome */
+ body[data-layout="redline"] #stage::after{display:none}  /* no vignette — flat white doc */
+ /* dark left sidebar holding book/chapter */
+ body[data-layout="redline"] .sidepanel{display:block;position:absolute;left:0;top:0;bottom:0;
+   width:560px;background:#0c0c0c;color:#fff;z-index:7;padding:62px 56px;
+   font-family:var(--sans)}
+ .sidepanel .back{font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:#cfcfcf;
+   font-weight:600;display:flex;align-items:center;gap:10px}
+ .sidepanel .lang{position:absolute;top:62px;right:56px;font-size:17px;letter-spacing:.12em;
+   text-transform:uppercase;font-weight:700;color:var(--hi)}
+ .sidepanel .title{font-size:62px;line-height:1.12;font-weight:300;margin-top:160px;
+   letter-spacing:-.01em}
+ .sidepanel .date{font-size:19px;color:#8a8a8a;margin-top:18px;font-weight:400}
+ /* reading panel pushed right of the sidebar; minimap gutter on the far right */
+ body[data-layout="redline"] #scrollwrap{left:560px;right:96px}
+ body[data-layout="redline"] #flow{padding:0 70px;text-align:justify;
+   font-size:40px;line-height:1.72;letter-spacing:0}
+ body[data-layout="redline"] #flow .w{padding:.02em .1em;border-radius:.18em}
+ body[data-layout="redline"] #flow .w.active{background:var(--hl);color:var(--hltext);
+   box-shadow:inset 0 -0.12em 0 0 var(--hi)}     /* green block + green underline, like the ref */
+ body[data-layout="redline"] .vn{color:var(--hi);font-weight:700;opacity:.85}
+ /* top strip: green toggle + label, like "HIGHLIGHT CHANGES" */
+ body[data-layout="redline"] .topbar{display:flex;align-items:center;gap:18px;
+   position:absolute;left:660px;top:46px;z-index:8;font-family:var(--sans)}
+ .topbar .tg{width:64px;height:34px;border-radius:18px;background:var(--hi);position:relative}
+ .topbar .tg::after{content:"";position:absolute;top:4px;right:4px;width:26px;height:26px;
+   border-radius:50%;background:#fff}
+ .topbar .lbl{font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a;font-weight:600}
+ /* right-edge minimap (orientation) */
+ body[data-layout="redline"] .minimap{display:block;position:absolute;right:44px;top:120px;
+   bottom:120px;width:6px;background:#ececec;border-radius:3px;z-index:7}
+ .minimap #mthumb{position:absolute;left:-5px;width:16px;height:42px;border-radius:3px;
+   background:#4a90e2;transform:translateY(-50%)}
+
+ /* opening title card — cream, on-brand; fades into the reading on click */
+ #veil{position:absolute;inset:0;z-index:9;display:grid;place-items:center;
+   background:var(--bg);cursor:pointer;text-align:center;
+   transition:opacity .9s ease}
+ #veil.hide{opacity:0;pointer-events:none}
+ #card .sub{font-family:var(--sans);font-size:22px;font-weight:600;
+   letter-spacing:.34em;text-transform:uppercase;color:var(--dim)}
+ #card .book{font-family:var(--serif);font-size:118px;font-weight:500;
+   line-height:1.05;margin:.18em 0 .05em;color:var(--fg)}
+ #card .chap{font-family:var(--serif);font-size:46px;font-weight:400;
+   font-style:italic;color:var(--dim)}
+ #card .rule{width:120px;height:2px;background:var(--hi);opacity:.5;margin:48px auto 0}
+ #card .hint{font-family:var(--sans);font-size:15px;letter-spacing:.18em;
+   text-transform:uppercase;color:var(--dim);opacity:.6;margin-top:28px}
+</style></head><body data-layout="passage" data-mark="block" class="minimal norule haspericope sim-wash">
+<div id="fit"><div id="stage">
+ <div class="mark"><div class="t">Genesis 1</div><div class="s">Berean Standard Bible</div></div>
+ <div class="verse" id="vb"><span class="vl">Verse</span><span class="vnum" id="vnum"></span></div>
+ <div class="pericope">Prologue: The Primal State</div>
+ <div class="unit"><span class="ul" id="uletter"></span><span class="ut" id="utitle"></span></div>
+ <div id="lines">
+  <div class="ln side" id="lp"></div>
+  <div class="ln cur"  id="lc"></div>
+  <div class="ln side" id="ln"></div>
+ </div>
+ <div id="scrollwrap"><div id="flow"></div></div>
+ <div class="sidepanel">
+   <div class="back">&#8592; Back</div><div class="lang">English</div>
+   <div class="title">Genesis<br>Chapter 1</div>
+   <div class="date">Snail &middot; read-along</div></div>
+ <div class="topbar"><div class="tg"></div><div class="lbl">Read Along</div></div>
+ <div class="minimap"><div id="mthumb"></div></div>
+ <div class="snail">Snail 🐌</div>
+ <div id="bar"></div>
+ <div id="veil"><div id="card">
+   <div class="sub">Berean Standard Bible</div>
+   <div class="book">Genesis</div>
+   <div class="chap">Chapter 1</div>
+   <div class="rule"></div>
+   <div class="hint">tap to begin</div></div></div>
+ <audio id="a" src="genesis-01.opus" preload="auto"></audio>
+</div></div>
+
+<div id="ctl">
+  <span class="lbl">Highlighter</span>
+  <button data-hl="sim-wash" class="on">Wash</button>
+  <button data-hl="sim-underline">Underline</button>
+  <button data-hl="sim-butter">Butter</button>
+  <button data-hl="sim-sage">Sage</button>
+  <button data-hl="sim-bold">Ink-bold</button>
+  <button data-hl="sim-kraft">Kraft</button>
+  <span class="sep"></span>
+  <span class="lbl">Ground</span>
+  <button id="groundbtn">Nord → Gruvbox</button>
+</div>
+
+<script>
+// simulator lab controls — swap highlighter / ground live while it plays
+(function(){
+  const body=document.body, HLS=['sim-wash','sim-underline','sim-butter','sim-sage','sim-bold','sim-kraft'];
+  const btns=[...document.querySelectorAll('#ctl button[data-hl]')];
+  function setHL(cls){ HLS.forEach(c=>body.classList.remove(c)); body.classList.add(cls);
+    btns.forEach(b=>b.classList.toggle('on', b.dataset.hl===cls)); }
+  btns.forEach(b=>b.addEventListener('click',()=>setHL(b.dataset.hl)));
+  const gb=document.getElementById('groundbtn');
+  gb.addEventListener('click',()=>{ const on=body.classList.toggle('sim-gruv');
+    gb.textContent = on ? 'Gruvbox → Nord' : 'Nord → Gruvbox'; gb.classList.toggle('on',on); });
+  // number keys 1-6 = highlighter, g = ground
+  addEventListener('keydown',e=>{ const i=parseInt(e.key,10);
+    if(i>=1&&i<=6) setHL(HLS[i-1]);
+    if(e.key==='g'||e.key==='G') gb.click(); });
+})();
+</script>
+<script>
+const W=[{"t": "Genesis,", "s": 2280, "e": 2840, "si": 0}, {"t": "Chapter", "s": 3280, "e": 3620, "si": 0}, {"t": "One.", "s": 3760, "e": 3940, "si": 0}, {"t": "In", "s": 5160, "e": 5240, "si": 1}, {"t": "the", "s": 5280, "e": 5360, "si": 1}, {"t": "beginning", "s": 5400, "e": 5880, "si": 1}, {"t": "God", "s": 6060, "e": 6380, "si": 1}, {"t": "created", "s": 6500, "e": 7000, "si": 1}, {"t": "the", "s": 7040, "e": 7120, "si": 1}, {"t": "heavens", "s": 7180, "e": 7620, "si": 1}, {"t": "and", "s": 7740, "e": 7860, "si": 1}, {"t": "the", "s": 7880, "e": 7960, "si": 1}, {"t": "earth.", "s": 8020, "e": 8280, "si": 1}, {"t": "Now", "s": 9140, "e": 9260, "si": 2}, {"t": "the", "s": 9300, "e": 9380, "si": 2}, {"t": "earth", "s": 9440, "e": 9660, "si": 2}, {"t": "was", "s": 9780, "e": 9940, "si": 2}, {"t": "formless", "s": 10080, "e": 10540, "si": 2}, {"t": "and", "s": 10580, "e": 10700, "si": 2}, {"t": "void,", "s": 10740, "e": 11120, "si": 2}, {"t": "and", "s": 11480, "e": 11600, "si": 2}, {"t": "darkness", "s": 11700, "e": 12240, "si": 2}, {"t": "was", "s": 12340, "e": 12501, "si": 2}, {"t": "over", "s": 12561, "e": 12741, "si": 2}, {"t": "the", "s": 12761, "e": 12841, "si": 2}, {"t": "surface", "s": 12941, "e": 13341, "si": 2}, {"t": "of", "s": 13381, "e": 13441, "si": 2}, {"t": "the", "s": 13481, "e": 13561, "si": 2}, {"t": "deep.", "s": 13621, "e": 13821, "si": 2}, {"t": "And", "s": 14501, "e": 14601, "si": 3}, {"t": "the", "s": 14641, "e": 14721, "si": 3}, {"t": "Spirit", "s": 14781, "e": 15121, "si": 3}, {"t": "of", "s": 15141, "e": 15221, "si": 3}, {"t": "God", "s": 15301, "e": 15561, "si": 3}, {"t": "was", "s": 15641, "e": 15801, "si": 3}, {"t": "hovering", "s": 15881, "e": 16341, "si": 3}, {"t": "over", "s": 16461, "e": 16621, "si": 3}, {"t": "the", "s": 16661, "e": 16741, "si": 3}, {"t": "surface", "s": 16821, "e": 17221, "si": 3}, {"t": "of", "s": 17241, "e": 17301, "si": 3}, {"t": "the", "s": 17341, "e": 17421, "si": 3}, {"t": "waters.", "s": 17461, "e": 17921, "si": 3}, {"t": "And", "s": 18961, "e": 19061, "si": 4}, {"t": "God", "s": 19121, "e": 19361, "si": 4}, {"t": "said,", "s": 19481, "e": 19741, "si": 4}, {"t": "“Let", "s": 20421, "e": 20561, "si": 4}, {"t": "there", "s": 20601, "e": 20741, "si": 4}, {"t": "be", "s": 20761, "e": 20821, "si": 4}, {"t": "light,”", "s": 20921, "e": 21221, "si": 4}, {"t": "and", "s": 21821, "e": 21921, "si": 4}, {"t": "there", "s": 21961, "e": 22101, "si": 4}, {"t": "was", "s": 22121, "e": 22261, "si": 4}, {"t": "light.", "s": 22361, "e": 22661, "si": 4}, {"t": "And", "s": 23521, "e": 23641, "si": 5}, {"t": "God", "s": 23701, "e": 23981, "si": 5}, {"t": "saw", "s": 24101, "e": 24321, "si": 5}, {"t": "that", "s": 24401, "e": 24541, "si": 5}, {"t": "the", "s": 24561, "e": 24661, "si": 5}, {"t": "light", "s": 24721, "e": 24961, "si": 5}, {"t": "was", "s": 25021, "e": 25201, "si": 5}, {"t": "good,", "s": 25281, "e": 25561, "si": 5}, {"t": "and", "s": 26001, "e": 26101, "si": 5}, {"t": "He", "s": 26121, "e": 26201, "si": 5}, {"t": "separated", "s": 26321, "e": 26861, "si": 5}, {"t": "the", "s": 26901, "e": 26981, "si": 5}, {"t": "light", "s": 27041, "e": 27301, "si": 5}, {"t": "from", "s": 27441, "e": 27601, "si": 5}, {"t": "the", "s": 27641, "e": 27721, "si": 5}, {"t": "darkness.", "s": 27781, "e": 28301, "si": 5}, {"t": "God", "s": 29061, "e": 29281, "si": 6}, {"t": "called", "s": 29381, "e": 29621, "si": 6}, {"t": "the", "s": 29641, "e": 29721, "si": 6}, {"t": "light", "s": 29781, "e": 30041, "si": 6}, {"t": "“day,”", "s": 30381, "e": 30641, "si": 6}, {"t": "and", "s": 31301, "e": 31401, "si": 6}, {"t": "the", "s": 31421, "e": 31501, "si": 6}, {"t": "darkness", "s": 31541, "e": 32001, "si": 6}, {"t": "He", "s": 32061, "e": 32121, "si": 6}, {"t": "called", "s": 32201, "e": 32521, "si": 6}, {"t": "“night.”", "s": 32601, "e": 32881, "si": 6}, {"t": "And", "s": 33481, "e": 33561, "si": 6}, {"t": "there", "s": 33581, "e": 33701, "si": 6}, {"t": "was", "s": 33721, "e": 33841, "si": 6}, {"t": "evening,", "s": 33921, "e": 34281, "si": 6}, {"t": "and", "s": 34441, "e": 34561, "si": 6}, {"t": "there", "s": 34561, "e": 34701, "si": 6}, {"t": "was", "s": 34721, "e": 34861, "si": 6}, {"t": "morning—the", "s": 34941, "e": 35781, "si": 6}, {"t": "first", "s": 35841, "e": 36121, "si": 6}, {"t": "day.", "s": 36181, "e": 36381, "si": 6}, {"t": "And", "s": 37402, "e": 37522, "si": 7}, {"t": "God", "s": 37582, "e": 37842, "si": 7}, {"t": "said,", "s": 37942, "e": 38222, "si": 7}, {"t": "“Let", "s": 38962, "e": 39102, "si": 7}, {"t": "there", "s": 39142, "e": 39282, "si": 7}, {"t": "be", "s": 39302, "e": 39382, "si": 7}, {"t": "an", "s": 39622, "e": 39702, "si": 7}, {"t": "expanse", "s": 39762, "e": 40482, "si": 7}, {"t": "between", "s": 40542, "e": 40982, "si": 7}, {"t": "the", "s": 41022, "e": 41102, "si": 7}, {"t": "waters,", "s": 41142, "e": 41642, "si": 7}, {"t": "to", "s": 41702, "e": 41782, "si": 7}, {"t": "separate", "s": 41922, "e": 42362, "si": 7}, {"t": "the", "s": 42382, "e": 42462, "si": 7}, {"t": "waters", "s": 42502, "e": 42962, "si": 7}, {"t": "from", "s": 43062, "e": 43222, "si": 7}, {"t": "the", "s": 43262, "e": 43342, "si": 7}, {"t": "waters.”", "s": 43402, "e": 43862, "si": 7}, {"t": "So", "s": 44602, "e": 44682, "si": 7}, {"t": "God", "s": 44802, "e": 45042, "si": 7}, {"t": "made", "s": 45122, "e": 45342, "si": 7}, {"t": "the", "s": 45362, "e": 45442, "si": 7}, {"t": "expanse", "s": 45522, "e": 46182, "si": 7}, {"t": "and", "s": 46242, "e": 46362, "si": 7}, {"t": "separated", "s": 46482, "e": 46962, "si": 7}, {"t": "the", "s": 46982, "e": 47062, "si": 7}, {"t": "waters", "s": 47122, "e": 47522, "si": 7}, {"t": "beneath", "s": 47622, "e": 48002, "si": 7}, {"t": "it", "s": 48062, "e": 48222, "si": 7}, {"t": "from", "s": 48322, "e": 48482, "si": 7}, {"t": "the", "s": 48502, "e": 48582, "si": 7}, {"t": "waters", "s": 48642, "e": 48982, "si": 7}, {"t": "above.", "s": 49042, "e": 49462, "si": 7}, {"t": "And", "s": 50102, "e": 50202, "si": 8}, {"t": "it", "s": 50242, "e": 50342, "si": 8}, {"t": "was", "s": 50382, "e": 50522, "si": 8}, {"t": "so.", "s": 50582, "e": 50662, "si": 8}, {"t": "God", "s": 51822, "e": 52022, "si": 9}, {"t": "called", "s": 52102, "e": 52342, "si": 9}, {"t": "the", "s": 52362, "e": 52442, "si": 9}, {"t": "expanse", "s": 52502, "e": 53102, "si": 9}, {"t": "“sky.”", "s": 53402, "e": 53802, "si": 9}, {"t": "And", "s": 54502, "e": 54602, "si": 9}, {"t": "there", "s": 54622, "e": 54742, "si": 9}, {"t": "was", "s": 54742, "e": 54862, "si": 9}, {"t": "evening,", "s": 54942, "e": 55322, "si": 9}, {"t": "and", "s": 55462, "e": 55562, "si": 9}, {"t": "there", "s": 55582, "e": 55742, "si": 9}, {"t": "was", "s": 55742, "e": 55882, "si": 9}, {"t": "morning—the", "s": 55982, "e": 56682, "si": 9}, {"t": "second", "s": 56782, "e": 57102, "si": 9}, {"t": "day.", "s": 57142, "e": 57322, "si": 9}, {"t": "And", "s": 58362, "e": 58462, "si": 10}, {"t": "God", "s": 58522, "e": 58742, "si": 10}, {"t": "said,", "s": 58862, "e": 59102, "si": 10}, {"t": "“Let", "s": 59402, "e": 59522, "si": 10}, {"t": "the", "s": 59562, "e": 59642, "si": 10}, {"t": "waters", "s": 59702, "e": 60142, "si": 10}, {"t": "under", "s": 60222, "e": 60422, "si": 10}, {"t": "the", "s": 60462, "e": 60542, "si": 10}, {"t": "sky", "s": 60582, "e": 60882, "si": 10}, {"t": "be", "s": 60942, "e": 61022, "si": 10}, {"t": "gathered", "s": 61142, "e": 61542, "si": 10}, {"t": "into", "s": 61702, "e": 61922, "si": 10}, {"t": "one", "s": 62123, "e": 62283, "si": 10}, {"t": "place,", "s": 62343, "e": 62763, "si": 10}, {"t": "so", "s": 62943, "e": 63043, "si": 10}, {"t": "that", "s": 63123, "e": 63263, "si": 10}, {"t": "the", "s": 63303, "e": 63383, "si": 10}, {"t": "dry", "s": 63443, "e": 63683, "si": 10}, {"t": "land", "s": 63763, "e": 64083, "si": 10}, {"t": "may", "s": 64163, "e": 64303, "si": 10}, {"t": "appear.”", "s": 64363, "e": 64703, "si": 10}, {"t": "And", "s": 65463, "e": 65563, "si": 10}, {"t": "it", "s": 65623, "e": 65703, "si": 10}, {"t": "was", "s": 65743, "e": 65883, "si": 10}, {"t": "so.", "s": 65943, "e": 66043, "si": 10}, {"t": "God", "s": 67063, "e": 67263, "si": 11}, {"t": "called", "s": 67343, "e": 67643, "si": 11}, {"t": "the", "s": 67683, "e": 67763, "si": 11}, {"t": "dry", "s": 67803, "e": 68023, "si": 11}, {"t": "land", "s": 68083, "e": 68383, "si": 11}, {"t": "“earth,”", "s": 68563, "e": 68863, "si": 11}, {"t": "and", "s": 69383, "e": 69483, "si": 11}, {"t": "the", "s": 69503, "e": 69563, "si": 11}, {"t": "gathering", "s": 69623, "e": 70063, "si": 11}, {"t": "of", "s": 70103, "e": 70183, "si": 11}, {"t": "waters", "s": 70263, "e": 70763, "si": 11}, {"t": "He", "s": 70823, "e": 70883, "si": 11}, {"t": "called", "s": 70983, "e": 71343, "si": 11}, {"t": "“seas.”", "s": 71583, "e": 72103, "si": 11}, {"t": "And", "s": 72843, "e": 72943, "si": 11}, {"t": "God", "s": 73023, "e": 73283, "si": 11}, {"t": "saw", "s": 73423, "e": 73643, "si": 11}, {"t": "that", "s": 73723, "e": 73843, "si": 11}, {"t": "it", "s": 73903, "e": 73983, "si": 11}, {"t": "was", "s": 74043, "e": 74203, "si": 11}, {"t": "good.", "s": 74303, "e": 74563, "si": 11}, {"t": "Then", "s": 75823, "e": 75983, "si": 12}, {"t": "God", "s": 76063, "e": 76303, "si": 12}, {"t": "said,", "s": 76403, "e": 76663, "si": 12}, {"t": "“Let", "s": 77043, "e": 77183, "si": 12}, {"t": "the", "s": 77223, "e": 77323, "si": 12}, {"t": "earth", "s": 77403, "e": 77623, "si": 12}, {"t": "bring", "s": 77703, "e": 77923, "si": 12}, {"t": "forth", "s": 77983, "e": 78243, "si": 12}, {"t": "vegetation:", "s": 78343, "e": 79063, "si": 12}, {"t": "seed-bearing", "s": 79543, "e": 80143, "si": 12}, {"t": "plants", "s": 80203, "e": 80663, "si": 12}, {"t": "and", "s": 80743, "e": 80863, "si": 12}, {"t": "fruit", "s": 80923, "e": 81123, "si": 12}, {"t": "trees,", "s": 81203, "e": 81663, "si": 12}, {"t": "each", "s": 81883, "e": 82103, "si": 12}, {"t": "bearing", "s": 82203, "e": 82483, "si": 12}, {"t": "fruit", "s": 82563, "e": 82783, "si": 12}, {"t": "with", "s": 82883, "e": 83063, "si": 12}, {"t": "seed", "s": 83123, "e": 83423, "si": 12}, {"t": "according", "s": 83483, "e": 83923, "si": 12}, {"t": "to", "s": 83963, "e": 84043, "si": 12}, {"t": "its", "s": 84143, "e": 84263, "si": 12}, {"t": "kind.”", "s": 84343, "e": 84763, "si": 12}, {"t": "And", "s": 85363, "e": 85463, "si": 12}, {"t": "it", "s": 85523, "e": 85603, "si": 12}, {"t": "was", "s": 85643, "e": 85783, "si": 12}, {"t": "so.", "s": 85863, "e": 85963, "si": 12}, {"t": "The", "s": 87244, "e": 87324, "si": 13}, {"t": "earth", "s": 87404, "e": 87624, "si": 13}, {"t": "produced", "s": 87744, "e": 88184, "si": 13}, {"t": "vegetation:", "s": 88204, "e": 88884, "si": 13}, {"t": "seed-bearing", "s": 89384, "e": 89964, "si": 13}, {"t": "plants", "s": 90004, "e": 90404, "si": 13}, {"t": "according", "s": 90464, "e": 90864, "si": 13}, {"t": "to", "s": 90904, "e": 90964, "si": 13}, {"t": "their", "s": 91024, "e": 91164, "si": 13}, {"t": "kinds", "s": 91264, "e": 91764, "si": 13}, {"t": "and", "s": 91824, "e": 91944, "si": 13}, {"t": "trees", "s": 92024, "e": 92504, "si": 13}, {"t": "bearing", "s": 92604, "e": 92884, "si": 13}, {"t": "fruit", "s": 92964, "e": 93204, "si": 13}, {"t": "with", "s": 93284, "e": 93444, "si": 13}, {"t": "seed", "s": 93524, "e": 93824, "si": 13}, {"t": "according", "s": 93884, "e": 94304, "si": 13}, {"t": "to", "s": 94364, "e": 94424, "si": 13}, {"t": "their", "s": 94484, "e": 94664, "si": 13}, {"t": "kinds.", "s": 94744, "e": 95224, "si": 13}, {"t": "And", "s": 95864, "e": 95984, "si": 14}, {"t": "God", "s": 96064, "e": 96324, "si": 14}, {"t": "saw", "s": 96444, "e": 96664, "si": 14}, {"t": "that", "s": 96744, "e": 96864, "si": 14}, {"t": "it", "s": 96904, "e": 96984, "si": 14}, {"t": "was", "s": 97064, "e": 97224, "si": 14}, {"t": "good.", "s": 97324, "e": 97584, "si": 14}, {"t": "And", "s": 98564, "e": 98664, "si": 15}, {"t": "there", "s": 98664, "e": 98784, "si": 15}, {"t": "was", "s": 98784, "e": 98924, "si": 15}, {"t": "evening,", "s": 98984, "e": 99344, "si": 15}, {"t": "and", "s": 99584, "e": 99664, "si": 15}, {"t": "there", "s": 99684, "e": 99824, "si": 15}, {"t": "was", "s": 99844, "e": 99964, "si": 15}, {"t": "morning—the", "s": 100044, "e": 100744, "si": 15}, {"t": "third", "s": 100804, "e": 101064, "si": 15}, {"t": "day.", "s": 101124, "e": 101344, "si": 15}, {"t": "And", "s": 103024, "e": 103124, "si": 16}, {"t": "God", "s": 103184, "e": 103424, "si": 16}, {"t": "said,", "s": 103544, "e": 103764, "si": 16}, {"t": "“Let", "s": 104044, "e": 104184, "si": 16}, {"t": "there", "s": 104204, "e": 104344, "si": 16}, {"t": "be", "s": 104344, "e": 104404, "si": 16}, {"t": "lights", "s": 104564, "e": 104884, "si": 16}, {"t": "in", "s": 105004, "e": 105084, "si": 16}, {"t": "the", "s": 105124, "e": 105204, "si": 16}, {"t": "expanse", "s": 105264, "e": 105864, "si": 16}, {"t": "of", "s": 105904, "e": 105964, "si": 16}, {"t": "the", "s": 106004, "e": 106084, "si": 16}, {"t": "sky", "s": 106124, "e": 106484, "si": 16}, {"t": "to", "s": 106584, "e": 106664, "si": 16}, {"t": "distinguish", "s": 106724, "e": 107364, "si": 16}, {"t": "between", "s": 107464, "e": 107844, "si": 16}, {"t": "the", "s": 107884, "e": 107964, "si": 16}, {"t": "day", "s": 108044, "e": 108284, "si": 16}, {"t": "and", "s": 108484, "e": 108604, "si": 16}, {"t": "the", "s": 108644, "e": 108724, "si": 16}, {"t": "night,", "s": 108764, "e": 109064, "si": 16}, {"t": "and", "s": 109544, "e": 109644, "si": 16}, {"t": "let", "s": 109684, "e": 109824, "si": 16}, {"t": "them", "s": 109844, "e": 109964, "si": 16}, {"t": "be", "s": 109984, "e": 110044, "si": 16}, {"t": "signs", "s": 110164, "e": 110584, "si": 16}, {"t": "to", "s": 110664, "e": 110724, "si": 16}, {"t": "mark", "s": 110784, "e": 110964, "si": 16}, {"t": "the", "s": 111024, "e": 111104, "si": 16}, {"t": "seasons", "s": 111184, "e": 111745, "si": 16}, {"t": "and", "s": 111805, "e": 111925, "si": 16}, {"t": "days", "s": 112005, "e": 112465, "si": 16}, {"t": "and", "s": 112565, "e": 112685, "si": 16}, {"t": "years.", "s": 112825, "e": 113305, "si": 16}, {"t": "And", "s": 113805, "e": 113885, "si": 17}, {"t": "let", "s": 113925, "e": 114045, "si": 17}, {"t": "them", "s": 114065, "e": 114185, "si": 17}, {"t": "serve", "s": 114285, "e": 114565, "si": 17}, {"t": "as", "s": 114565, "e": 114665, "si": 17}, {"t": "lights", "s": 114785, "e": 115125, "si": 17}, {"t": "in", "s": 115205, "e": 115285, "si": 17}, {"t": "the", "s": 115325, "e": 115405, "si": 17}, {"t": "expanse", "s": 115485, "e": 116065, "si": 17}, {"t": "of", "s": 116105, "e": 116165, "si": 17}, {"t": "the", "s": 116205, "e": 116305, "si": 17}, {"t": "sky", "s": 116365, "e": 116665, "si": 17}, {"t": "to", "s": 116745, "e": 116805, "si": 17}, {"t": "shine", "s": 116925, "e": 117265, "si": 17}, {"t": "upon", "s": 117305, "e": 117545, "si": 17}, {"t": "the", "s": 117585, "e": 117685, "si": 17}, {"t": "earth.”", "s": 117745, "e": 118005, "si": 17}, {"t": "And", "s": 118625, "e": 118725, "si": 17}, {"t": "it", "s": 118785, "e": 118865, "si": 17}, {"t": "was", "s": 118905, "e": 119065, "si": 17}, {"t": "so.", "s": 119125, "e": 119225, "si": 17}, {"t": "God", "s": 120445, "e": 120705, "si": 18}, {"t": "made", "s": 120785, "e": 121045, "si": 18}, {"t": "two", "s": 121125, "e": 121385, "si": 18}, {"t": "great", "s": 121585, "e": 121845, "si": 18}, {"t": "lights:", "s": 121985, "e": 122365, "si": 18}, {"t": "the", "s": 122745, "e": 122825, "si": 18}, {"t": "greater", "s": 122885, "e": 123205, "si": 18}, {"t": "light", "s": 123265, "e": 123485, "si": 18}, {"t": "to", "s": 123525, "e": 123605, "si": 18}, {"t": "rule", "s": 123685, "e": 123905, "si": 18}, {"t": "the", "s": 123945, "e": 124045, "si": 18}, {"t": "day", "s": 124085, "e": 124345, "si": 18}, {"t": "and", "s": 124665, "e": 124765, "si": 18}, {"t": "the", "s": 124785, "e": 124865, "si": 18}, {"t": "lesser", "s": 124945, "e": 125245, "si": 18}, {"t": "light", "s": 125285, "e": 125545, "si": 18}, {"t": "to", "s": 125585, "e": 125645, "si": 18}, {"t": "rule", "s": 125745, "e": 125965, "si": 18}, {"t": "the", "s": 125985, "e": 126065, "si": 18}, {"t": "night.", "s": 126105, "e": 126385, "si": 18}, {"t": "And", "s": 126985, "e": 127085, "si": 19}, {"t": "He", "s": 127105, "e": 127165, "si": 19}, {"t": "made", "s": 127225, "e": 127425, "si": 19}, {"t": "the", "s": 127425, "e": 127525, "si": 19}, {"t": "stars", "s": 127585, "e": 128065, "si": 19}, {"t": "as", "s": 128125, "e": 128225, "si": 19}, {"t": "well.", "s": 128325, "e": 128565, "si": 19}, {"t": "God", "s": 129525, "e": 129745, "si": 20}, {"t": "set", "s": 129885, "e": 130045, "si": 20}, {"t": "these", "s": 130105, "e": 130325, "si": 20}, {"t": "lights", "s": 130385, "e": 130685, "si": 20}, {"t": "in", "s": 130765, "e": 130845, "si": 20}, {"t": "the", "s": 130905, "e": 131005, "si": 20}, {"t": "expanse", "s": 131065, "e": 131665, "si": 20}, {"t": "of", "s": 131705, "e": 131765, "si": 20}, {"t": "the", "s": 131785, "e": 131865, "si": 20}, {"t": "sky", "s": 131925, "e": 132245, "si": 20}, {"t": "to", "s": 132325, "e": 132365, "si": 20}, {"t": "shine", "s": 132465, "e": 132765, "si": 20}, {"t": "upon", "s": 132785, "e": 133025, "si": 20}, {"t": "the", "s": 133065, "e": 133145, "si": 20}, {"t": "earth,", "s": 133225, "e": 133485, "si": 20}, {"t": "to", "s": 133825, "e": 133885, "si": 20}, {"t": "preside", "s": 133965, "e": 134565, "si": 20}, {"t": "over", "s": 134705, "e": 134865, "si": 20}, {"t": "the", "s": 134885, "e": 134985, "si": 20}, {"t": "day", "s": 135045, "e": 135285, "si": 20}, {"t": "and", "s": 135465, "e": 135565, "si": 20}, {"t": "the", "s": 135585, "e": 135665, "si": 20}, {"t": "night,", "s": 135725, "e": 135985, "si": 20}, {"t": "and", "s": 136406, "e": 136506, "si": 20}, {"t": "to", "s": 136526, "e": 136586, "si": 20}, {"t": "separate", "s": 136706, "e": 137146, "si": 20}, {"t": "the", "s": 137146, "e": 137226, "si": 20}, {"t": "light", "s": 137306, "e": 137526, "si": 20}, {"t": "from", "s": 137566, "e": 137706, "si": 20}, {"t": "the", "s": 137766, "e": 137826, "si": 20}, {"t": "darkness.", "s": 137886, "e": 138406, "si": 20}, {"t": "And", "s": 139186, "e": 139306, "si": 21}, {"t": "God", "s": 139366, "e": 139666, "si": 21}, {"t": "saw", "s": 139806, "e": 140006, "si": 21}, {"t": "that", "s": 140106, "e": 140226, "si": 21}, {"t": "it", "s": 140286, "e": 140366, "si": 21}, {"t": "was", "s": 140426, "e": 140586, "si": 21}, {"t": "good.", "s": 140666, "e": 140926, "si": 21}, {"t": "And", "s": 141806, "e": 141906, "si": 22}, {"t": "there", "s": 141906, "e": 142046, "si": 22}, {"t": "was", "s": 142046, "e": 142166, "si": 22}, {"t": "evening,", "s": 142246, "e": 142606, "si": 22}, {"t": "and", "s": 142806, "e": 142906, "si": 22}, {"t": "there", "s": 142926, "e": 143066, "si": 22}, {"t": "was", "s": 143086, "e": 143206, "si": 22}, {"t": "morning—the", "s": 143286, "e": 143966, "si": 22}, {"t": "fourth", "s": 144046, "e": 144346, "si": 22}, {"t": "day.", "s": 144426, "e": 144626, "si": 22}, {"t": "And", "s": 145686, "e": 145806, "si": 23}, {"t": "God", "s": 145846, "e": 146086, "si": 23}, {"t": "said,", "s": 146206, "e": 146446, "si": 23}, {"t": "“Let", "s": 146886, "e": 147006, "si": 23}, {"t": "the", "s": 147046, "e": 147106, "si": 23}, {"t": "waters", "s": 147166, "e": 147566, "si": 23}, {"t": "teem", "s": 147706, "e": 148026, "si": 23}, {"t": "with", "s": 148146, "e": 148286, "si": 23}, {"t": "living", "s": 148346, "e": 148606, "si": 23}, {"t": "creatures,", "s": 148666, "e": 149266, "si": 23}, {"t": "and", "s": 149346, "e": 149466, "si": 23}, {"t": "let", "s": 149526, "e": 149666, "si": 23}, {"t": "birds", "s": 149786, "e": 150206, "si": 23}, {"t": "fly", "s": 150286, "e": 150586, "si": 23}, {"t": "above", "s": 150626, "e": 150866, "si": 23}, {"t": "the", "s": 150886, "e": 150966, "si": 23}, {"t": "earth", "s": 151046, "e": 151286, "si": 23}, {"t": "in", "s": 151346, "e": 151426, "si": 23}, {"t": "the", "s": 151446, "e": 151546, "si": 23}, {"t": "open", "s": 151646, "e": 151886, "si": 23}, {"t": "expanse", "s": 151966, "e": 152546, "si": 23}, {"t": "of", "s": 152586, "e": 152646, "si": 23}, {"t": "the", "s": 152686, "e": 152766, "si": 23}, {"t": "sky.”", "s": 152806, "e": 153186, "si": 23}, {"t": "So", "s": 154106, "e": 154186, "si": 23}, {"t": "God", "s": 154306, "e": 154566, "si": 23}, {"t": "created", "s": 154686, "e": 155146, "si": 23}, {"t": "the", "s": 155186, "e": 155266, "si": 23}, {"t": "great", "s": 155326, "e": 155586, "si": 23}, {"t": "sea", "s": 155726, "e": 155886, "si": 23}, {"t": "creatures", "s": 155966, "e": 156546, "si": 23}, {"t": "and", "s": 156606, "e": 156746, "si": 23}, {"t": "every", "s": 156806, "e": 157006, "si": 23}, {"t": "living", "s": 157106, "e": 157386, "si": 23}, {"t": "thing", "s": 157466, "e": 157686, "si": 23}, {"t": "that", "s": 157766, "e": 157906, "si": 23}, {"t": "moves,", "s": 158006, "e": 158466, "si": 23}, {"t": "with", "s": 158586, "e": 158726, "si": 24}, {"t": "which", "s": 158766, "e": 159006, "si": 24}, {"t": "the", "s": 159106, "e": 159186, "si": 24}, {"t": "waters", "s": 159226, "e": 159606, "si": 24}, {"t": "teemed", "s": 159706, "e": 160146, "si": 24}, {"t": "according", "s": 160206, "e": 160606, "si": 24}, {"t": "to", "s": 160646, "e": 160726, "si": 24}, {"t": "their", "s": 160766, "e": 160906, "si": 24}, {"t": "kinds,", "s": 160986, "e": 161487, "si": 24}, {"t": "and", "s": 161907, "e": 161987, "si": 24}, {"t": "every", "s": 162027, "e": 162187, "si": 24}, {"t": "winged", "s": 162287, "e": 162567, "si": 24}, {"t": "bird", "s": 162707, "e": 162947, "si": 24}, {"t": "after", "s": 163007, "e": 163287, "si": 24}, {"t": "its", "s": 163367, "e": 163507, "si": 24}, {"t": "kind.", "s": 163587, "e": 163987, "si": 24}, {"t": "And", "s": 164627, "e": 164747, "si": 25}, {"t": "God", "s": 164807, "e": 165067, "si": 25}, {"t": "saw", "s": 165147, "e": 165347, "si": 25}, {"t": "that", "s": 165427, "e": 165547, "si": 25}, {"t": "it", "s": 165587, "e": 165687, "si": 25}, {"t": "was", "s": 165747, "e": 165927, "si": 25}, {"t": "good.", "s": 166027, "e": 166287, "si": 25}, {"t": "Then", "s": 167267, "e": 167407, "si": 26}, {"t": "God", "s": 167487, "e": 167727, "si": 26}, {"t": "blessed", "s": 167827, "e": 168167, "si": 26}, {"t": "them", "s": 168207, "e": 168347, "si": 26}, {"t": "and", "s": 168407, "e": 168527, "si": 26}, {"t": "said,", "s": 168607, "e": 168867, "si": 26}, {"t": "“Be", "s": 169287, "e": 169367, "si": 26}, {"t": "fruitful", "s": 169527, "e": 170027, "si": 26}, {"t": "and", "s": 170127, "e": 170247, "si": 26}, {"t": "multiply", "s": 170287, "e": 170887, "si": 26}, {"t": "and", "s": 170987, "e": 171107, "si": 26}, {"t": "fill", "s": 171207, "e": 171467, "si": 26}, {"t": "the", "s": 171567, "e": 171647, "si": 26}, {"t": "waters", "s": 171707, "e": 172087, "si": 26}, {"t": "of", "s": 172147, "e": 172207, "si": 26}, {"t": "the", "s": 172247, "e": 172327, "si": 26}, {"t": "seas,", "s": 172427, "e": 172887, "si": 26}, {"t": "and", "s": 173267, "e": 173347, "si": 26}, {"t": "let", "s": 173387, "e": 173547, "si": 26}, {"t": "birds", "s": 173647, "e": 174047, "si": 26}, {"t": "multiply", "s": 174147, "e": 174747, "si": 26}, {"t": "on", "s": 174847, "e": 174927, "si": 26}, {"t": "the", "s": 174947, "e": 175047, "si": 26}, {"t": "earth.”", "s": 175127, "e": 175387, "si": 26}, {"t": "And", "s": 176327, "e": 176407, "si": 26}, {"t": "there", "s": 176427, "e": 176547, "si": 26}, {"t": "was", "s": 176547, "e": 176667, "si": 26}, {"t": "evening,", "s": 176747, "e": 177087, "si": 26}, {"t": "and", "s": 177187, "e": 177287, "si": 26}, {"t": "there", "s": 177307, "e": 177447, "si": 26}, {"t": "was", "s": 177467, "e": 177587, "si": 26}, {"t": "morning—the", "s": 177687, "e": 178387, "si": 26}, {"t": "fifth", "s": 178467, "e": 178727, "si": 26}, {"t": "day.", "s": 178807, "e": 179027, "si": 26}, {"t": "And", "s": 180347, "e": 180467, "si": 27}, {"t": "God", "s": 180507, "e": 180747, "si": 27}, {"t": "said,", "s": 180847, "e": 181087, "si": 27}, {"t": "“Let", "s": 181307, "e": 181447, "si": 27}, {"t": "the", "s": 181487, "e": 181567, "si": 27}, {"t": "earth", "s": 181647, "e": 181887, "si": 27}, {"t": "bring", "s": 181987, "e": 182187, "si": 27}, {"t": "forth", "s": 182247, "e": 182527, "si": 27}, {"t": "living", "s": 182607, "e": 182847, "si": 27}, {"t": "creatures", "s": 182907, "e": 183427, "si": 27}, {"t": "according", "s": 183507, "e": 183947, "si": 27}, {"t": "to", "s": 184007, "e": 184067, "si": 27}, {"t": "their", "s": 184107, "e": 184247, "si": 27}, {"t": "kinds:", "s": 184347, "e": 184867, "si": 27}, {"t": "livestock,", "s": 185287, "e": 185948, "si": 27}, {"t": "land", "s": 186348, "e": 186648, "si": 27}, {"t": "crawlers,", "s": 186728, "e": 187248, "si": 27}, {"t": "and", "s": 187308, "e": 187428, "si": 27}, {"t": "beasts", "s": 187528, "e": 187928, "si": 27}, {"t": "of", "s": 187948, "e": 188028, "si": 27}, {"t": "the", "s": 188048, "e": 188128, "si": 27}, {"t": "earth", "s": 188208, "e": 188408, "si": 27}, {"t": "according", "s": 188468, "e": 188888, "si": 27}, {"t": "to", "s": 188948, "e": 189008, "si": 27}, {"t": "their", "s": 189068, "e": 189208, "si": 27}, {"t": "kinds.”", "s": 189288, "e": 189768, "si": 27}, {"t": "And", "s": 190348, "e": 190448, "si": 27}, {"t": "it", "s": 190508, "e": 190588, "si": 27}, {"t": "was", "s": 190648, "e": 190768, "si": 27}, {"t": "so.", "s": 190828, "e": 190928, "si": 27}, {"t": "God", "s": 192028, "e": 192248, "si": 28}, {"t": "made", "s": 192328, "e": 192568, "si": 28}, {"t": "the", "s": 192588, "e": 192668, "si": 28}, {"t": "beasts", "s": 192728, "e": 193088, "si": 28}, {"t": "of", "s": 193128, "e": 193208, "si": 28}, {"t": "the", "s": 193228, "e": 193308, "si": 28}, {"t": "earth", "s": 193368, "e": 193568, "si": 28}, {"t": "according", "s": 193628, "e": 194048, "si": 28}, {"t": "to", "s": 194088, "e": 194168, "si": 28}, {"t": "their", "s": 194208, "e": 194348, "si": 28}, {"t": "kinds,", "s": 194428, "e": 194928, "si": 28}, {"t": "the", "s": 195268, "e": 195348, "si": 28}, {"t": "livestock", "s": 195408, "e": 196028, "si": 28}, {"t": "according", "s": 196148, "e": 196548, "si": 28}, {"t": "to", "s": 196608, "e": 196668, "si": 28}, {"t": "their", "s": 196728, "e": 196908, "si": 28}, {"t": "kinds,", "s": 196988, "e": 197468, "si": 28}, {"t": "and", "s": 197548, "e": 197668, "si": 28}, {"t": "everything", "s": 197768, "e": 198248, "si": 28}, {"t": "that", "s": 198328, "e": 198448, "si": 28}, {"t": "crawls", "s": 198488, "e": 198868, "si": 28}, {"t": "upon", "s": 198928, "e": 199188, "si": 28}, {"t": "the", "s": 199228, "e": 199308, "si": 28}, {"t": "earth", "s": 199368, "e": 199568, "si": 28}, {"t": "according", "s": 199628, "e": 200028, "si": 28}, {"t": "to", "s": 200088, "e": 200168, "si": 28}, {"t": "its", "s": 200308, "e": 200468, "si": 28}, {"t": "kind.", "s": 200548, "e": 200928, "si": 28}, {"t": "And", "s": 201688, "e": 201788, "si": 29}, {"t": "God", "s": 201848, "e": 202108, "si": 29}, {"t": "saw", "s": 202208, "e": 202388, "si": 29}, {"t": "that", "s": 202468, "e": 202588, "si": 29}, {"t": "it", "s": 202628, "e": 202708, "si": 29}, {"t": "was", "s": 202768, "e": 202928, "si": 29}, {"t": "good.", "s": 203008, "e": 203288, "si": 29}, {"t": "Then", "s": 204588, "e": 204728, "si": 30}, {"t": "God", "s": 204828, "e": 205088, "si": 30}, {"t": "said,", "s": 205188, "e": 205468, "si": 30}, {"t": "“Let", "s": 205928, "e": 206068, "si": 30}, {"t": "Us", "s": 206128, "e": 206228, "si": 30}, {"t": "make", "s": 206308, "e": 206508, "si": 30}, {"t": "man", "s": 206548, "e": 206848, "si": 30}, {"t": "in", "s": 206928, "e": 207048, "si": 30}, {"t": "Our", "s": 207228, "e": 207428, "si": 30}, {"t": "image,", "s": 207568, "e": 207968, "si": 30}, {"t": "after", "s": 208208, "e": 208568, "si": 30}, {"t": "Our", "s": 208668, "e": 208788, "si": 30}, {"t": "likeness,", "s": 208848, "e": 209348, "si": 30}, {"t": "to", "s": 209428, "e": 209528, "si": 30}, {"t": "rule", "s": 209648, "e": 209968, "si": 30}, {"t": "over", "s": 210028, "e": 210208, "si": 30}, {"t": "the", "s": 210228, "e": 210328, "si": 30}, {"t": "fish", "s": 210388, "e": 210628, "si": 30}, {"t": "of", "s": 210668, "e": 210729, "si": 30}, {"t": "the", "s": 210769, "e": 210849, "si": 30}, {"t": "sea", "s": 210949, "e": 211169, "si": 30}, {"t": "and", "s": 211269, "e": 211369, "si": 30}, {"t": "the", "s": 211389, "e": 211489, "si": 30}, {"t": "birds", "s": 211529, "e": 211829, "si": 30}, {"t": "of", "s": 211849, "e": 211929, "si": 30}, {"t": "the", "s": 211949, "e": 212049, "si": 30}, {"t": "air,", "s": 212149, "e": 212349, "si": 30}, {"t": "over", "s": 212649, "e": 212829, "si": 30}, {"t": "the", "s": 212849, "e": 212929, "si": 30}, {"t": "livestock,", "s": 212989, "e": 213609, "si": 30}, {"t": "and", "s": 213669, "e": 213749, "si": 31}, {"t": "over", "s": 213789, "e": 213969, "si": 31}, {"t": "all", "s": 214069, "e": 214229, "si": 31}, {"t": "the", "s": 214269, "e": 214369, "si": 31}, {"t": "earth", "s": 214429, "e": 214589, "si": 31}, {"t": "itself", "s": 214649, "e": 215109, "si": 31}, {"t": "and", "s": 215209, "e": 215329, "si": 31}, {"t": "every", "s": 215489, "e": 215789, "si": 31}, {"t": "creature", "s": 215929, "e": 216349, "si": 31}, {"t": "that", "s": 216369, "e": 216509, "si": 31}, {"t": "crawls", "s": 216569, "e": 216909, "si": 31}, {"t": "upon", "s": 216949, "e": 217249, "si": 31}, {"t": "it.”", "s": 217309, "e": 217429, "si": 31}, {"t": "So", "s": 218669, "e": 218749, "si": 31}, {"t": "God", "s": 218869, "e": 219149, "si": 31}, {"t": "created", "s": 219249, "e": 219749, "si": 31}, {"t": "man", "s": 219789, "e": 220049, "si": 31}, {"t": "in", "s": 220209, "e": 220289, "si": 31}, {"t": "His", "s": 220329, "e": 220469, "si": 31}, {"t": "own", "s": 220549, "e": 220669, "si": 31}, {"t": "image;", "s": 220749, "e": 221129, "si": 31}, {"t": "in", "s": 221349, "e": 221429, "si": 31}, {"t": "the", "s": 221469, "e": 221549, "si": 31}, {"t": "image", "s": 221669, "e": 221949, "si": 31}, {"t": "of", "s": 221989, "e": 222049, "si": 31}, {"t": "God", "s": 222129, "e": 222429, "si": 31}, {"t": "He", "s": 222489, "e": 222569, "si": 31}, {"t": "created", "s": 222689, "e": 223169, "si": 31}, {"t": "him;", "s": 223209, "e": 223369, "si": 31}, {"t": "male", "s": 223969, "e": 224309, "si": 31}, {"t": "and", "s": 224349, "e": 224469, "si": 31}, {"t": "female", "s": 224549, "e": 225089, "si": 31}, {"t": "He", "s": 225189, "e": 225269, "si": 31}, {"t": "created", "s": 225409, "e": 225909, "si": 31}, {"t": "them.", "s": 225949, "e": 226129, "si": 31}, {"t": "God", "s": 227189, "e": 227409, "si": 32}, {"t": "blessed", "s": 227469, "e": 227789, "si": 32}, {"t": "them", "s": 227829, "e": 227969, "si": 32}, {"t": "and", "s": 228189, "e": 228329, "si": 32}, {"t": "said", "s": 228429, "e": 228609, "si": 32}, {"t": "to", "s": 228649, "e": 228709, "si": 32}, {"t": "them,", "s": 228749, "e": 228949, "si": 32}, {"t": "“Be", "s": 229429, "e": 229509, "si": 32}, {"t": "fruitful", "s": 229649, "e": 230069, "si": 32}, {"t": "and", "s": 230129, "e": 230229, "si": 32}, {"t": "multiply,", "s": 230249, "e": 230829, "si": 32}, {"t": "and", "s": 230929, "e": 231029, "si": 32}, {"t": "fill", "s": 231149, "e": 231389, "si": 32}, {"t": "the", "s": 231429, "e": 231529, "si": 32}, {"t": "earth", "s": 231589, "e": 231829, "si": 32}, {"t": "and", "s": 231889, "e": 232009, "si": 32}, {"t": "subdue", "s": 232089, "e": 232449, "si": 32}, {"t": "it;", "s": 232489, "e": 232589, "si": 32}, {"t": "rule", "s": 233129, "e": 233449, "si": 32}, {"t": "over", "s": 233549, "e": 233729, "si": 32}, {"t": "the", "s": 233749, "e": 233829, "si": 32}, {"t": "fish", "s": 233909, "e": 234129, "si": 32}, {"t": "of", "s": 234169, "e": 234229, "si": 32}, {"t": "the", "s": 234269, "e": 234349, "si": 32}, {"t": "sea", "s": 234449, "e": 234669, "si": 32}, {"t": "and", "s": 234789, "e": 234889, "si": 32}, {"t": "the", "s": 234909, "e": 234989, "si": 32}, {"t": "birds", "s": 235049, "e": 235329, "si": 32}, {"t": "of", "s": 235369, "e": 235429, "si": 32}, {"t": "the", "s": 235449, "e": 235550, "si": 32}, {"t": "air", "s": 235650, "e": 235830, "si": 32}, {"t": "and", "s": 235910, "e": 236070, "si": 32}, {"t": "every", "s": 236230, "e": 236490, "si": 32}, {"t": "creature", "s": 236610, "e": 237050, "si": 32}, {"t": "that", "s": 237090, "e": 237230, "si": 32}, {"t": "crawls", "s": 237310, "e": 237670, "si": 32}, {"t": "upon", "s": 237730, "e": 237990, "si": 32}, {"t": "the", "s": 238010, "e": 238110, "si": 32}, {"t": "earth.”", "s": 238170, "e": 238430, "si": 32}, {"t": "Then", "s": 239210, "e": 239350, "si": 32}, {"t": "God", "s": 239430, "e": 239670, "si": 32}, {"t": "said,", "s": 239770, "e": 240030, "si": 32}, {"t": "“Behold,", "s": 240530, "e": 240990, "si": 32}, {"t": "I", "s": 241130, "e": 241150, "si": 33}, {"t": "have", "s": 241210, "e": 241370, "si": 33}, {"t": "given", "s": 241410, "e": 241650, "si": 33}, {"t": "you", "s": 241710, "e": 241810, "si": 33}, {"t": "every", "s": 241890, "e": 242150, "si": 33}, {"t": "seed-bearing", "s": 242330, "e": 242910, "si": 33}, {"t": "plant", "s": 242950, "e": 243290, "si": 33}, {"t": "on", "s": 243390, "e": 243450, "si": 33}, {"t": "the", "s": 243470, "e": 243550, "si": 33}, {"t": "face", "s": 243610, "e": 243890, "si": 33}, {"t": "of", "s": 243930, "e": 243990, "si": 33}, {"t": "all", "s": 244070, "e": 244190, "si": 33}, {"t": "the", "s": 244230, "e": 244330, "si": 33}, {"t": "earth,", "s": 244390, "e": 244650, "si": 33}, {"t": "and", "s": 244830, "e": 244930, "si": 33}, {"t": "every", "s": 244970, "e": 245170, "si": 33}, {"t": "tree", "s": 245310, "e": 245550, "si": 33}, {"t": "whose", "s": 245630, "e": 245870, "si": 33}, {"t": "fruit", "s": 245930, "e": 246170, "si": 33}, {"t": "contains", "s": 246250, "e": 246810, "si": 33}, {"t": "seed.", "s": 246910, "e": 247230, "si": 33}, {"t": "They", "s": 247710, "e": 247830, "si": 34}, {"t": "will", "s": 247850, "e": 248010, "si": 34}, {"t": "be", "s": 248050, "e": 248110, "si": 34}, {"t": "yours", "s": 248190, "e": 248570, "si": 34}, {"t": "for", "s": 248650, "e": 248790, "si": 34}, {"t": "food.", "s": 248870, "e": 249230, "si": 34}, {"t": "And", "s": 250190, "e": 250310, "si": 35}, {"t": "to", "s": 250350, "e": 250410, "si": 35}, {"t": "every", "s": 250490, "e": 250690, "si": 35}, {"t": "beast", "s": 250790, "e": 251070, "si": 35}, {"t": "of", "s": 251110, "e": 251170, "si": 35}, {"t": "the", "s": 251210, "e": 251290, "si": 35}, {"t": "earth", "s": 251350, "e": 251570, "si": 35}, {"t": "and", "s": 251630, "e": 251710, "si": 35}, {"t": "every", "s": 251750, "e": 251930, "si": 35}, {"t": "bird", "s": 252050, "e": 252270, "si": 35}, {"t": "of", "s": 252310, "e": 252370, "si": 35}, {"t": "the", "s": 252410, "e": 252490, "si": 35}, {"t": "air", "s": 252590, "e": 252750, "si": 35}, {"t": "and", "s": 252830, "e": 252910, "si": 35}, {"t": "every", "s": 252950, "e": 253150, "si": 35}, {"t": "creature", "s": 253270, "e": 253690, "si": 35}, {"t": "that", "s": 253730, "e": 253850, "si": 35}, {"t": "crawls", "s": 253910, "e": 254250, "si": 35}, {"t": "upon", "s": 254310, "e": 254550, "si": 35}, {"t": "the", "s": 254590, "e": 254670, "si": 35}, {"t": "earth—everything", "s": 254750, "e": 255930, "si": 35}, {"t": "that", "s": 256070, "e": 256210, "si": 35}, {"t": "has", "s": 256250, "e": 256490, "si": 35}, {"t": "the", "s": 256570, "e": 256650, "si": 35}, {"t": "breath", "s": 256690, "e": 256910, "si": 35}, {"t": "of", "s": 256930, "e": 257010, "si": 35}, {"t": "life", "s": 257070, "e": 257290, "si": 35}, {"t": "in", "s": 257330, "e": 257410, "si": 35}, {"t": "it—I", "s": 257470, "e": 258050, "si": 35}, {"t": "have", "s": 258090, "e": 258230, "si": 35}, {"t": "given", "s": 258270, "e": 258530, "si": 35}, {"t": "every", "s": 258710, "e": 259010, "si": 35}, {"t": "green", "s": 259170, "e": 259450, "si": 35}, {"t": "plant", "s": 259550, "e": 259890, "si": 35}, {"t": "for", "s": 259950, "e": 260070, "si": 35}, {"t": "food.”", "s": 260130, "e": 260471, "si": 35}, {"t": "And", "s": 260991, "e": 261091, "si": 35}, {"t": "it", "s": 261131, "e": 261211, "si": 35}, {"t": "was", "s": 261251, "e": 261391, "si": 35}, {"t": "so.", "s": 261471, "e": 261551, "si": 35}, {"t": "And", "s": 262891, "e": 262991, "si": 36}, {"t": "God", "s": 263051, "e": 263271, "si": 36}, {"t": "looked", "s": 263331, "e": 263551, "si": 36}, {"t": "upon", "s": 263591, "e": 263851, "si": 36}, {"t": "all", "s": 264051, "e": 264231, "si": 36}, {"t": "that", "s": 264331, "e": 264471, "si": 36}, {"t": "He", "s": 264511, "e": 264591, "si": 36}, {"t": "had", "s": 264631, "e": 264771, "si": 36}, {"t": "made,", "s": 264831, "e": 265191, "si": 36}, {"t": "and", "s": 265331, "e": 265471, "si": 36}, {"t": "indeed,", "s": 265531, "e": 266031, "si": 36}, {"t": "it", "s": 266251, "e": 266331, "si": 36}, {"t": "was", "s": 266391, "e": 266551, "si": 36}, {"t": "very", "s": 266671, "e": 266951, "si": 36}, {"t": "good.", "s": 267051, "e": 267311, "si": 36}, {"t": "And", "s": 268051, "e": 268131, "si": 37}, {"t": "there", "s": 268151, "e": 268291, "si": 37}, {"t": "was", "s": 268291, "e": 268431, "si": 37}, {"t": "evening,", "s": 268511, "e": 268871, "si": 37}, {"t": "and", "s": 268991, "e": 269091, "si": 37}, {"t": "there", "s": 269111, "e": 269251, "si": 37}, {"t": "was", "s": 269271, "e": 269411, "si": 37}, {"t": "morning—the", "s": 269491, "e": 270171, "si": 37}, {"t": "sixth", "s": 270311, "e": 270651, "si": 37}, {"t": "day.", "s": 270731, "e": 270951, "si": 37}], S=[{"text": "Genesis, Chapter One."}, {"text": "In the beginning God created the heavens and the earth."}, {"text": "Now the earth was formless and void, and darkness was over the surface of the deep."}, {"text": "And the Spirit of God was hovering over the surface of the waters."}, {"text": "And God said, “Let there be light,” and there was light."}, {"text": "And God saw that the light was good, and He separated the light from the darkness."}, {"text": "God called the light “day,” and the darkness He called “night.” And there was evening, and there was morning—the first day."}, {"text": "And God said, “Let there be an expanse between the waters, to separate the waters from the waters.” So God made the expanse and separated the waters beneath it from the waters above."}, {"text": "And it was so."}, {"text": "God called the expanse “sky.” And there was evening, and there was morning—the second day."}, {"text": "And God said, “Let the waters under the sky be gathered into one place, so that the dry land may appear.” And it was so."}, {"text": "God called the dry land “earth,” and the gathering of waters He called “seas.” And God saw that it was good."}, {"text": "Then God said, “Let the earth bring forth vegetation: seed-bearing plants and fruit trees, each bearing fruit with seed according to its kind.” And it was so."}, {"text": "The earth produced vegetation: seed-bearing plants according to their kinds and trees bearing fruit with seed according to their kinds."}, {"text": "And God saw that it was good."}, {"text": "And there was evening, and there was morning—the third day."}, {"text": "And God said, “Let there be lights in the expanse of the sky to distinguish between the day and the night, and let them be signs to mark the seasons and days and years."}, {"text": "And let them serve as lights in the expanse of the sky to shine upon the earth.” And it was so."}, {"text": "God made two great lights: the greater light to rule the day and the lesser light to rule the night."}, {"text": "And He made the stars as well."}, {"text": "God set these lights in the expanse of the sky to shine upon the earth, to preside over the day and the night, and to separate the light from the darkness."}, {"text": "And God saw that it was good."}, {"text": "And there was evening, and there was morning—the fourth day."}, {"text": "And God said, “Let the waters teem with living creatures, and let birds fly above the earth in the open expanse of the sky.” So God created the great sea creatures and every living thing that moves,"}, {"text": "with which the waters teemed according to their kinds, and every winged bird after its kind."}, {"text": "And God saw that it was good."}, {"text": "Then God blessed them and said, “Be fruitful and multiply and fill the waters of the seas, and let birds multiply on the earth.” And there was evening, and there was morning—the fifth day."}, {"text": "And God said, “Let the earth bring forth living creatures according to their kinds: livestock, land crawlers, and beasts of the earth according to their kinds.” And it was so."}, {"text": "God made the beasts of the earth according to their kinds, the livestock according to their kinds, and everything that crawls upon the earth according to its kind."}, {"text": "And God saw that it was good."}, {"text": "Then God said, “Let Us make man in Our image, after Our likeness, to rule over the fish of the sea and the birds of the air, over the livestock,"}, {"text": "and over all the earth itself and every creature that crawls upon it.” So God created man in His own image; in the image of God He created him; male and female He created them."}, {"text": "God blessed them and said to them, “Be fruitful and multiply, and fill the earth and subdue it; rule over the fish of the sea and the birds of the air and every creature that crawls upon the earth.” Then God said, “Behold,"}, {"text": "I have given you every seed-bearing plant on the face of all the earth, and every tree whose fruit contains seed."}, {"text": "They will be yours for food."}, {"text": "And to every beast of the earth and every bird of the air and every creature that crawls upon the earth—everything that has the breath of life in it—I have given every green plant for food.” And it was so."}, {"text": "And God looked upon all that He had made, and indeed, it was very good."}, {"text": "And there was evening, and there was morning—the sixth day."}], VM={"book": "Genesis", "chapter": 1, "verses": [{"n": 1, "word": 3}, {"n": 2, "word": 13}, {"n": 3, "word": 42}, {"n": 4, "word": 53}, {"n": 5, "word": 69}, {"n": 6, "word": 90}, {"n": 7, "word": 108}, {"n": 8, "word": 127}, {"n": 9, "word": 142}, {"n": 10, "word": 167}, {"n": 11, "word": 188}, {"n": 12, "word": 215}, {"n": 13, "word": 242}, {"n": 14, "word": 252}, {"n": 15, "word": 286}, {"n": 16, "word": 307}, {"n": 17, "word": 334}, {"n": 18, "word": 349}, {"n": 19, "word": 372}, {"n": 20, "word": 382}, {"n": 21, "word": 406}, {"n": 22, "word": 442}, {"n": 23, "word": 466}, {"n": 24, "word": 476}, {"n": 25, "word": 506}, {"n": 26, "word": 541}, {"n": 27, "word": 584}, {"n": 28, "word": 606}, {"n": 29, "word": 645}, {"n": 30, "word": 676}, {"n": 31, "word": 716}]}, DUR=272691, LAYOUT="passage";
+const SCENES=[{"word": 3, "story": "The Cosmic Creation and Sabbath", "scene": "Prologue: The Primal State"}, {"word": 42, "story": "The Cosmic Creation and Sabbath", "scene": "Day 1: Creation of Light"}, {"word": 90, "story": "The Cosmic Creation and Sabbath", "scene": "Day 2: Firmament"}, {"word": 142, "story": "The Cosmic Creation and Sabbath", "scene": "Day 3a: Land and Seas"}, {"word": 188, "story": "The Cosmic Creation and Sabbath", "scene": "Day 3b: Vegetation"}, {"word": 252, "story": "The Cosmic Creation and Sabbath", "scene": "Day 4: Luminaries"}, {"word": 382, "story": "The Cosmic Creation and Sabbath", "scene": "Day 5: Birds and Fish"}, {"word": 476, "story": "The Cosmic Creation and Sabbath", "scene": "Day 6: Animals and Humans"}], SCENETIER="scene";   // pericope titles anchored to word index
+const a=document.getElementById('a'),bar=document.getElementById('bar');
+const lc=document.getElementById('lc'),lp=document.getElementById('lp'),ln=document.getElementById('ln');
+const vb=document.getElementById('vb'),veil=document.getElementById('veil');
+const flow=document.getElementById('flow'),stage=document.getElementById('stage');
+
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);
+  stage.style.transform='scale('+s+')';}
+addEventListener('resize',fit);fit();
+
+function verseAt(wi){ if(!VM||wi<0) return null; let n=null;
+  for(const v of VM.verses){ if(wi>=v.word) n=v.n; else break; } return n; }
+// switch EXACTLY at the verse's first word (not on scroll), pulse in, then fade.
+let lastVerse=-1, vnum=document.getElementById('vnum');
+function showVerse(wi){ if(!VM) return; const n=verseAt(wi);
+  if(n===null||n===lastVerse) return; lastVerse=n;
+  vnum.textContent=n; vb.style.opacity=1; }   // persistent: number just swaps, no fade/pulse
+
+// dynamic pericope: swap the upper-right title at each scene's first word (no fade — just
+// the text changing, like the verse number). SCENETIER picks evocative vs short.
+let lastScene=-1, peri=document.querySelector('.pericope');
+function showScene(wi){ if(!SCENES.length||!peri) return; let idx=-1;
+  for(let k=0;k<SCENES.length;k++){ if(wi>=SCENES[k].word) idx=k; else break; }
+  if(idx<0||idx===lastScene) return; lastScene=idx;
+  const L=String.fromCharCode(65+idx);   // just a letter address in front of the title
+  peri.textContent = SCENETIER==='scene' ? (L+'.  '+SCENES[idx].scene) : SCENES[idx].story; }
+
+// subtle lettered memory unit: swap the quiet A/B/C badge at each unit's first word.
+const UNITS=[];
+let lastUnit=-1, uLetter=document.getElementById('uletter'), uTitle=document.getElementById('utitle');
+function showUnit(wi){ if(!UNITS.length) return; let idx=-1;
+  for(let k=0;k<UNITS.length;k++){ if(wi>=UNITS[k].word) idx=k; else break; }
+  if(idx<0||idx===lastUnit) return; lastUnit=idx;
+  if(uLetter) uLetter.textContent=UNITS[idx].letter;
+  if(uTitle) uTitle.textContent=UNITS[idx].title; }
+
+// --- sync engine (identical math to the phone player) ---
+let LEAD=180, hwLat=0;
+try{const C=window.AudioContext||window.webkitAudioContext;
+ if(C){const ctx=new C();const rd=()=>{hwLat=(ctx.baseLatency||0)+(ctx.outputLatency||0);};rd();
+  a.addEventListener('play',()=>{ctx.state==='suspended'?ctx.resume().then(rd):rd();});}}catch(e){}
+let baseCT=-1,baseWall=0;
+function playheadMs(){const ct=a.currentTime,now=performance.now();
+ if(ct!==baseCT){baseCT=ct;baseWall=now;}
+ const adv=a.paused?0:(now-baseWall)/1000*(a.playbackRate||1);
+ return (baseCT+adv-hwLat)*1000;}
+let cur=-1;
+function find(ms){
+ if(cur>=0&&ms>=W[cur].s&&ms<W[cur].e)return cur;
+ if(cur>=0&&ms>=W[cur].e){for(let i=cur+1;i<W.length;i++){
+   if(ms<W[i].e)return ms>=W[i].s?i:i-1>=cur?i-1:cur;}return W.length-1;}
+ for(let i=0;i<W.length;i++)if(ms<W[i].e)return ms>=W[i].s?i:Math.max(0,i-1);
+ return W.length-1;}
+
+/* ===== renderer A: solo / window (3-line stack) ===== */
+let curSent=-1, wordEls=[];
+function renderSentence(si){
+ curSent=si;
+ lp.textContent = si>0 ? S[si-1].text : '';
+ ln.textContent = si<S.length-1 ? S[si+1].text : '';
+ lc.innerHTML='';wordEls=[];
+ for(let i=0;i<W.length;i++){ if(W[i].si!==si) continue;
+   const e=document.createElement('span');e.className='w ahead';
+   e.textContent=W[i].t+' ';e.dataset.wi=i;lc.appendChild(e);wordEls.push(e);}
+ showVerse(W.findIndex(w=>w.si===si));
+}
+function paintStack(i){
+ if(W[i].si!==curSent) renderSentence(W[i].si);
+ for(const e of wordEls){const wi=+e.dataset.wi;
+   e.className='w '+(wi<i?'read':wi===i?'active':'ahead');}
+}
+
+/* ===== renderer B: passage (whole chapter inline, like the web player) ===== */
+let pEls=[], pLastTop=-1, pPrev=-1;
+function buildPassage(){
+ // verse-number markers, then every word flows inline like a real Bible page
+ const marks = (VM&&VM.verses.length) ? VM.verses.slice() : [];
+ const startMark = {};                       // word index -> verse number
+ for(const v of marks) startMark[v.word]=v.n;
+ flow.innerHTML='';pEls=new Array(W.length);
+ for(let i=0;i<W.length;i++){
+   if(startMark[i]!==undefined && startMark[i]!==1){      // small verse superscript
+     const b=document.createElement('span');b.className='vn';
+     b.textContent=startMark[i];flow.appendChild(b);}
+   const e=document.createElement('span');e.className='w';
+   e.textContent=W[i].t+' ';flow.appendChild(e);pEls[i]=e;
+ }
+}
+function paintPassage(i){
+ // word-level: everything BEFORE i dims (read), i is the highlighter, everything AFTER stays full ink.
+ // uses its own pPrev — the shared `cur` is already advanced by the loop, so we can't lean on it.
+ if(i>pPrev){ for(let k=Math.max(0,pPrev);k<i;k++) pEls[k].className='w read'; }
+ else if(i<pPrev){ for(let k=i+1;k<=pPrev && k<pEls.length;k++) pEls[k].className='w'; } // scrubbed back
+ pEls[i].className='w active';
+ pPrev=i;
+ showVerse(i);   // precise: fires at the verse's first word, independent of scroll
+ showScene(i);   // precise: swaps the pericope title at the scene boundary
+ showUnit(i);    // precise: swaps the subtle A/B/C memory-unit badge
+ // keep the LIVE line vertically centered; only re-scroll when the line changes
+ const top=pEls[i].offsetTop;
+ if(top!==pLastTop){ pLastTop=top;
+   flow.style.transform='translateY('+(496 - top)+'px)'; }
+}
+
+const ISPASSAGE=(LAYOUT==='passage'||LAYOUT==='redline');
+function paint(i){ if(ISPASSAGE) paintPassage(i); else paintStack(i); }
+
+const mthumb=document.getElementById('mthumb');
+function loop(){
+ if(!a.paused){
+   const i=find(playheadMs()+LEAD);
+   if(i!==cur&&i>=0){cur=i;paint(i);}
+   const frac=Math.min(1,(a.currentTime*1000)/(DUR||1));
+   bar.style.width=(100*frac)+'%';
+   if(mthumb) mthumb.style.top=(frac*100)+'%';   // minimap position (redline)
+ }
+ requestAnimationFrame(loop);
+}
+if(ISPASSAGE) buildPassage();
+requestAnimationFrame(loop);
+
+veil.onclick=()=>{veil.classList.add('hide');a.play();};
+a.addEventListener('ended',()=>{bar.style.width='100%';});
+</script></body></html>

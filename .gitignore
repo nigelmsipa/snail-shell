@@ -5,3 +5,12 @@ kokoro-en-v0_19/
 __pycache__/
 *.tmp
 *.zip
+
+# --- generated read-along render data (regenerable; back up the .opus separately) ---
+renders/
+# scratch / iteration output dirs
+*_output/
+frames/
+wordtest/
+ylt-test/
+bakeoff/

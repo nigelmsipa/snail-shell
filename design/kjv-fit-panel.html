@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>KJV fit-panel — own-shelf landmarks (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=IBM+Plex+Sans:wght@500;600&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --paper:#fcfcfc; --ink:#2e3440; --metadata:#9a9388; --gold:hsl(42 40% 50%);
+   --ghost:#b9b1a0; --ghosttick:#cbc4b4;
+   --serif:"Source Serif 4",Georgia,serif;
+   --display:"DM Serif Display",Georgia,serif;
+   --sans:"IBM Plex Sans",system-ui,sans-serif;
+ }
+ *{box-sizing:border-box;margin:0;padding:0}
+ html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+ body{background:#e7e3da;font-family:var(--sans);padding:54px 54px 90px}
+
+ .tn{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--paper);
+   border-radius:5px;box-shadow:0 14px 40px rgba(0,0,0,.13);margin-bottom:40px}
+ .tn::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.45;
+   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>")}
+ .seclbl{max-width:1920px;margin:6px auto 14px;font-family:var(--sans);font-size:13px;font-weight:700;
+   letter-spacing:.18em;text-transform:uppercase;color:#8a8678}
+
+ /* KJV lore + fit panel */
+ .lore{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 200px;height:100%}
+ .lore .lbl{font-size:21px;font-weight:600;letter-spacing:.30em;text-transform:uppercase;color:var(--gold)}
+ .lore .name{font-family:var(--display);font-weight:400;font-size:128px;line-height:.95;color:var(--ink);margin-top:14px}
+ .lore .yr{font-family:var(--serif);font-style:italic;font-size:38px;color:var(--metadata);margin-top:6px}
+ .lore .rule{width:120px;height:3px;background:var(--gold);opacity:.85;margin:34px 0 30px}
+ .lore p{font-family:var(--serif);font-size:29px;line-height:1.55;color:#4f535a;max-width:1120px}
+
+ .fit{width:100%;max-width:1080px;margin-top:50px}
+ .fit .fl{font-size:18px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:38px}
+ .spec{margin-bottom:64px}
+ .spec .ends{display:flex;justify-content:space-between;font-family:var(--sans);
+   font-size:19px;font-weight:600;letter-spacing:.02em;color:var(--metadata)}
+ .spec .ends .hot{color:var(--ink)}
+ .spec .track{position:relative;height:3px;background:#e7e2d6;margin-top:16px;border-radius:2px;overflow:visible}
+
+ /* ghost landmarks — other Bibles on the shelf, faint */
+ .tick{position:absolute;top:50%;width:2px;height:13px;background:var(--ghosttick);
+   transform:translate(-50%,-50%);border-radius:1px}
+ .tick .tl{position:absolute;top:15px;left:50%;transform:translateX(-50%);white-space:nowrap;
+   font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:.02em;color:var(--ghost)}
+
+ /* the subject — KJV, lit */
+ .dot{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--gold);
+   transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(179,148,77,.16);z-index:2}
+ .dot .dl{position:absolute;top:20px;left:50%;transform:translateX(-50%);white-space:nowrap;
+   font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:.02em;color:var(--ink)}
+
+ /* the honest empty end */
+ .empty{position:absolute;top:50%;transform:translate(-50%,-50%);white-space:nowrap;
+   font-family:var(--serif);font-style:italic;font-size:17px;color:#c4bcab}
+
+ .bestfor{margin-top:14px;font-family:var(--serif);font-size:30px;line-height:1.5;color:#3f434a}
+ .bestfor b{font-style:normal;font-weight:600}
+ .bestfor .note{display:block;font-size:23px;font-style:italic;color:var(--metadata);margin-top:14px}
+</style>
+</head>
+<body>
+
+  <div class="seclbl">Fit panel · v3 — landmarks from the shelf itself (register track leads · dynamic end left honest)</div>
+  <div class="tn">
+    <div class="lore">
+      <div class="lbl">The Translation</div>
+      <div class="name">King James Version</div>
+      <div class="yr">Authorized, 1611</div>
+      <div class="rule"></div>
+      <p>Rendered by forty-seven scholars over seven years on Tyndale's foundation — four centuries on, still the most printed, most quoted, most memorized book in the English language.</p>
+
+      <div class="fit">
+        <div class="fl">Is this your Bible?</div>
+
+        <!-- PRIMARY: language register — where the shelf actually spreads -->
+        <div class="spec">
+          <div class="ends"><span class="hot">Traditional English</span><span>Plain &amp; modern</span></div>
+          <div class="track">
+            <div class="tick" style="left:64%"><span class="tl">WEB · BSB</span></div>
+            <div class="tick" style="left:91%"><span class="tl">BBE</span></div>
+            <div class="dot" style="left:13%"><span class="dl">King James</span></div>
+          </div>
+        </div>
+
+        <!-- SECONDARY: translation philosophy — honestly clustered left -->
+        <div class="spec">
+          <div class="ends"><span class="hot">Word&#8209;for&#8209;word</span><span>Thought&#8209;for&#8209;thought</span></div>
+          <div class="track">
+            <div class="tick" style="left:6%"><span class="tl">YLT</span></div>
+            <div class="tick" style="left:40%"><span class="tl">WEB · BSB</span></div>
+            <div class="tick" style="left:52%"><span class="tl">BBE</span></div>
+            <div class="empty" style="left:82%">— no paraphrase here —</div>
+            <div class="dot" style="left:18%"><span class="dl">King James</span></div>
+          </div>
+        </div>
+
+        <div class="bestfor"><b>Best for</b> &nbsp;readers who want the majestic, traditional text — and the cadence that has made it the most memorized Bible in English.
+          <span class="note">Early-modern English (thee, thou, &#8209;eth) — a richer read, not the simplest first Bible.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1920px;margin:0 auto;font-family:var(--sans);color:#7a776d;font-size:14.5px;line-height:1.6">
+    Prototype · KJV fit-panel. Every landmark is a Bible <b>on the shelf</b> — no proprietary versions, anywhere. The gold dot is the one you're reading; faint ticks are its siblings. Register track leads (that's where KJV/WEB/BBE genuinely differ); the word-for-word track sits honestly clustered left, its dynamic end left empty by design. <b>Verify the placements before this becomes the template.</b>
+  </div>
+</body></html>

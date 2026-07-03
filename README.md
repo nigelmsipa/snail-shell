@@ -1,4 +1,4 @@
-# snail-shell
+# wolf-and-word
 
 The compiler engine for the Snail knowledge system. Takes source documents (PDF, Markdown, text) and produces portable, playable, AI-queryable artifacts: `.opus` audio + `.html` follow-along player + `.vtt` captions + `.json` timing map.
 
@@ -22,7 +22,7 @@ sudo pacman -S rocm-hip-sdk rocm-opencl-runtime hip-runtime-amd ffmpeg poppler p
 
 ```bash
 cd ~
-git clone https://github.com/nigelmsipa/snail-shell.git
+git clone https://github.com/nigelmsipa/wolf-and-word.git
 ```
 
 ### 3. Clone VibeVoice
@@ -35,7 +35,7 @@ git clone https://github.com/vibevoice-community/VibeVoice.git
 ### 4. Create Python venv and install deps
 
 ```bash
-cd ~/snail-shell
+cd ~/wolf-and-word
 python -m venv .venv
 source .venv/bin/activate
 pip install torch --index-url https://download.pytorch.org/whl/rocm6.0
@@ -63,7 +63,7 @@ Common values by card:
 ### 6. Start the server
 
 ```bash
-cd ~/snail-shell
+cd ~/wolf-and-word
 source .venv/bin/activate
 export HSA_OVERRIDE_GFX_VERSION=10.3.0   # adjust for your card
 python server.py --port 7272
@@ -73,9 +73,9 @@ To keep it running after closing the terminal, use tmux:
 
 ```bash
 tmux new -s render
-source ~/snail-shell/.venv/bin/activate
+source ~/wolf-and-word/.venv/bin/activate
 export HSA_OVERRIDE_GFX_VERSION=10.3.0
-python ~/snail-shell/server.py --port 7272
+python ~/wolf-and-word/server.py --port 7272
 # Press Ctrl+B then D to detach — server keeps running
 ```
 
@@ -96,7 +96,7 @@ curl http://localhost:7272/voices
 When the main machine pushes changes:
 
 ```bash
-cd ~/snail-shell
+cd ~/wolf-and-word
 git pull
 # restart server
 ```

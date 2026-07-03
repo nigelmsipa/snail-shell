@@ -1,0 +1,15 @@
+export const GALATIANS_PERICOPES = [
+  { chapter: 1, verse_start: 1, verse_end: 10, name: 'No Other Gospel' },
+  { chapter: 1, verse_start: 11, verse_end: 24, name: 'Paul\'s Conversion' },
+  { chapter: 2, verse_start: 1, verse_end: 10, name: 'Accepted by the Apostles' },
+  { chapter: 2, verse_start: 11, verse_end: 21, name: 'Justified by Faith' },
+  { chapter: 3, verse_start: 1, verse_end: 14, name: 'Received the Spirit by Faith' },
+  { chapter: 3, verse_start: 15, verse_end: 29, name: 'The Promise to Abraham' },
+  { chapter: 4, verse_start: 1, verse_end: 11, name: 'No Longer a Slave' },
+  { chapter: 4, verse_start: 12, verse_end: 20, name: 'Become as I Am' },
+  { chapter: 4, verse_start: 21, verse_end: 31, name: 'Hagar and Sarah' },
+  { chapter: 5, verse_start: 1, verse_end: 12, name: 'Stand Firm in Freedom' },
+  { chapter: 5, verse_start: 13, verse_end: 26, name: 'The Fruit of the Spirit' },
+  { chapter: 6, verse_start: 1, verse_end: 10, name: 'Bear One Another\'s Burdens' },
+  { chapter: 6, verse_start: 11, verse_end: 18, name: 'Boast Only in the Cross' },
+];

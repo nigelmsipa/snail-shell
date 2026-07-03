@@ -1,0 +1,62 @@
+/**
+ * JOSHUA PERICOPES
+ * Regenerated from Memory Method Bible scenes for proper memorization granularity
+ * Target: 6-12 verses per pericope, evocative titles
+ */
+
+export const JOSHUA_PERICOPES = [
+  { chapter: 1, verse_start: 1, verse_end: 9, name: 'God\'s Commission to Joshua' },
+  { chapter: 1, verse_start: 10, verse_end: 18, name: 'Joshua Assumes Command' },
+  { chapter: 2, verse_start: 1, verse_end: 7, name: 'The Spies Sent to Jericho' },
+  { chapter: 2, verse_start: 8, verse_end: 21, name: 'The Covenant with Rahab' },
+  { chapter: 2, verse_start: 22, verse_end: 24, name: 'The Spies\' Faithful Report' },
+  { chapter: 3, verse_start: 1, verse_end: 6, name: 'Consecration at the Jordan' },
+  { chapter: 3, verse_start: 7, verse_end: 17, name: 'The Miraculous Crossing' },
+  { chapter: 4, verse_start: 1, verse_end: 14, name: 'The Twelve Memorial Stones' },
+  { chapter: 4, verse_start: 15, verse_end: 24, name: 'The Crossing Completed' },
+  { chapter: 5, verse_start: 1, verse_end: 1, name: 'The Fear of the Kings' },
+  { chapter: 5, verse_start: 2, verse_end: 9, name: 'Covenant Renewal at Gilgal' },
+  { chapter: 5, verse_start: 10, verse_end: 12, name: 'Passover and the Manna Ceases' },
+  { chapter: 5, verse_start: 13, verse_end: 15, name: 'The Captain of the LORD\'s Host' },
+  { chapter: 6, verse_start: 1, verse_end: 5, name: 'The Divine Battle Plan for Jericho' },
+  { chapter: 6, verse_start: 6, verse_end: 16, name: 'Joshua Relays the Plan' },
+  { chapter: 6, verse_start: 17, verse_end: 27, name: 'The Fall of Jericho' },
+  { chapter: 7, verse_start: 1, verse_end: 12, name: 'Achan\'s Sin and the Defeat at Ai' },
+  { chapter: 7, verse_start: 13, verse_end: 26, name: 'The Judgment of Achan' },
+  { chapter: 8, verse_start: 1, verse_end: 13, name: 'The Strategy for Ai' },
+  { chapter: 8, verse_start: 14, verse_end: 29, name: 'The Capture and Destruction of Ai' },
+  { chapter: 8, verse_start: 30, verse_end: 35, name: 'The Covenant Renewal on Mount Ebal' },
+  { chapter: 9, verse_start: 1, verse_end: 15, name: 'The Gibeonite Deception' },
+  { chapter: 9, verse_start: 16, verse_end: 27, name: 'The Discovery and Servitude' },
+  { chapter: 10, verse_start: 1, verse_end: 11, name: 'The Southern Coalition Attacks' },
+  { chapter: 10, verse_start: 12, verse_end: 15, name: 'The Sun Stands Still' },
+  { chapter: 10, verse_start: 16, verse_end: 28, name: 'Execution of the Five Kings' },
+  { chapter: 10, verse_start: 29, verse_end: 43, name: 'Summary of the Southern Conquest' },
+  { chapter: 11, verse_start: 1, verse_end: 15, name: 'The Northern Campaign' },
+  { chapter: 11, verse_start: 16, verse_end: 23, name: 'Final Summary of the Conquest' },
+  { chapter: 12, verse_start: 1, verse_end: 24, name: 'The List of Defeated Kings' },
+  { chapter: 13, verse_start: 1, verse_end: 7, name: 'The Command to Divide the Land' },
+  { chapter: 13, verse_start: 8, verse_end: 33, name: 'The Transjordan Inheritance' },
+  { chapter: 14, verse_start: 1, verse_end: 5, name: 'The Division of Canaan Begins' },
+  { chapter: 14, verse_start: 6, verse_end: 15, name: 'Caleb\'s Special Inheritance' },
+  { chapter: 15, verse_start: 1, verse_end: 12, name: 'The Boundaries of Judah' },
+  { chapter: 15, verse_start: 13, verse_end: 19, name: 'Caleb, Othniel, and Achsah' },
+  { chapter: 15, verse_start: 20, verse_end: 63, name: 'The Cities of Judah' },
+  { chapter: 16, verse_start: 1, verse_end: 17, name: 'The Inheritance of Joseph' },
+  { chapter: 18, verse_start: 1, verse_end: 10, name: 'The Tabernacle at Shiloh and the Seven Tribes' },
+  { chapter: 18, verse_start: 11, verse_end: 28, name: 'The Lot of Benjamin' },
+  { chapter: 19, verse_start: 1, verse_end: 48, name: 'The Lots of Simeon through Dan' },
+  { chapter: 19, verse_start: 49, verse_end: 51, name: 'Joshua\'s Personal Inheritance' },
+  { chapter: 20, verse_start: 1, verse_end: 9, name: 'The Cities of Refuge' },
+  { chapter: 21, verse_start: 1, verse_end: 42, name: 'The Levitical Cities' },
+  { chapter: 21, verse_start: 43, verse_end: 45, name: 'The Great Theological Conclusion' },
+  { chapter: 22, verse_start: 1, verse_end: 9, name: 'The Transjordan Tribes Dismissed' },
+  { chapter: 22, verse_start: 10, verse_end: 20, name: 'The Altar of Witness and the Crisis' },
+  { chapter: 22, verse_start: 21, verse_end: 34, name: 'The Crisis Averted' },
+  { chapter: 23, verse_start: 1, verse_end: 16, name: 'Joshua\'s First Farewell Address' },
+  { chapter: 24, verse_start: 1, verse_end: 13, name: 'The Assembly at Shechem' },
+  { chapter: 24, verse_start: 14, verse_end: 28, name: 'The Shechem Covenant' },
+  { chapter: 24, verse_start: 29, verse_end: 33, name: 'The End of an Era' }
+];
+
+export default JOSHUA_PERICOPES;

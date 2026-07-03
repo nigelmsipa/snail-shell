@@ -77,22 +77,22 @@ Compare to CPU-only Void Linux Ollama speed.
 ### 1. Pull latest changes
 
 ```bash
-cd ~/snail-shell
+cd ~/wolf-and-word
 git pull
 ```
 
 ### 2. Install Kokoro dependencies
 
 ```bash
-source ~/snail-shell/.venv/bin/activate
+source ~/wolf-and-word/.venv/bin/activate
 pip install sherpa-onnx lameenc
 ```
 
 ### 3. Download the Kokoro model
 
 ```bash
-mkdir -p ~/snail-shell/kokoro-en-v0_19
-cd ~/snail-shell/kokoro-en-v0_19
+mkdir -p ~/wolf-and-word/kokoro-en-v0_19
+cd ~/wolf-and-word/kokoro-en-v0_19
 
 # Download all required files:
 wget https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-en-v0_19.tar.bz2
@@ -103,7 +103,7 @@ rm kokoro-en-v0_19.tar.bz2
 If the above URL is broken, files can also be found at:
 https://huggingface.co/csukuangfj/kokoro-en-v0_19
 
-Required files inside `~/snail-shell/kokoro-en-v0_19/`:
+Required files inside `~/wolf-and-word/kokoro-en-v0_19/`:
 - `model.onnx`
 - `voices.bin`
 - `tokens.txt`
@@ -116,7 +116,7 @@ Required files inside `~/snail-shell/kokoro-en-v0_19/`:
 tmux kill-session -t render
 
 tmux new -s render
-cd ~/snail-shell
+cd ~/wolf-and-word
 source .venv/bin/activate
 export HSA_OVERRIDE_GFX_VERSION=10.3.0
 python server.py --port 7272
@@ -148,7 +148,7 @@ The goal is to find out if the GPU helps Kokoro more than it helps VibeVoice.
 ## Benchmark results (2026-06-11, RX 6600 / gfx1030)
 
 Done. Deps installed (`sherpa-onnx` 1.13.2 + `lameenc`), model downloaded to
-`~/snail-shell/kokoro-en-v0_19`, server restarted, `adam` tested. Same
+`~/wolf-and-word/kokoro-en-v0_19`, server restarted, `adam` tested. Same
 3-sentence text through both models:
 
 | Model | Voice | Audio | Wall | RTF |

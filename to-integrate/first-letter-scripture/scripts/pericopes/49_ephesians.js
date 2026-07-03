@@ -1,0 +1,16 @@
+export const EPHESIANS_PERICOPES = [
+  { chapter: 1, verse_start: 1, verse_end: 14, name: 'Blessed with Every Spiritual Blessing' },
+  { chapter: 1, verse_start: 15, verse_end: 23, name: 'That You May Know' },
+  { chapter: 2, verse_start: 1, verse_end: 10, name: 'By Grace You Have Been Saved' },
+  { chapter: 2, verse_start: 11, verse_end: 22, name: 'One New Man' },
+  { chapter: 3, verse_start: 1, verse_end: 13, name: 'The Mystery of Christ' },
+  { chapter: 3, verse_start: 14, verse_end: 21, name: 'Rooted and Grounded in Love' },
+  { chapter: 4, verse_start: 1, verse_end: 16, name: 'Walk Worthy of Your Calling' },
+  { chapter: 4, verse_start: 17, verse_end: 32, name: 'Put Off the Old Self' },
+  { chapter: 5, verse_start: 1, verse_end: 14, name: 'Walk in Love' },
+  { chapter: 5, verse_start: 15, verse_end: 21, name: 'Be Filled with the Spirit' },
+  { chapter: 5, verse_start: 22, verse_end: 33, name: 'Wives Submit to Your Husbands' },
+  { chapter: 6, verse_start: 1, verse_end: 9, name: 'Children and Slaves Obey' },
+  { chapter: 6, verse_start: 10, verse_end: 20, name: 'The Armor of God' },
+  { chapter: 6, verse_start: 21, verse_end: 24, name: 'Tychicus Will Tell You' },
+];

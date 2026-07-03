@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Pure Word — Vellum palette */
+    --background: 50 70% 96%;          /* #fcf9ef */
+    --foreground: 60 4% 25%;           /* #42423D */
+
+    --card: 50 70% 96%;
+    --card-foreground: 60 4% 25%;
+
+    --popover: 50 70% 96%;
+    --popover-foreground: 60 4% 25%;
+
+    --primary: 60 4% 25%;
+    --primary-foreground: 50 70% 96%;
+
+    --secondary: 50 30% 90%;
+    --secondary-foreground: 60 4% 25%;
+
+    --muted: 50 30% 92%;
+    --muted-foreground: 60 6% 37%;     /* #656557 */
+
+    --accent: 50 30% 92%;
+    --accent-foreground: 60 4% 25%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 50 70% 96%;
+
+    --border: 48 14% 80%;
+    --input: 48 14% 85%;
+    --ring: 60 4% 25%;
+
+    --radius: 0.25rem;
+
+    /* Surface tokens used elsewhere */
+    --surface: 50 70% 96%;
+    --surface-dim: 55 13% 88%;
+    --surface-container-lowest: 0 0% 100%;
+    --surface-container-low: 50 50% 95%;
+    --surface-container: 50 30% 92%;
+    --surface-container-high: 46 19% 88%;
+    --surface-container-highest: 48 14% 85%;
+
+    --on-surface: 60 4% 25%;
+    --on-surface-variant: 60 6% 37%;
+    --outline-variant: 48 10% 72%;
+    --tertiary: 30 28% 37%;
+
+    --shadow-ambient: 60 4% 25%;
+
+    --touch-target: 44px;
+    --slider-thumb: 20px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Serif', Georgia, 'Times New Roman', serif;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Parchment surface with very subtle noise */
+  .vellum-bg {
+    background-color: #fcf9ef;
+    background-image:
+      radial-gradient(at 10% 0%, rgba(201, 168, 76, 0.06) 0px, transparent 50%),
+      radial-gradient(at 90% 100%, rgba(101, 101, 87, 0.05) 0px, transparent 55%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.26  0 0 0 0 0.26  0 0 0 0 0.24  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply, multiply, normal;
+  }
+
+  @media (max-width: 768px) {
+    button, input, select {
+      min-height: var(--touch-target);
+    }
+  }
+
+  [role="slider"] {
+    min-height: var(--touch-target);
+  }
+
+  .scroll-smooth { scroll-behavior: smooth; }
+
+  /* Word follow-along states (utility classes available if needed) */
+  .word-past   { color: #656557; opacity: 0.4; transition: opacity .5s ease, color .3s ease; }
+  .word-active { color: #42423D; font-weight: 700; transform: scale(1.02); transition: all .2s ease; }
+  .word-future { color: #42423D; opacity: 1; transition: opacity .3s ease; }
+}

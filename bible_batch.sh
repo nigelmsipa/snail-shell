@@ -4,7 +4,7 @@
 # For each chapter: bible_build -> render-vibevoice (Davis) -> align -> bible_player.
 # Skips a chapter if its -words.html already exists, so it survives crashes.
 set -eu
-cd /home/nigel/snail-shell
+cd /home/nigel/wolf-and-word
 
 BOOK="$1"; FIRST="$2"; LAST="$3"; VOICE="${4:-Davis}"
 RENDER_PY=/home/nigel/.kokoro-render-venv/bin/python
@@ -22,8 +22,8 @@ while [ "$c" -le "$LAST" ]; do
   python3 bible_build.py "$BOOK" "$c" "$base"
   echo "=== [$base] render ($VOICE) ==="
   nice -n 19 "$RENDER_PY" render-vibevoice.py \
-    "/home/nigel/snail-shell/$base.txt" \
-    "/home/nigel/snail-shell/$base.opus" "$VOICE" >"/tmp/$base-render.log" 2>&1
+    "/home/nigel/wolf-and-word/$base.txt" \
+    "/home/nigel/wolf-and-word/$base.opus" "$VOICE" >"/tmp/$base-render.log" 2>&1
   echo "=== [$base] align ==="
   # single-threaded: torch CPU forced-align segfaults intermittently when multi-threaded
   OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \

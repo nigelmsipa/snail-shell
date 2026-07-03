@@ -1,0 +1,7 @@
+project_id = "eamjsthjahxzsqmqjwxi"
+
+[functions.bible-api]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false

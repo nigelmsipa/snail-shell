@@ -29,7 +29,7 @@ SANS_SNAIL = ImageFont.truetype(FONT_SANS, 30)
 
 with open('/home/nigel/kjv-render/genesis-01-aligned.json') as f:
     aligned = json.load(f)
-with open('/home/nigel/snail-shell/genesis-01-units.json') as f:
+with open('/home/nigel/wolf-and-word/genesis-01-units.json') as f:
     units = json.load(f)['units']
 with open('/home/nigel/kjv-render/genesis-01.versemap.json') as f:
     vmap = json.load(f)
@@ -146,5 +146,5 @@ for line in lines:
             cursor_x += iw + space_w
     cursor_y += LH
 
-img.save('/home/nigel/snail-shell/test_frame.png')
-print("Saved /home/nigel/snail-shell/test_frame.png")
+img.save('/home/nigel/wolf-and-word/test_frame.png')
+print("Saved /home/nigel/wolf-and-word/test_frame.png")

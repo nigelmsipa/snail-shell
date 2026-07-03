@@ -28,7 +28,7 @@ import lameenc
 import numpy as np
 
 MODEL = os.path.expanduser(
-    os.environ.get("KOKORO_MODEL_DIR", "~/snail-shell/kokoro-en-v0_19"))
+    os.environ.get("KOKORO_MODEL_DIR", "~/wolf-and-word/kokoro-en-v0_19"))
 
 
 def load_text(path):

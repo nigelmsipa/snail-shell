@@ -1,0 +1,27 @@
+{
+  "name": "Wolf & Word",
+  "short_name": "Wolf&Word",
+  "description": "Master Bible verses through structured memorization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f2f4",
+  "theme_color": "#0040FF",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

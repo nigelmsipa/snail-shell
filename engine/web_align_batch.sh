@@ -15,7 +15,7 @@
 # >>> log (~/HANDOFF_WEB_ALIGN.md). Run TEST_BOOK=genesis first, eyeball leading-gap
 # >>> diagnostics in the per-chapter logs, THEN unleash on all 66 books.
 set -u
-cd /home/nigel/wolf-and-word
+cd /home/nigel/wolf-and-word/engine
 
 AUDIO_DIR="$HOME/web-human/audio"          # where the zips were unpacked
 TXT_DIR="$HOME/web-text-chapters"          # pre-split WEB chapter transcripts

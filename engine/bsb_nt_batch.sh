@@ -7,7 +7,7 @@
 # the still-downloading Matthew-26 / Jude) just continues / fills in on a re-run.
 # Bitrate = 48k mono Opus (user's final call 2026-06-15 — economical, transparent).
 set -u
-cd /home/nigel/wolf-and-word
+cd /home/nigel/wolf-and-word/engine
 
 DL="$HOME/Downloads"
 ALIGN_PY="$HOME/.snail-align-venv/bin/python"
@@ -32,7 +32,7 @@ process_one() {
   local book="$1" chap="$2" prefix="$3"
   local slug base mp3 log
   slug=$(printf '%s' "$book" | tr 'A-Z' 'a-z' | tr -d ' ')
-  base=$(printf "%s-%02d" "$slug" "$chap")
+  base=$(printf "../output/bsb/%s-%02d" "$slug" "$chap")
   mp3=$(printf "%s/%s_%03d.mp3" "$DL" "$prefix" "$chap")
   log="$LOGDIR/$base.log"
 

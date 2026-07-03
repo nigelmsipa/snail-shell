@@ -10,7 +10,7 @@
 # Resume-safe: writes <base>.bsb.done on success and skips it next run, so a
 # crash mid-batch just continues. Re-do a chapter by deleting its .bsb.done.
 set -eu
-cd /home/nigel/wolf-and-word
+cd /home/nigel/wolf-and-word/engine
 
 BOOK="$1"; FIRST="$2"; LAST="$3"
 ALIGN_PY=/home/nigel/.snail-align-venv/bin/python

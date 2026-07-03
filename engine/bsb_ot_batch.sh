@@ -4,7 +4,7 @@
 # Audio: ~/Downloads/<prefix>_<NNN>.mp3.  Markers: <slug>-<NN>.bsb.done (resume-safe).
 # BSB quirks: Psalms = book name "Psalm"; 22_so = "Song of Solomon".
 set -u
-cd /home/nigel/wolf-and-word
+cd /home/nigel/wolf-and-word/engine
 
 DL="$HOME/Downloads"
 ALIGN_PY="$HOME/.snail-align-venv/bin/python"
@@ -33,7 +33,7 @@ process_one() {
   local book="$1" chap="$2" prefix="$3"
   local slug base mp3 log
   slug=$(printf '%s' "$book" | tr 'A-Z' 'a-z' | tr -d ' ')
-  base=$(printf "%s-%02d" "$slug" "$chap")
+  base=$(printf "../output/bsb/%s-%02d" "$slug" "$chap")
   mp3=$(printf "%s/%s_%03d.mp3" "$DL" "$prefix" "$chap")
   log="$LOGDIR/$base.log"
 

@@ -6,11 +6,11 @@ from pathlib import Path
 
 # Paths
 ALIGNED = "/home/nigel/kjv-render/genesis-01-aligned.json"
-UNITS_JSON = "/home/nigel/wolf-and-word/genesis-01-units.json"
+UNITS_JSON = "/home/nigel/kjv-render/genesis-01-units.json"
 VERSEMAP = "/home/nigel/kjv-render/genesis-01.versemap.json"
 AUDIO = "/home/nigel/kjv-render/genesis-01.opus"
-OUTPUT_DIR = Path("/home/nigel/wolf-and-word/genesis_output")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = Path("/home/nigel/wolf-and-word/output/kjv/genesis_output")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # 4K resolution
 W, H = 3840, 2160
@@ -268,7 +268,7 @@ def main():
     p.wait()
 
     def make_static_video(image_name, duration, out_name):
-        img_path = Path("/home/nigel/wolf-and-word") / image_name
+        img_path = Path("/home/nigel/wolf-and-word/design") / image_name
         out_path = OUTPUT_DIR / out_name
         print(f"Making {out_name}...")
         subprocess.run([

@@ -4,7 +4,7 @@
 # transcript-word aligner per book into ~/geneva. A finished book drops
 # <slug>.geneva.done so a crash/restart just picks up where it left off.
 set -u
-cd /home/nigel/wolf-and-word
+cd /home/nigel/wolf-and-word/engine
 
 OUT="$HOME/geneva"
 MANIFEST="$OUT/manifest.tsv"
@@ -52,7 +52,7 @@ write_status() {
     echo "Resume command:"
     echo
     echo '```bash'
-    echo "cd /home/nigel/wolf-and-word"
+    echo "cd /home/nigel/wolf-and-word/engine"
     echo "MAXJOBS=$MAXJOBS ./geneva_batch.sh"
     echo '```'
     echo

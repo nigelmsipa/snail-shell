@@ -8,7 +8,7 @@ ALIGN=/workspace/snail-shell/align_from_audio.py
 MAXJOBS="${MAXJOBS:-2}"
 LOG="$KJV/MAIN.log"
 mkdir -p "$KJV/logs"
-cd /workspace/snail-shell
+cd /workspace/snail-shell/engine
 
 do_one() {
   local base="$1"

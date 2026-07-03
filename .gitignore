@@ -7,7 +7,7 @@ __pycache__/
 *.zip
 
 # --- generated read-along render data (regenerable; back up the .opus separately) ---
-renders/
+output/
 # scratch / iteration output dirs
 *_output/
 frames/
@@ -17,3 +17,5 @@ bakeoff/
 
 # design iteration / sticky-note mockups — source of truth is ~/open-design
 design/
+
+_scratch/

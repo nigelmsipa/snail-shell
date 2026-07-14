@@ -6,12 +6,22 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 
+# Chapter selection (env-driven for batch rendering)
+BOOK = os.environ.get("BOOK", "genesis")
+CHAPTER = os.environ.get("CHAPTER", "01").zfill(2)
+
+# Leading aligned words to skip. The openbible voice starts directly at
+# scripture, so 0. (The old Davis voice spoke a 3-word chapter preamble —
+# the hardcoded skip it left behind was silently dropping "In the beginning"
+# from Genesis 1:1. Set SKIP_WORDS=3 only for preamble voices.)
+SKIP_WORDS = int(os.environ.get("SKIP_WORDS", "0"))
+
 # Paths
-ALIGNED = "/home/nigel/openbible-kjv/genesis-01-aligned.json"
-UNITS_JSON = "/home/nigel/kjv-render/genesis-01-units.json"
-VERSEMAP = "/home/nigel/openbible-kjv/genesis-01.versemap.json"
-AUDIO = "/home/nigel/openbible-kjv/genesis-01.opus"
-OUTPUT_DIR = Path("/home/nigel/wolf-and-word/output/kjv/genesis_output")
+ALIGNED = f"/home/nigel/openbible-kjv/{BOOK}-{CHAPTER}-aligned.json"
+UNITS_JSON = f"/home/nigel/kjv-render/{BOOK}-{CHAPTER}-units.json"
+VERSEMAP = f"/home/nigel/openbible-kjv/{BOOK}-{CHAPTER}.versemap.json"
+AUDIO = f"/home/nigel/openbible-kjv/{BOOK}-{CHAPTER}.opus"
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "/home/nigel/wolf-and-word/output/kjv/genesis_output"))
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # 1080p resolution for faster iteration
@@ -104,7 +114,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             current_line_items = []
             cur_w = 0
 
-    for i in range(3, len(words)):
+    for i in range(SKIP_WORDS, len(words)):
         v = word_to_verse.get(i, -1)
         u_idx = word_to_unit_idx.get(i, 0)
         unit = units[u_idx]
@@ -174,7 +184,7 @@ def compute_scroll_track_chase(words, rows, word_to_row, total_frames):
     this curve; SS=2 fixed that. ALPHA is per-frame at 30fps."""
     ALPHA = 0.05
     row_first_time = {}
-    for i in range(3, len(words)):
+    for i in range(SKIP_WORDS, len(words)):
         r = word_to_row.get(i)
         if r is not None and r not in row_first_time:
             row_first_time[r] = float(words[i]['s'])
@@ -200,7 +210,7 @@ def compute_scroll_track_drift(words, rows, word_to_row, total_frames):
     at the narration's own pace (~30px/s), speeding gently through marker
     rows and slowing in long pauses, but always alive."""
     row_first_time = {}
-    for i in range(3, len(words)):
+    for i in range(SKIP_WORDS, len(words)):
         r = word_to_row.get(i)
         if r is not None and r not in row_first_time:
             row_first_time[r] = float(words[i]['s'])
@@ -225,7 +235,7 @@ def compute_scroll_track_gauss(words, rows, word_to_row, total_frames):
     taller scene/story marker rows scroll their full height."""
     SIGMA_MS = 450.0
     row_first_time = {}
-    for i in range(3, len(words)):
+    for i in range(SKIP_WORDS, len(words)):
         r = word_to_row.get(i)
         if r is not None and r not in row_first_time:
             row_first_time[r] = float(words[i]['s'])
@@ -268,7 +278,7 @@ def compute_scroll_track_pagehold(words, rows, word_to_row, total_frames):
     SLIDE_MS = 700.0
 
     row_first_time = {}
-    for i in range(3, len(words)):
+    for i in range(SKIP_WORDS, len(words)):
         r = word_to_row.get(i)
         if r is not None and r not in row_first_time:
             row_first_time[r] = float(words[i]['s'])
@@ -332,7 +342,7 @@ def main():
     word_to_verse = {}
     v_idx = 0
     for i in range(len(words)):
-        if i < 3:
+        if i < SKIP_WORDS:
             word_to_verse[i] = 0
         else:
             if v_idx < len(verses) - 1 and i >= verses[v_idx+1]['word']:
@@ -360,7 +370,7 @@ def main():
     draw_bg = ImageDraw.Draw(bg_img)
     
     # Static top UI
-    draw_bg.text((132, 58), "GENESIS 1", font=SANS_MARK, fill=INK)
+    draw_bg.text((132, 58), f"{BOOK.upper()} {int(CHAPTER)}", font=SANS_MARK, fill=INK)
     draw_bg.text((132, 90), "KING JAMES VERSION", font=SANS_SUB, fill=META)
     
     brand_text = "W & W"
@@ -382,7 +392,7 @@ def main():
         out_file = OUTPUT_DIR / f"sample_{SCROLL_MODE}_ss{SS}.mp4"
         audio_args = ["-ss", str(SAMPLE_START), "-t", str(SAMPLE_END - SAMPLE_START), "-i", AUDIO]
     else:
-        out_file = OUTPUT_DIR / f"reading_scroll_{SCROLL_MODE}_1080p.mp4"
+        out_file = OUTPUT_DIR / f"{BOOK}-{CHAPTER}-scroll.mp4"
         audio_args = ["-i", AUDIO]
     print(f"Encoding {out_file}...")
     p = subprocess.Popen([

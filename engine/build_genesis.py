@@ -316,16 +316,30 @@ def compute_scroll_track_pagehold(words, rows, word_to_row, total_frames):
 
 def draw_centered_text(draw, text, font, y_center, color, letter_spacing=0):
     """Centered marker text. `y_center` and `letter_spacing` are 1x layout
-    values; drawing happens in SS space with the matching SS font."""
+    values; drawing happens in SS space with the matching SS font.
+
+    Rows straddling the top cull boundary can land at y_center ~ -52.4999...;
+    at certain subpixel offsets PIL computes a zero-size glyph mask and raises
+    'bad image size' (killed 3/50 chapters in the first batch). Anything that
+    high sits in the alpha-0 fade zone anyway, so skip it — and armor each
+    glyph draw so a stray PIL edge case can never kill a chapter render."""
+    if y_center < -10:
+        return
     ls = letter_spacing * SS
     if letter_spacing > 0:
         total_w = sum(draw.textlength(ch, font=font) for ch in text) + ls * max(0, len(text) - 1)
         cx = (W * SS - total_w) / 2
         for ch in text:
-            draw.text((cx, y_center * SS), ch, font=font, fill=color, anchor="lm")
+            try:
+                draw.text((cx, y_center * SS), ch, font=font, fill=color, anchor="lm")
+            except ValueError:
+                pass
             cx += draw.textlength(ch, font=font) + ls
     else:
-        draw.text((W * SS / 2, y_center * SS), text, font=font, fill=color, anchor="mm")
+        try:
+            draw.text((W * SS / 2, y_center * SS), text, font=font, fill=color, anchor="mm")
+        except ValueError:
+            pass
 
 def main():
     print("Loading data...")

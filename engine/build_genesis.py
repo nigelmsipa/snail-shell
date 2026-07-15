@@ -36,7 +36,7 @@ MARGIN_X = 384 * U  # (1920 - 1152)/2 — 1152px column = ~52 CPL (kinetic-typog
 LH = 90 * U  # 1.5 line-height on 60px body — saccadic landing zones for moving text
 
 # Colors
-BG = (252, 252, 252)
+BG = (255, 255, 255)  # pure white — user amendment 2026-07-14 (was #fcfcfc)
 INK = (38, 50, 79)
 READ = (163, 155, 139)
 META = (154, 147, 136)
@@ -55,15 +55,15 @@ FONT_SANS_SEMI = "/usr/share/fonts/TTF/IBMPlexSans-SemiBold.ttf"
 FONT_SERIF_ITALIC = "/home/nigel/.local/share/fonts/source-serif-4/SourceSerif4Display-It.otf"
 
 # Scaled based on CSS ratios relative to 60px body font
-SANS_MARK = ImageFont.truetype(FONT_SANS, 26 * U)
-SANS_SUB = ImageFont.truetype(FONT_SANS_REG, 15 * U)
+SANS_MARK = ImageFont.truetype(FONT_SANS, 28 * U)
+SANS_SUB = ImageFont.truetype(FONT_SANS_REG, 16 * U)
 BODY_PT = 60 * U  # 16-20 arcmin x-height on a phone at 12-15in — the master spec's anchor value
 SERIF_BODY = ImageFont.truetype(FONT_SERIF, BODY_PT)
 SANS_VN = ImageFont.truetype(FONT_SANS, 22 * U)  # .36em of 60px body
 SANS_BRAND = ImageFont.truetype(FONT_SANS, 20 * U)
 
-SCENE_MARKER_FONT = ImageFont.truetype(FONT_SANS_SEMI, 25 * U)
-STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF_ITALIC, 44 * U)
+SCENE_MARKER_FONT = ImageFont.truetype(FONT_SANS_SEMI, 27 * U)
+STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF_ITALIC, 47 * U)
 SCENE_COLOR = (183, 173, 156)  # #b7ad9c
 STORY_COLOR = (167, 156, 138)  # #a79c8a
 HAIRLINE_COLOR = (201, 195, 183) # #c9c3b7
@@ -89,8 +89,8 @@ SAMPLE_END = float(os.environ.get("SAMPLE_END", "0") or 0)
 SS = 2
 SERIF_BODY_SS = ImageFont.truetype(FONT_SERIF, BODY_PT * SS)
 SANS_VN_SS = ImageFont.truetype(FONT_SANS, 22 * U * SS)
-SCENE_MARKER_FONT_SS = ImageFont.truetype(FONT_SANS_SEMI, 25 * U * SS)
-STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF_ITALIC, 44 * U * SS)
+SCENE_MARKER_FONT_SS = ImageFont.truetype(FONT_SANS_SEMI, 27 * U * SS)
+STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF_ITALIC, 47 * U * SS)
 
 def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
     img = Image.new("RGB", (10, 10))
@@ -108,6 +108,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
     
     last_unit_idx = -1
     last_story_letter = None
+
     
     def flush_line():
         nonlocal current_line_items, cur_w
@@ -131,14 +132,14 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             if last_story_letter is None or unit['story_letter'] != last_story_letter:
                 rows.append({
                     'type': 'story',
-                    'height': (80 + 2 + 30 + 44 + 60) * U,
+                    'height': (80 + 2 + 30 + 47 + 60) * U,
                     'text': unit['story_title']
                 })
                 last_story_letter = unit['story_letter']
 
             rows.append({
                 'type': 'scene',
-                'height': (52 + 25 + 40) * U,
+                'height': (52 + 27 + 40) * U,
                 'text': unit['title'].upper()
             })
             last_unit_idx = u_idx
@@ -146,7 +147,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
         items_to_add = []
         if v != current_verse and v > 0:
             vn_text = str(v)
-            vn_w = draw.textlength(vn_text, font=SANS_VN) + space_w * 0.4
+            vn_w = draw.textlength(vn_text, font=SANS_VN) + BODY_PT * 0.12
             items_to_add.append(('vn', vn_text, vn_w, v))
             current_verse = v
             
@@ -159,7 +160,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             if cur_w + iw > max_w and current_line_items:
                 flush_line()
             current_line_items.append(item)
-            cur_w += iw + space_w
+            cur_w += iw if itype == 'vn' else iw + space_w
             if itype == 'word':
                 word_to_row[ref] = len(rows)
 
@@ -221,8 +222,11 @@ def compute_scroll_track_drift(words, rows, word_to_row, total_frames):
         if r is not None and r not in row_first_time:
             row_first_time[r] = float(words[i]['s'])
 
-    times = np.array([row_first_time[r] for r in sorted(row_first_time)], dtype=float)
-    ys = np.array([rows[r]['y'] for r in sorted(row_first_time)], dtype=float)
+    times = [row_first_time[r] for r in sorted(row_first_time)]
+    ys = [float(rows[r]['y']) for r in sorted(row_first_time)]
+
+    times = np.array(times, dtype=float)
+    ys = np.array(ys, dtype=float)
 
     t_frames = np.arange(total_frames) / FPS * 1000.0 + 180.0
     track = np.interp(t_frames, times, ys)
@@ -390,7 +394,8 @@ def main():
     draw_bg = ImageDraw.Draw(bg_img)
     
     # Static top UI
-    draw_bg.text((132 * U, 58 * U), f"{BOOK.upper()} {int(CHAPTER)}", font=SANS_MARK, fill=INK)
+    header_text = f"{BOOK.upper()} {int(CHAPTER)}"
+    draw_bg.text((132 * U, 58 * U), header_text, font=SANS_MARK, fill=INK)
     draw_bg.text((132 * U, 90 * U), "KING JAMES VERSION", font=SANS_SUB, fill=META)
     
     brand_text = "W & W"
@@ -424,8 +429,11 @@ def main():
         "-r", str(FPS),
         "-i", "-",
         *audio_args,
+        "-vf", "scale=in_range=full:out_range=tv:out_color_matrix=bt709",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
         "-pix_fmt", "yuv420p",
+        "-colorspace", "bt709", "-color_primaries", "bt709",
+        "-color_trc", "bt709", "-color_range", "tv",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
         "-shortest",
         str(out_file)
@@ -474,12 +482,12 @@ def main():
 
             if r['type'] == 'scene':
                 # Text (52 top padding, text is 25 tall)
-                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + (52 + 12.5) * U, SCENE_COLOR, letter_spacing=5.5 * U)
+                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + (52 + 13.5) * U, SCENE_COLOR, letter_spacing=5.5 * U)
 
             elif r['type'] == 'story':
                 line_y = cursor_y + 80 * U
                 draw_text.rectangle([(W/2 - 40 * U) * SS, line_y * SS, (W/2 + 40 * U) * SS, (line_y + 2 * U) * SS], fill=HAIRLINE_COLOR)
-                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + (80 + 2 + 30 + 22) * U, STORY_COLOR)
+                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + (80 + 2 + 30 + 23.5) * U, STORY_COLOR)
 
             elif r['type'] == 'text':
                 cursor_x = MARGIN_X
@@ -488,8 +496,8 @@ def main():
                 for item in r['items']:
                     itype, itext, iw, ref = item
                     if itype == 'vn':
-                        draw_text.text(((cursor_x + space_w*0.1) * SS, (baseline - 50 * U) * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
-                        cursor_x += iw + space_w
+                        draw_text.text((cursor_x * SS, (baseline - 50 * U) * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
+                        cursor_x += iw
                     else:
                         w_idx = ref
                         if w_idx == active_w:

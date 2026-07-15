@@ -24,11 +24,16 @@ AUDIO = f"/home/nigel/openbible-kjv/{BOOK}-{CHAPTER}.opus"
 OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "/home/nigel/wolf-and-word/output/kjv/genesis_output"))
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# 1080p resolution for faster iteration
-W, H = 1920, 1080
+# Output resolution: RES=1080 (default) or RES=2160 (4K). All layout values
+# below are authored in 1080p units and scaled by U — the design spec's own
+# "×2 for the 4K render" rule.
+RES = os.environ.get("RES", "1080")
+U = 2 if RES == "2160" else 1
+
+W, H = 1920 * U, 1080 * U
 FPS = 30
-MARGIN_X = 280  # (1920 - 1360)/2 = 280
-LH = 80
+MARGIN_X = 384 * U  # (1920 - 1152)/2 — 1152px column = ~52 CPL (kinetic-typography master spec)
+LH = 90 * U  # 1.5 line-height on 60px body — saccadic landing zones for moving text
 
 # Colors
 BG = (252, 252, 252)
@@ -42,22 +47,23 @@ HLTEXT = (44, 39, 34)
 MUTED_ACCENT = (180, 150, 90)
 
 # Fonts
-FONT_SERIF = "/usr/share/fonts/TTF/adobe/SourceSerifPro-Regular.ttf"
+FONT_SERIF = "/home/nigel/.local/share/fonts/source-serif-4/SourceSerif4Display-Regular.otf"  # opsz=60 Display cut per master spec
 FONT_SERIF_IT = "/usr/share/fonts/TTF/adobe/SourceSerifPro-It.ttf"
 FONT_SANS = "/usr/share/fonts/TTF/IBMPlexSans-SemiBold.ttf"
 FONT_SANS_REG = "/usr/share/fonts/TTF/IBMPlexSans-Regular.ttf"
 FONT_SANS_SEMI = "/usr/share/fonts/TTF/IBMPlexSans-SemiBold.ttf"
-FONT_SERIF_ITALIC = "/usr/share/fonts/TTF/adobe/SourceSerifPro-It.ttf"
+FONT_SERIF_ITALIC = "/home/nigel/.local/share/fonts/source-serif-4/SourceSerif4Display-It.otf"
 
 # Scaled based on CSS ratios relative to 60px body font
-SANS_MARK = ImageFont.truetype(FONT_SANS, 26)
-SANS_SUB = ImageFont.truetype(FONT_SANS_REG, 15)
-SERIF_BODY = ImageFont.truetype(FONT_SERIF, 56)
-SANS_VN = ImageFont.truetype(FONT_SANS, 20)
-SANS_BRAND = ImageFont.truetype(FONT_SANS, 20)
+SANS_MARK = ImageFont.truetype(FONT_SANS, 26 * U)
+SANS_SUB = ImageFont.truetype(FONT_SANS_REG, 15 * U)
+BODY_PT = 60 * U  # 16-20 arcmin x-height on a phone at 12-15in — the master spec's anchor value
+SERIF_BODY = ImageFont.truetype(FONT_SERIF, BODY_PT)
+SANS_VN = ImageFont.truetype(FONT_SANS, 22 * U)  # .36em of 60px body
+SANS_BRAND = ImageFont.truetype(FONT_SANS, 20 * U)
 
-SCENE_MARKER_FONT = ImageFont.truetype(FONT_SANS_SEMI, 25)
-STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF_ITALIC, 44)
+SCENE_MARKER_FONT = ImageFont.truetype(FONT_SANS_SEMI, 25 * U)
+STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF_ITALIC, 44 * U)
 SCENE_COLOR = (183, 173, 156)  # #b7ad9c
 STORY_COLOR = (167, 156, 138)  # #a79c8a
 HAIRLINE_COLOR = (201, 195, 183) # #c9c3b7
@@ -81,10 +87,10 @@ SAMPLE_END = float(os.environ.get("SAMPLE_END", "0") or 0)
 # with uniform softness (a raw 1x rasterization snaps letters to whole pixels,
 # which makes small titles shimmer whenever the page moves slowly).
 SS = 2
-SERIF_BODY_SS = ImageFont.truetype(FONT_SERIF, 56 * SS)
-SANS_VN_SS = ImageFont.truetype(FONT_SANS, 20 * SS)
-SCENE_MARKER_FONT_SS = ImageFont.truetype(FONT_SANS_SEMI, 25 * SS)
-STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF_ITALIC, 44 * SS)
+SERIF_BODY_SS = ImageFont.truetype(FONT_SERIF, BODY_PT * SS)
+SANS_VN_SS = ImageFont.truetype(FONT_SANS, 22 * U * SS)
+SCENE_MARKER_FONT_SS = ImageFont.truetype(FONT_SANS_SEMI, 25 * U * SS)
+STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF_ITALIC, 44 * U * SS)
 
 def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
     img = Image.new("RGB", (10, 10))
@@ -125,14 +131,14 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             if last_story_letter is None or unit['story_letter'] != last_story_letter:
                 rows.append({
                     'type': 'story',
-                    'height': 80 + 2 + 30 + 44 + 60,
+                    'height': (80 + 2 + 30 + 44 + 60) * U,
                     'text': unit['story_title']
                 })
                 last_story_letter = unit['story_letter']
 
             rows.append({
                 'type': 'scene',
-                'height': 52 + 25 + 40,
+                'height': (52 + 25 + 40) * U,
                 'text': unit['title'].upper()
             })
             last_unit_idx = u_idx
@@ -273,8 +279,8 @@ def compute_scroll_track_pagehold(words, rows, word_to_row, total_frames):
     section heading. Motion is rare (~every 6-8 lines) and purposeful; every
     prior scheme (EMA chase, constant drift, per-line gauss steps) moved the
     page constantly, which is what made the titles 'bounce'."""
-    TOP_LINE = 330          # reading line lands here (top fade ends at 305)
-    BOTTOM_GUARD = H - 150  # advance before a line's bottom passes this
+    TOP_LINE = 330 * U          # reading line lands here (top fade ends at 305)
+    BOTTOM_GUARD = H - 150 * U  # advance before a line's bottom passes this
     SLIDE_MS = 700.0
 
     row_first_time = {}
@@ -323,7 +329,7 @@ def draw_centered_text(draw, text, font, y_center, color, letter_spacing=0):
     'bad image size' (killed 3/50 chapters in the first batch). Anything that
     high sits in the alpha-0 fade zone anyway, so skip it — and armor each
     glyph draw so a stray PIL edge case can never kill a chapter render."""
-    if y_center < -10:
+    if y_center < -10 * U:
         return
     ls = letter_spacing * SS
     if letter_spacing > 0:
@@ -384,18 +390,18 @@ def main():
     draw_bg = ImageDraw.Draw(bg_img)
     
     # Static top UI
-    draw_bg.text((132, 58), f"{BOOK.upper()} {int(CHAPTER)}", font=SANS_MARK, fill=INK)
-    draw_bg.text((132, 90), "KING JAMES VERSION", font=SANS_SUB, fill=META)
+    draw_bg.text((132 * U, 58 * U), f"{BOOK.upper()} {int(CHAPTER)}", font=SANS_MARK, fill=INK)
+    draw_bg.text((132 * U, 90 * U), "KING JAMES VERSION", font=SANS_SUB, fill=META)
     
     brand_text = "W & W"
     brand_w = draw_bg.textlength(brand_text, font=SANS_BRAND)
-    draw_bg.text((W - 132 - brand_w, H - 72 - 20), brand_text, font=SANS_BRAND, fill=META)
+    draw_bg.text((W - 132 * U - brand_w, H - (72 + 20) * U), brand_text, font=SANS_BRAND, fill=META)
 
     mask = Image.new("L", (W, H), 255)
     draw_mask = ImageDraw.Draw(mask)
     
-    fade_top = 130
-    fade_len = 175
+    fade_top = 130 * U
+    fade_len = 175 * U
     for y in range(fade_top):
         draw_mask.line([(0, y), (W, y)], fill=0)
     for y in range(fade_top, fade_top + fade_len):
@@ -403,10 +409,10 @@ def main():
         draw_mask.line([(0, y), (W, y)], fill=alpha)
 
     if SAMPLE_END > 0:
-        out_file = OUTPUT_DIR / f"sample_{SCROLL_MODE}_ss{SS}.mp4"
+        out_file = OUTPUT_DIR / f"sample_{SCROLL_MODE}_ss{SS}{"-4k" if U == 2 else ""}.mp4"
         audio_args = ["-ss", str(SAMPLE_START), "-t", str(SAMPLE_END - SAMPLE_START), "-i", AUDIO]
     else:
-        out_file = OUTPUT_DIR / f"{BOOK}-{CHAPTER}-scroll.mp4"
+        out_file = OUTPUT_DIR / f"{BOOK}-{CHAPTER}-scroll{"-4k" if U == 2 else ""}.mp4"
         audio_args = ["-i", AUDIO]
     print(f"Encoding {out_file}...")
     p = subprocess.Popen([
@@ -468,12 +474,12 @@ def main():
 
             if r['type'] == 'scene':
                 # Text (52 top padding, text is 25 tall)
-                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + 52 + 12.5, SCENE_COLOR, letter_spacing=5.5)
+                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + (52 + 12.5) * U, SCENE_COLOR, letter_spacing=5.5 * U)
 
             elif r['type'] == 'story':
-                line_y = cursor_y + 80
-                draw_text.rectangle([(W/2 - 40) * SS, line_y * SS, (W/2 + 40) * SS, (line_y + 2) * SS], fill=HAIRLINE_COLOR)
-                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + 80 + 2 + 30 + 22, STORY_COLOR)
+                line_y = cursor_y + 80 * U
+                draw_text.rectangle([(W/2 - 40 * U) * SS, line_y * SS, (W/2 + 40 * U) * SS, (line_y + 2 * U) * SS], fill=HAIRLINE_COLOR)
+                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + (80 + 2 + 30 + 22) * U, STORY_COLOR)
 
             elif r['type'] == 'text':
                 cursor_x = MARGIN_X
@@ -482,16 +488,16 @@ def main():
                 for item in r['items']:
                     itype, itext, iw, ref = item
                     if itype == 'vn':
-                        draw_text.text(((cursor_x + space_w*0.1) * SS, (baseline - 50) * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
+                        draw_text.text(((cursor_x + space_w*0.1) * SS, (baseline - 50 * U) * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
                         cursor_x += iw + space_w
                     else:
                         w_idx = ref
                         if w_idx == active_w:
-                            hx1 = cursor_x - 6
-                            hy1 = baseline - 56 * 0.40
-                            hx2 = cursor_x + iw + 6
-                            hy2 = baseline + 56 * 0.22
-                            draw_text.rounded_rectangle([hx1 * SS, hy1 * SS, hx2 * SS, hy2 * SS], radius=4 * SS, fill=HL)
+                            hx1 = cursor_x - 6 * U
+                            hy1 = baseline - BODY_PT * 0.40
+                            hx2 = cursor_x + iw + 6 * U
+                            hy2 = baseline + BODY_PT * 0.22
+                            draw_text.rounded_rectangle([hx1 * SS, hy1 * SS, hx2 * SS, hy2 * SS], radius=4 * U * SS, fill=HL)
                             draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=HLTEXT, anchor="ls")
                         elif active_w != -1 and w_idx < active_w:
                             draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=READ, anchor="ls")

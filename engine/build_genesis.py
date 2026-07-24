@@ -31,19 +31,24 @@ RES = os.environ.get("RES", "1080")
 U = 2 if RES == "2160" else 1
 
 W, H = 1920 * U, 1080 * U
-FPS = 30
+# 30fps sits between the jerky (17 Hz) and smooth (33 Hz) motion conditions in
+# the attention-capture work; FPS=60 puts the caret unambiguously in the
+# no-capture regime. Encode time is the only cost.
+FPS = int(os.environ.get("FPS", "30"))
 MARGIN_X = 384 * U  # (1920 - 1152)/2 — 1152px column = ~52 CPL (kinetic-typography master spec)
 LH = 90 * U  # 1.5 line-height on 60px body — saccadic landing zones for moving text
 
 # Colors
-BG = (255, 255, 255)  # pure white — user amendment 2026-07-14 (was #fcfcfc)
-INK = (38, 50, 79)
+def _hx(s): s = s.lstrip("#"); return tuple(int(s[i:i+2], 16) for i in (0, 2, 4))
+def _env_rgb(name, default): return _hx(os.environ[name]) if os.environ.get(name) else default
+BG = _env_rgb("BG_HEX", (255, 255, 255))  # pure white — override e.g. BG_HEX=518B0E
+INK = _env_rgb("INK_HEX", (38, 50, 79))   # lit text (monkeytype: read+active)
 READ = (163, 155, 139)
 META = (154, 147, 136)
 FADE = (248, 244, 232)
-ACCENT = (196, 164, 100)
+ACCENT = _env_rgb("ACCENT_HEX", (196, 164, 100))  # caret + verse numbers
 HL = (244, 217, 153)
-HLTEXT = (44, 39, 34)
+HLTEXT = (38, 50, 79)  # = ink, per color-constitution.md ("hltext = ink, consistent everywhere")
 MUTED_ACCENT = (180, 150, 90)
 
 # Fonts
@@ -62,8 +67,29 @@ SERIF_BODY = ImageFont.truetype(FONT_SERIF, BODY_PT)
 SANS_VN = ImageFont.truetype(FONT_SANS, 22 * U)  # .36em of 60px body
 SANS_BRAND = ImageFont.truetype(FONT_SANS, 20 * U)
 
-SCENE_MARKER_FONT = ImageFont.truetype(FONT_SANS_SEMI, 27 * U)
-STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF_ITALIC, 47 * U)
+# MARKER_STYLE — the story/scene hierarchy treatment.
+#   current  the shipped pair: serif-roman story over SEMIBOLD letterspaced CAPS sans scene.
+#            Differentiated on FOUR axes at once (typeface, case, size, letterspacing) and
+#            the colors are near-identical, so color does no work. Net effect is a HIERARCHY
+#            INVERSION: the scene is the lower tier but semibold+caps+tracking gives it more
+#            presence than the light serif story above it.
+#   weight   one-variable fix — scene drops to sans REGULAR so it stops out-shouting its parent.
+#   unified  both tiers in the serif, differing on size + color only (4 axes -> 2).
+#   air      styling untouched; PROXIMITY does the work. Space moves from below each marker to
+#            above it, binding the title to the text it introduces. Row totals are unchanged so
+#            the scroll track is identical and only the grouping differs.
+MARKER_STYLE = os.environ.get("MARKER_STYLE", "current")
+# MARKER_AIR is independent of the styling so the two fixes compose (e.g. weight + air).
+MARKER_AIR = os.environ.get("MARKER_AIR", "1" if MARKER_STYLE == "air" else "0") == "1"
+SCENE_UPPER = MARKER_STYLE != "unified"
+if MARKER_STYLE == "weight":
+    _scene_face, _scene_pt, _scene_ls = FONT_SANS_REG, 27, 5.5
+elif MARKER_STYLE == "unified":
+    _scene_face, _scene_pt, _scene_ls = FONT_SERIF, 28, 0.0
+else:
+    _scene_face, _scene_pt, _scene_ls = FONT_SANS_SEMI, 27, 5.5
+SCENE_MARKER_FONT = ImageFont.truetype(_scene_face, _scene_pt * U)
+STORY_MARKER_FONT = ImageFont.truetype(FONT_SERIF, 40 * U)  # serif ROMAN — bookish tier above the sans scenes (italic rejected 2026-07-16)
 SCENE_COLOR = (183, 173, 156)  # #b7ad9c
 STORY_COLOR = (167, 156, 138)  # #a79c8a
 HAIRLINE_COLOR = (201, 195, 183) # #c9c3b7
@@ -74,7 +100,74 @@ HAIRLINE_COLOR = (201, 195, 183) # #c9c3b7
 # "drift":    TELEPROMPTER — never stops; glides continuously at the
 #             narration's pace between line onsets. The alive one.
 # gauss/drift need SS=2 supersampling or small type shimmers in slow motion.
-SCROLL_MODE = os.environ.get("SCROLL_MODE", "drift")
+SCROLL_MODE = os.environ.get("SCROLL_MODE", "gauss")  # V1 SHIPPING DEFAULT 2026-07-23 (was drift)
+
+# "word": per-word highlight — a crisp beat on each word as it's spoken
+#         (stresses the word; matches the memorization grammar).
+# "wash": traveling wash — one band gliding between words (tested 2026-07-16,
+#         kept for comparison; smears word boundaries in fast passages).
+HIGHLIGHT = os.environ.get("HIGHLIGHT", "word")
+
+# HL_DOTS: micro-halftone INSIDE the highlighter band only (the Sailfish
+# cover tooth, applied to the one surface that's ours) — scripture untouched.
+# The lattice is PHASE-LOCKED TO THE PAGE, not the box: the highlighter is a
+# window revealing the paper's tooth, so the pattern never strobes between
+# words — each word sits over the same fixed field. Default ON (2026-07-16).
+HL_DOTS = os.environ.get("HL_DOTS", "1") == "1"
+HL_DOT = (226, 199, 135)  # the wash's own shadow tone, ~18 levels under HL
+# HL_PATTERN: the texture inside the band — all page-locked & pixel-snapped:
+#   dots    45° half-dot lattice (the Sailfish tooth)
+#   laid    horizontal laid-paper lines
+#   stripes 45° pinstripes
+#   cross   crosshatch (both diagonals)
+#   stipple hashed blue-noise-ish speckle (organic paper grain)
+HL_PATTERN = os.environ.get("HL_PATTERN", "dots")
+
+# MONKEYTYPE MODE (HL_STYLE=monkeytype): inverts the reading model. The page
+# sits DIM; each word ignites to full ink as a smooth gold caret glides past
+# it — the page fills in as it's read (vs. receding behind). Word-precise.
+# V1 SHIPPING DEFAULT 2026-07-23: monkeypace. Set HL_STYLE explicitly for the others.
+HL_STYLE = os.environ.get("HL_STYLE", "monkeypace")
+MT = HL_STYLE in ("monkeytype", "monkeyband", "monkeypace")
+MT_BAND = HL_STYLE == "monkeyband"  # monkeytype fill + the band marker
+DIM = _env_rgb("DIM_HEX", (206, 202, 193))  # "untyped" — soft, above the recede
+
+# MONKEYPACE (HL_STYLE=monkeypace): monkeytype's ignition, but the caret never
+# rests. Plain monkeytype holds the caret still through a word then DASHES
+# 160ms to the next one — which is a fresh motion ONSET every word, and motion
+# onset captures attention involuntarily precisely when the motion that follows
+# is jerky rather than smooth (Psychon. Bull. Rev. 2011: capture at 8/17 Hz,
+# none at 33/100 Hz). That per-word grab is the "trick" feeling. Monkeypace
+# instead sweeps the caret ACROSS each word over that word's own spoken
+# duration and across the gap during the silence: no onsets left to grab with,
+# and the marker becomes a reading pacer — a moving anchor the eye chooses to
+# follow. Travel works out to ~2-3 deg/s, far inside the 20-30 deg/s band where
+# smooth pursuit is comfortable.
+MT_PACE = HL_STYLE == "monkeypace"
+# Caret width: 3px of saturated gold is inside the zone 4:2:0 chroma
+# subsampling smears (see the kinetic-typography master spec) — 4 gives the
+# luma edge something to survive YouTube's encode with.
+CARET_W = float(os.environ.get("CARET_W", "4"))
+CARET_A = int(os.environ.get("CARET_A", "255"))  # <255 = a veil passing over glyphs, not a slash through them
+# linear = constant speed, metronomic, never at rest (the true pacer).
+# smooth = eases to a stop at each word edge — prosodic undulation, but it
+# reintroduces a soft start/stop per word.
+PACE_EASE = os.environ.get("PACE_EASE", "linear")
+# PACE_SMOOTH: time constant in ms for a low-pass follow on the caret position.
+# The caret's AVERAGE speed is not a free parameter — it must cross the line in
+# the time the narration takes, so distance/time is fixed by the text and the
+# audio. What this evens out is the VELOCITY SPIKES: word-locked travel darts
+# across short quick words ("the", "and") and crawls across long ones, and that
+# unevenness is what reads as "too fast". The filter lags the target slightly
+# and catches up, so sync is preserved and self-correcting. 0 = off.
+PACE_SMOOTH = float(os.environ.get("PACE_SMOOTH", "120"))  # V1 SHIPPING DEFAULT 2026-07-23
+def _pace_ease(p):
+    p = max(0.0, min(1.0, p))
+    return p * p * (3 - 2 * p) if PACE_EASE == "smooth" else p
+
+# Advance the highlight at the next word's true onset minus this lead — never
+# at the gap midpoint. Locked 2026-07-06 (the "and lights up early" fix).
+LEAD_MS = 50
 
 # Windowed sample render for fast iteration, e.g.:
 #   SCROLL_MODE=pagehold SAMPLE_START=40 SAMPLE_END=65 python3 build_genesis.py
@@ -89,8 +182,8 @@ SAMPLE_END = float(os.environ.get("SAMPLE_END", "0") or 0)
 SS = 2
 SERIF_BODY_SS = ImageFont.truetype(FONT_SERIF, BODY_PT * SS)
 SANS_VN_SS = ImageFont.truetype(FONT_SANS, 22 * U * SS)
-SCENE_MARKER_FONT_SS = ImageFont.truetype(FONT_SANS_SEMI, 27 * U * SS)
-STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF_ITALIC, 47 * U * SS)
+SCENE_MARKER_FONT_SS = ImageFont.truetype(_scene_face, _scene_pt * U * SS)
+STORY_MARKER_FONT_SS = ImageFont.truetype(FONT_SERIF, 40 * U * SS)
 
 def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
     img = Image.new("RGB", (10, 10))
@@ -101,7 +194,8 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
     
     rows = []
     word_to_row = {}
-    
+    word_pos = {}  # ref -> (row_idx, x0, x1) for the traveling wash
+
     current_verse = None
     current_line_items = []
     cur_w = 0
@@ -132,7 +226,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             if last_story_letter is None or unit['story_letter'] != last_story_letter:
                 rows.append({
                     'type': 'story',
-                    'height': (80 + 2 + 30 + 47 + 60) * U,
+                    'height': (56 + 2 + 24 + 40 + 44) * U,  # tightened 2026-07-16 — old air was half the grotesque
                     'text': unit['story_title']
                 })
                 last_story_letter = unit['story_letter']
@@ -140,14 +234,14 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             rows.append({
                 'type': 'scene',
                 'height': (52 + 27 + 40) * U,
-                'text': unit['title'].upper()
+                'text': unit['title'].upper() if SCENE_UPPER else unit['title']
             })
             last_unit_idx = u_idx
 
         items_to_add = []
         if v != current_verse and v > 0:
             vn_text = str(v)
-            vn_w = draw.textlength(vn_text, font=SANS_VN) + BODY_PT * 0.12
+            vn_w = draw.textlength(vn_text, font=SANS_VN) + BODY_PT * 0.06  # tightened from 0.12em — the sup must cling to its verse (2026-07-16)
             items_to_add.append(('vn', vn_text, vn_w, v))
             current_verse = v
             
@@ -160,9 +254,10 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
             if cur_w + iw > max_w and current_line_items:
                 flush_line()
             current_line_items.append(item)
-            cur_w += iw if itype == 'vn' else iw + space_w
             if itype == 'word':
                 word_to_row[ref] = len(rows)
+                word_pos[ref] = (len(rows), MARGIN_X + cur_w, MARGIN_X + cur_w + iw)
+            cur_w += iw if itype == 'vn' else iw + space_w
 
     flush_line()
     
@@ -171,7 +266,7 @@ def layout_chapter(words, word_to_verse, word_to_unit_idx, units):
         r['y'] = cy
         cy += r['height']
         
-    return rows, word_to_row, space_w
+    return rows, word_to_row, space_w, word_pos
 
 def compute_scroll_track(words, rows, word_to_row, total_frames):
     if SCROLL_MODE == "pagehold":
@@ -386,21 +481,54 @@ def main():
         else:
             word_to_unit_idx[i] = verse_to_unit_idx.get(v, 0)
 
-    rows, word_to_row, space_w = layout_chapter(words, word_to_verse, word_to_unit_idx, units)
+    rows, word_to_row, space_w, word_pos = layout_chapter(words, word_to_verse, word_to_unit_idx, units)
     
     start_y_offset = H // 2 - LH
     
     bg_img = Image.new("RGB", (W, H), BG)
     draw_bg = ImageDraw.Draw(bg_img)
     
-    # Static top UI
+    # Static top UI. TITLE_CENTER=1 centers the book anchor over the column
+    # (the card render's "everything in the middle" posture) instead of the
+    # constitution's top-left pin.
+    # The anchor opens PROMINENT (ink) so you know the room you walked into,
+    # then eases into the recede family after TITLE_FADE_AT seconds — still
+    # legible on a glance, no longer fighting scripture for hierarchy.
     header_text = f"{BOOK.upper()} {int(CHAPTER)}"
-    draw_bg.text((132 * U, 58 * U), header_text, font=SANS_MARK, fill=INK)
-    draw_bg.text((132 * U, 90 * U), "KING JAMES VERSION", font=SANS_SUB, fill=META)
-    
     brand_text = "W & W"
     brand_w = draw_bg.textlength(brand_text, font=SANS_BRAND)
-    draw_bg.text((W - 132 * U - brand_w, H - (72 + 20) * U), brand_text, font=SANS_BRAND, fill=META)
+    _bg_plain = bg_img.copy()
+
+    def _draw_static_ui(im, c_bk, c_ver):
+        d = ImageDraw.Draw(im)
+        # TOP-LEFT PIN by decree (settled 2026-07-23, and this is the ORIGINAL
+        # constitution value — it was briefly amended to centered that day and
+        # reverted the same session).
+        # The reason, which had never been written down: the centre axis is not
+        # spare space, it is the busiest lane on the page — a scene title cycles
+        # through it every few verses. The book anchor is the one element that
+        # NEVER changes, so parking it in that lane pollutes a working channel
+        # for no gain. Off-axis is less "clean" in a still frame and more
+        # readable in motion. TITLE_CENTER=1 centers it (the card render's
+        # "everything in the middle" posture) if that is ever wanted again.
+        if os.environ.get("TITLE_CENTER", "0") == "1":
+            d.text((W / 2, 58 * U), header_text, font=SANS_MARK, fill=c_bk, anchor="ma")
+            d.text((W / 2, 96 * U), "KING JAMES VERSION", font=SANS_SUB, fill=c_ver, anchor="ma")
+        else:
+            d.text((132 * U, 58 * U), header_text, font=SANS_MARK, fill=c_bk)
+            d.text((132 * U, 90 * U), "KING JAMES VERSION", font=SANS_SUB, fill=c_ver)
+        d.text((W - 132 * U - brand_w, H - (72 + 20) * U), brand_text, font=SANS_BRAND, fill=META)
+
+    _draw_static_ui(bg_img, INK, META)                 # opening state
+    bg_faded = _bg_plain
+    # settled state: BARELY visible — a breath above the paper, watermark-grade.
+    # You find it only when you go looking for it.
+    _draw_static_ui(bg_faded, (226, 222, 213), (234, 231, 224))
+    # the fade is liturgical, not stopwatch: bright while you arrive, receding
+    # the moment the Word begins (first spoken word onset)
+    _fade_env = os.environ.get("TITLE_FADE_AT")
+    TITLE_FADE_AT = float(_fade_env) if _fade_env else max(0.5, words[SKIP_WORDS]['s'] / 1000.0)
+    TITLE_FADE_DUR = float(os.environ.get("TITLE_FADE_DUR", "1.6"))
 
     mask = Image.new("L", (W, H), 255)
     draw_mask = ImageDraw.Draw(mask)
@@ -413,11 +541,13 @@ def main():
         alpha = int(((y - fade_top) / fade_len) ** 1.5 * 255)
         draw_mask.line([(0, y), (W, y)], fill=alpha)
 
+    # OUT_NAME: explicit filename, so A/B renders that differ only by an env
+    # knob don't clobber each other (the sample name keys off SCROLL_MODE only).
     if SAMPLE_END > 0:
-        out_file = OUTPUT_DIR / f"sample_{SCROLL_MODE}_ss{SS}{"-4k" if U == 2 else ""}.mp4"
+        out_file = OUTPUT_DIR / (os.environ.get("OUT_NAME") or f"sample_{SCROLL_MODE}_ss{SS}{"-4k" if U == 2 else ""}.mp4")
         audio_args = ["-ss", str(SAMPLE_START), "-t", str(SAMPLE_END - SAMPLE_START), "-i", AUDIO]
     else:
-        out_file = OUTPUT_DIR / f"{BOOK}-{CHAPTER}-scroll{"-4k" if U == 2 else ""}.mp4"
+        out_file = OUTPUT_DIR / (os.environ.get("OUT_NAME") or f"{BOOK}-{CHAPTER}-scroll{"-4k" if U == 2 else ""}.mp4")
         audio_args = ["-i", AUDIO]
     print(f"Encoding {out_file}...")
     p = subprocess.Popen([
@@ -430,7 +560,7 @@ def main():
         "-i", "-",
         *audio_args,
         "-vf", "scale=in_range=full:out_range=tv:out_color_matrix=bt709",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+        "-c:v", "libx264", "-preset", os.environ.get("PRESET", "veryfast"), "-crf", os.environ.get("CRF", "18"),
         "-pix_fmt", "yuv420p",
         "-colorspace", "bt709", "-color_primaries", "bt709",
         "-color_trc", "bt709", "-color_range", "tv",
@@ -446,6 +576,8 @@ def main():
 
     start_frame = int(SAMPLE_START * FPS) if SAMPLE_END > 0 else 0
     end_frame = min(int(SAMPLE_END * FPS), total_frames) if SAMPLE_END > 0 else total_frames
+
+    _caret_prev, _caret_prev_row = None, -1
 
     for frame in range(start_frame, end_frame):
         t_ms = (frame / FPS) * 1000.0 + 180.0
@@ -463,10 +595,44 @@ def main():
             
             if active_w != -1 and active_w + 1 < len(words):
                 next_w = active_w + 1
-                LEAD_MS = 50
                 if t_ms >= words[next_w]['s'] - LEAD_MS:
                     active_w = next_w
-        
+
+        # Monkeypace caret: one continuous path. Through the active word while
+        # it is voiced, across the gap during the silence, arriving at the next
+        # word's leading edge exactly at its onset lead. A long pause becomes a
+        # slow drift rather than a hold-then-dash — it still "waits," but it
+        # never restarts from rest.
+        caret_row, caret_x = -1, 0.0
+        if MT_PACE and active_w != -1 and active_w in word_pos:
+            a_i, a_x0, a_x1 = word_pos[active_w]
+            caret_row = a_i
+            a_s, a_e = float(words[active_w]['s']), float(words[active_w]['e'])
+            nxt = active_w + 1
+            if t_ms <= a_e or nxt not in word_pos:
+                _pp = 0.0 if a_e <= a_s else (t_ms - a_s) / (a_e - a_s)
+                caret_x = a_x0 + (a_x1 - a_x0) * _pace_ease(_pp)
+            else:
+                n_i, n_x0, _n_x1 = word_pos[nxt]
+                n_s = float(words[nxt]['s']) - LEAD_MS
+                if n_i != a_i:
+                    # Line change: hold at the row's end and let the jump be a
+                    # jump. Return sweeps are saccadic in real reading —
+                    # animating one would fight the oculomotor system.
+                    caret_x = a_x1
+                else:
+                    _pp = 1.0 if n_s <= a_e else (t_ms - a_e) / (n_s - a_e)
+                    caret_x = a_x1 + (n_x0 - a_x1) * _pace_ease(_pp)
+
+            # Low-pass the word-locked target to shave the velocity spikes.
+            # Reset on row change so the line jump stays a jump and never
+            # smears into a diagonal slide across the column.
+            if PACE_SMOOTH > 0:
+                if _caret_prev is not None and _caret_prev_row == caret_row:
+                    _a = 1.0 - math.exp(-(1000.0 / FPS) / PACE_SMOOTH)
+                    caret_x = _caret_prev + (caret_x - _caret_prev) * _a
+                _caret_prev, _caret_prev_row = caret_x, caret_row
+
         current_scroll_y = scroll_track[frame]
 
         text_layer = Image.new("RGBA", (W * SS, H * SS), (0,0,0,0))
@@ -474,7 +640,33 @@ def main():
 
         base_y = start_y_offset - current_scroll_y
 
-        for r in rows:
+        # TRAVELING WASH (HIGHLIGHT=wash): one continuous gold presence
+        # that glides between words (same-row), like a finger under the line.
+        # After the final word it lingers and recedes — the ending settle.
+        if HIGHLIGHT == "wash" and active_w in word_pos:
+            r_i, wx0, wx1 = word_pos[active_w]
+            nxt = active_w + 1
+            if nxt in word_pos and nxt < len(words):
+                GLIDE = 160.0
+                pgl = (t_ms - (float(words[nxt]['s']) - GLIDE)) / GLIDE
+                if pgl > 0:
+                    n_i, nx0, nx1 = word_pos[nxt]
+                    if n_i == r_i:
+                        e = min(1.0, pgl); e = e * e * (3 - 2 * e)
+                        wx0 += (nx0 - wx0) * e
+                        wx1 += (nx1 - wx1) * e
+            wash_alpha = 1.0
+            last_e = float(words[-1]['e'])
+            if t_ms > last_e:
+                wash_alpha = max(0.0, 1.0 - (t_ms - last_e) / 1400.0)
+            if wash_alpha > 0:
+                wy = base_y + rows[r_i]['y'] + LH * 0.75
+                draw_text.rounded_rectangle(
+                    [(wx0 - 6 * U) * SS, (wy - BODY_PT * 0.40) * SS,
+                     (wx1 + 6 * U) * SS, (wy + BODY_PT * 0.22) * SS],
+                    radius=4 * U * SS, fill=(*HL, int(255 * wash_alpha)))
+
+        for _ri, r in enumerate(rows):
             cursor_y = base_y + r['y']
 
             if cursor_y + r['height'] < 0 or cursor_y > H:
@@ -482,12 +674,13 @@ def main():
 
             if r['type'] == 'scene':
                 # Text (52 top padding, text is 25 tall)
-                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + (52 + 13.5) * U, SCENE_COLOR, letter_spacing=5.5 * U)
+                _sc_y = (68 + 13.5) if MARKER_AIR else (52 + 13.5)
+                draw_centered_text(draw_text, r['text'], SCENE_MARKER_FONT_SS, cursor_y + _sc_y * U, SCENE_COLOR, letter_spacing=_scene_ls * U)
 
             elif r['type'] == 'story':
-                line_y = cursor_y + 80 * U
-                draw_text.rectangle([(W/2 - 40 * U) * SS, line_y * SS, (W/2 + 40 * U) * SS, (line_y + 2 * U) * SS], fill=HAIRLINE_COLOR)
-                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + (80 + 2 + 30 + 23.5) * U, STORY_COLOR)
+                # hairline removed 2026-07-16 ("that little dash — I don't like it")
+                _st_y = (80 + 2 + 24 + 20) if MARKER_AIR else (56 + 2 + 24 + 20)
+                draw_centered_text(draw_text, r['text'], STORY_MARKER_FONT_SS, cursor_y + _st_y * U, STORY_COLOR)
 
             elif r['type'] == 'text':
                 cursor_x = MARGIN_X
@@ -496,22 +689,150 @@ def main():
                 for item in r['items']:
                     itype, itext, iw, ref = item
                     if itype == 'vn':
-                        draw_text.text((cursor_x * SS, (baseline - 50 * U) * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
+                        # VN_STYLE=inline sits the number on the baseline beside the
+                        # text (same small size); default 'super' raises it.
+                        _vny = baseline if os.environ.get("VN_STYLE") == "inline" else baseline - 50 * U
+                        draw_text.text((cursor_x * SS, _vny * SS), itext, font=SANS_VN_SS, fill=ACCENT, anchor="ls")
                         cursor_x += iw
                     else:
                         w_idx = ref
+                        if MT:
+                            # Monkeytype: past+active = lit ink, future = dim.
+                            # marker = a gliding gold caret (default) OR the band (monkeyband).
+                            if w_idx == active_w:
+                                if MT_BAND:
+                                    hx1 = cursor_x - 6 * U
+                                    hy1 = baseline - BODY_PT * 0.40
+                                    hx2 = cursor_x + iw + 6 * U
+                                    hy2 = baseline + BODY_PT * 0.22
+                                    draw_text.rounded_rectangle(
+                                        [hx1 * SS, hy1 * SS, hx2 * SS, hy2 * SS], radius=4 * U * SS, fill=HL)
+                                elif (not MT_PACE) and active_w in word_pos:
+                                    _cxr = cursor_x + iw
+                                    nxt = active_w + 1
+                                    if nxt in word_pos:
+                                        r_i = word_pos[active_w][0]
+                                        n_i, _nx0, _nx1 = word_pos[nxt]
+                                        if n_i == r_i and nxt < len(words):
+                                            _gl = 160.0
+                                            _pg = (t_ms - (float(words[nxt]['s']) - _gl)) / _gl
+                                            if _pg > 0:
+                                                _e = min(1.0, _pg); _e = _e * _e * (3 - 2 * _e)
+                                                _cxr += (_nx1 - (cursor_x + iw)) * _e
+                                    draw_text.rectangle(
+                                        [(_cxr + 2 * U) * SS, (baseline - BODY_PT * 0.74) * SS,
+                                         (_cxr + 2 * U + 3 * U) * SS, (baseline + BODY_PT * 0.20) * SS], fill=ACCENT)
+                            _mtfill = INK if (active_w != -1 and w_idx <= active_w) else DIM
+                            draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=_mtfill, anchor="ls")
+                            cursor_x += iw + space_w
+                            continue
                         if w_idx == active_w:
-                            hx1 = cursor_x - 6 * U
-                            hy1 = baseline - BODY_PT * 0.40
-                            hx2 = cursor_x + iw + 6 * U
-                            hy2 = baseline + BODY_PT * 0.22
-                            draw_text.rounded_rectangle([hx1 * SS, hy1 * SS, hx2 * SS, hy2 * SS], radius=4 * U * SS, fill=HL)
+                            if HIGHLIGHT == "word" and os.environ.get("HL_STYLE") == "cursor":
+                                # CURSOR: a text caret riding under the active word
+                                # instead of a band — a gold underline bar the width of
+                                # the word, plus a blinking vertical caret at its end.
+                                _uy = (baseline + BODY_PT * 0.16) * U if False else baseline + BODY_PT * 0.14
+                                draw_text.rectangle(
+                                    [cursor_x * SS, _uy * SS, (cursor_x + iw) * SS, (_uy + 4 * U) * SS], fill=HL)
+                                _blink = (frame // 8) % 2 == 0
+                                if _blink:
+                                    _cx = cursor_x + iw + 3 * U
+                                    draw_text.rectangle(
+                                        [_cx * SS, (baseline - BODY_PT * 0.72) * SS,
+                                         (_cx + 3 * U) * SS, (baseline + BODY_PT * 0.20) * SS], fill=ACCENT)
+                            elif HIGHLIGHT == "word":
+                                hx1 = cursor_x - 6 * U
+                                hy1 = baseline - BODY_PT * 0.40
+                                hx2 = cursor_x + iw + 6 * U
+                                hy2 = baseline + BODY_PT * 0.22
+                                draw_text.rounded_rectangle([hx1 * SS, hy1 * SS, hx2 * SS, hy2 * SS], radius=4 * U * SS, fill=HL)
+                                if os.environ.get("HL_STYLE", "flat") == "glass":
+                                    # GLASS: vertical light falloff + bright top edge +
+                                    # shaded bottom edge — the band as a lit pane; the
+                                    # pattern tooth then prints on the glass
+                                    _gh = (hy2 - hy1)
+                                    _steps = max(4, int(_gh / 6))
+                                    for _gi in range(_steps):
+                                        _t = _gi / (_steps - 1)
+                                        _gc = tuple(min(255, int(c + 16 - 26 * _t)) for c in HL)
+                                        _gy0 = (hy1 + 1 * U + (_gh - 2 * U) * _gi / _steps) * SS
+                                        _gy1 = (hy1 + 1 * U + (_gh - 2 * U) * (_gi + 1) / _steps) * SS
+                                        draw_text.rectangle([(hx1 + 4 * U) * SS, _gy0, (hx2 - 4 * U) * SS, _gy1], fill=_gc)
+                                    draw_text.rectangle([(hx1 + 4 * U) * SS, (hy1 + 1 * U) * SS, (hx2 - 4 * U) * SS, (hy1 + 1 * U) * SS + SS], fill=(252, 236, 188))
+                                    draw_text.rectangle([(hx1 + 4 * U) * SS, (hy2 - 1 * U) * SS - SS, (hx2 - 4 * U) * SS, (hy2 - 1 * U) * SS], fill=(212, 183, 118))
+                                if HL_DOTS and HL_PATTERN != "none":
+                                    # all patterns: page-locked phase (the box reveals a
+                                    # field fixed to the paper) + snapped to the OUTPUT
+                                    # pixel grid — crisp like print, no downscale smear
+                                    _sp = 6.0 * U * SS
+                                    _hsp = _sp / 2
+                                    _by = base_y * SS
+                                    _ytop = (hy1 + 1 * U) * SS
+                                    _ybot = (hy2 - 1 * U) * SS
+                                    _xl = (hx1 + 3 * U) * SS
+                                    _xr = (hx2 - 3 * U) * SS
+                                    _snap = lambda v: int(round(v / SS)) * SS
+                                    if HL_PATTERN == "dots":
+                                        _y = _ytop + ((-( _ytop - _by)) % _hsp)
+                                        while _y < _ybot:
+                                            _rown = int(round((_y - _by) / _hsp))
+                                            _xoff = _sp * 0.5 if _rown % 2 else 0.0
+                                            _x = _xl + ((-( _xl - _xoff)) % _sp)
+                                            _yq = _snap(_y)
+                                            while _x < _xr:
+                                                _xq = _snap(_x)
+                                                draw_text.rectangle([_xq - SS, _yq - SS, _xq + SS - 1, _yq + SS - 1], fill=HL_DOT)
+                                                _x += _sp
+                                            _y += _hsp
+                                    elif HL_PATTERN == "laid":
+                                        _y = _ytop + ((-( _ytop - _by)) % _sp)
+                                        while _y < _ybot:
+                                            _yq = _snap(_y)
+                                            draw_text.rectangle([_snap(_xl), _yq, _snap(_xr) - 1, _yq + SS - 1], fill=HL_DOT)
+                                            _y += _sp
+                                    elif HL_PATTERN in ("stripes", "cross"):
+                                        _sp2 = 8.0 * U * SS
+                                        _sgns = (1,) if HL_PATTERN == "stripes" else (1, -1)
+                                        _y = float(_snap(_ytop + SS))
+                                        while _y < _ybot:
+                                            _py = _y - _by
+                                            for _sgn in _sgns:
+                                                _x = _xl + ((-( _xl - _sgn * _py)) % _sp2)
+                                                while _x < _xr:
+                                                    _xq = _snap(_x)
+                                                    draw_text.rectangle([_xq, int(_y), _xq + SS - 1, int(_y) + SS - 1], fill=HL_DOT)
+                                                    _x += _sp2
+                                            _y += SS
+                                    elif HL_PATTERN == "stipple":
+                                        _cell = 5.0 * U * SS
+                                        _gy = int((_ytop - _by) // _cell)
+                                        while _by + _gy * _cell < _ybot:
+                                            _gx = int(_xl // _cell)
+                                            while _gx * _cell < _xr:
+                                                _h = ((_gx * 73856093) ^ (_gy * 19349663)) & 0xFFFF
+                                                if _h % 100 < 40:
+                                                    _dy = _by + _gy * _cell + (_h >> 4) % max(1, int(_cell))
+                                                    _dx = _gx * _cell + (_h >> 8) % max(1, int(_cell))
+                                                    _xq, _yq = _snap(_dx), _snap(_dy)
+                                                    if _xl <= _xq < _xr and _ytop <= _yq < _ybot:
+                                                        draw_text.rectangle([_xq, _yq, _xq + SS - 1, _yq + SS - 1], fill=HL_DOT)
+                                                _gx += 1
+                                            _gy += 1
                             draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=HLTEXT, anchor="ls")
                         elif active_w != -1 and w_idx < active_w:
                             draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=READ, anchor="ls")
                         else:
                             draw_text.text((cursor_x * SS, baseline * SS), itext, font=SERIF_BODY_SS, fill=INK, anchor="ls")
                         cursor_x += iw + space_w
+
+                # Drawn after the row's words so the caret rides over them —
+                # it crosses glyphs on its way through a word. CARET_A<255
+                # turns that crossing into a veil rather than a slash.
+                if MT_PACE and caret_row == _ri:
+                    draw_text.rectangle(
+                        [caret_x * SS, (baseline - BODY_PT * 0.74) * SS,
+                         (caret_x + CARET_W * U) * SS, (baseline + BODY_PT * 0.20) * SS],
+                        fill=(*ACCENT, CARET_A))
 
         text_layer = text_layer.resize((W, H), Image.LANCZOS)
 
@@ -520,7 +841,15 @@ def main():
         a_c = ImageChops.multiply(a_c, mask)
         faded_text = Image.merge("RGBA", (r_c, g_c, b_c, a_c))
         
-        img = bg_img.copy()
+        t_s = frame / FPS
+        if t_s <= TITLE_FADE_AT:
+            img = bg_img.copy()
+        elif t_s >= TITLE_FADE_AT + TITLE_FADE_DUR:
+            img = bg_faded.copy()
+        else:
+            fp = (t_s - TITLE_FADE_AT) / TITLE_FADE_DUR
+            fp = fp * fp * (3 - 2 * fp)
+            img = Image.blend(bg_img, bg_faded, fp)
         img.paste(faded_text, (0,0), faded_text)
         
         try:

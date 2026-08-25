@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wolfandword.org/schemas/bible-in-a-year/kjv-overlay.schema.json",
+  "title": "Wolf & Word Bible-in-a-Year — KJV edition overlay",
+  "description": "Translation-specific presentation and measurement data for the KJV, keyed by stable master-plan day id. Holds no structural decisions: a boundary can only be changed in the master plan.",
+  "type": "object",
+  "required": [
+    "overlay_id",
+    "edition",
+    "version",
+    "applies_to",
+    "measurement_method",
+    "totals",
+    "days"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "overlay_id": { "type": "string", "const": "ww-biay-kjv" },
+
+    "edition": {
+      "type": "object",
+      "required": ["name", "abbreviation", "text_witness"],
+      "properties": {
+        "name": { "type": "string" },
+        "abbreviation": { "type": "string" },
+        "text_witness": { "type": "string" },
+        "public_domain": { "type": "boolean" }
+      }
+    },
+
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+
+    "applies_to": {
+      "type": "object",
+      "required": ["plan_id", "plan_version"],
+      "properties": {
+        "plan_id": { "type": "string", "const": "ww-biay" },
+        "plan_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" }
+      }
+    },
+
+    "measurement_method": {
+      "type": "object",
+      "required": ["word_count", "reading_rate_wpm", "audio_rate_wpm", "audio_status", "authority"],
+      "properties": {
+        "word_count": {
+          "type": "string",
+          "description": "Must state that supplied (italicised) words are counted and marginal annotations are not."
+        },
+        "reading_rate_wpm": { "type": "integer", "const": 200 },
+        "audio_rate_wpm": { "type": "integer", "const": 155 },
+        "audio_status": { "type": "string" },
+        "authority": { "type": "string" }
+      }
+    },
+
+    "totals": {
+      "type": "object",
+      "required": ["days", "word_count"],
+      "properties": {
+        "days": { "type": "integer", "const": 365 },
+        "word_count": { "type": "integer" },
+        "independent_measurement_word_count": { "type": "integer" }
+      }
+    },
+
+    "days": {
+      "type": "object",
+      "description": "Keyed by master-plan day_id. Every key must resolve to a master day.",
+      "minProperties": 365,
+      "maxProperties": 365,
+      "propertyNames": { "pattern": "^ww-biay-\\d{3}$" },
+      "additionalProperties": { "$ref": "#/$defs/overlayDay" }
+    }
+  },
+
+  "$defs": {
+    "overlayDay": {
+      "type": "object",
+      "required": [
+        "day_id",
+        "ordinal",
+        "display_references",
+        "display_reference",
+        "word_count",
+        "word_count_source",
+        "reading_duration_minutes",
+        "audio_duration_minutes_provisional",
+        "independent_measurement"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "day_id": { "type": "string", "pattern": "^ww-biay-\\d{3}$" },
+        "ordinal": { "type": "integer", "minimum": 1, "maximum": 365 },
+
+        "display_references": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "One KJV display reference per canonical reading of the day."
+        },
+        "display_reference": {
+          "type": "string",
+          "description": "The approved document's own Reading line, retained verbatim."
+        },
+
+        "word_count": { "type": "integer", "minimum": 1 },
+        "word_count_source": { "type": "string" },
+
+        "reading_duration_minutes": { "type": "number", "exclusiveMinimum": 0 },
+        "reading_duration_minutes_source_stated": { "type": "number" },
+        "audio_duration_minutes_provisional": { "type": "number", "exclusiveMinimum": 0 },
+        "audio_duration_minutes_source_stated": { "type": "number" },
+
+        "independent_measurement": {
+          "type": "object",
+          "required": ["word_count", "delta_vs_source", "text_witness"],
+          "properties": {
+            "word_count": { "type": "integer", "minimum": 0 },
+            "delta_vs_source": { "type": "integer" },
+            "text_witness": { "type": "string" }
+          }
+        },
+
+        "versification": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "required": ["note_id", "kjv_display", "note"],
+            "properties": {
+              "note_id": { "type": "string" },
+              "kjv_display": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+
+        "notes": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "KJV-specific text or measurement notes. Never devotional content and never an invented quotation."
+        }
+      }
+    }
+  }
+}

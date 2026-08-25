@@ -1,0 +1,493 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wolfandword.org/schemas/bible-in-a-year/master-plan.schema.json",
+  "title": "Wolf & Word Bible-in-a-Year master plan",
+  "description": "Translation-agnostic 365-day reading calendar. Contains structure and canonical references only. Translation measurements, quotations and display references belong in an edition overlay.",
+  "type": "object",
+  "required": [
+    "plan_id",
+    "plan_name",
+    "version",
+    "translation_agnostic",
+    "calendar",
+    "architecture",
+    "source_structure",
+    "source_document",
+    "versification",
+    "boundary_hierarchy",
+    "review_vocabulary",
+    "sequence_exceptions",
+    "coordinated_products",
+    "totals",
+    "days"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "plan_id": { "type": "string", "const": "ww-biay" },
+    "plan_name": { "type": "string" },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version. MAJOR changes a reading assignment or a day id; MINOR adds days-adjacent metadata; PATCH corrects prose or non-structural notes."
+    },
+    "translation_agnostic": { "type": "boolean", "const": true },
+
+    "calendar": {
+      "type": "object",
+      "required": ["type", "leap_handling", "days", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "perennial" },
+        "leap_handling": { "type": "string", "const": "non-leap" },
+        "days": { "type": "integer", "const": 365 },
+        "note": { "type": "string" }
+      }
+    },
+
+    "architecture": {
+      "type": "object",
+      "required": ["upstream_hierarchy", "wolf_and_word_hierarchy", "derived_layer", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "upstream_hierarchy": {
+          "type": "array",
+          "items": { "enum": ["book", "story", "scene"] },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "wolf_and_word_hierarchy": {
+          "type": "array",
+          "items": { "enum": ["book", "story", "daily_movement", "scene"] },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "derived_layer": { "type": "string", "const": "daily_movement" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "source_structure": {
+      "type": "object",
+      "description": "Exact upstream revision the story/scene identifiers were resolved against.",
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": { "type": "string" },
+        "local_path": { "type": "string" },
+        "revision": { "type": ["string", "null"] },
+        "revision_subject": { "type": ["string", "null"] },
+        "working_tree_clean": { "type": ["boolean", "null"] },
+        "uncommitted_base_structure_files": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "source_document": {
+      "type": "object",
+      "required": ["title", "version", "path", "status"],
+      "properties": {
+        "title": { "type": "string" },
+        "version": { "type": "string" },
+        "path": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+
+    "versification": {
+      "type": "object",
+      "required": ["tradition", "verse_identity_format", "canonical_verse_count", "note"],
+      "properties": {
+        "tradition": { "type": "string" },
+        "verse_identity_format": { "type": "string" },
+        "verse_identity_example": { "type": "string" },
+        "canonical_verse_count": { "type": "integer", "const": 31102 },
+        "note": { "type": "string" }
+      }
+    },
+
+    "boundary_hierarchy": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["rank", "label"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "endpoint_type": {
+            "type": ["string", "null"],
+            "enum": [
+              "book_ending",
+              "story_ending",
+              "major_internal_movement",
+              "strong_scene_ending",
+              null
+            ]
+          },
+          "label": { "type": "string" },
+          "constraint": { "type": "boolean" }
+        }
+      }
+    },
+
+    "review_vocabulary": {
+      "type": "object",
+      "required": ["boundary", "load", "note"],
+      "properties": {
+        "boundary": { "type": "array", "items": { "enum": ["green", "yellow", "red"] } },
+        "load": {
+          "type": "array",
+          "items": { "enum": ["light", "normal", "elevated", "heavy", "extreme"] }
+        },
+        "note": { "type": "string" }
+      }
+    },
+
+    "sequence_exceptions": {
+      "type": "array",
+      "description": "Every intentional departure from strict canonical book order. Never empty while the 2 Peter/Jude pairing stands.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "exception_id",
+          "kind",
+          "day_ids",
+          "summary",
+          "rationale",
+          "status",
+          "approved_in"
+        ],
+        "properties": {
+          "exception_id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["canonical_order_exception"] },
+          "day_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^ww-biay-\\d{3}$" }
+          },
+          "books_out_of_canonical_order": { "type": "array", "items": { "type": "string" } },
+          "canonical_order_expected": { "type": "array", "items": { "type": "string" } },
+          "plan_order_used": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string" },
+          "rationale": { "type": "string" },
+          "status": { "type": "string", "enum": ["intentional"] },
+          "approved_in": { "type": "string" },
+          "source_evidence": { "type": "string" },
+          "do_not_silently_correct": { "type": "boolean" }
+        }
+      }
+    },
+
+    "coordinated_products": {
+      "type": "object",
+      "description": "Word of the Day and Slow Bible are separate products. Only join keys live here.",
+      "required": ["note", "join_keys"],
+      "properties": {
+        "note": { "type": "string" },
+        "join_keys": { "type": "array", "items": { "type": "string" } },
+        "word_of_the_day": {
+          "type": "object",
+          "properties": { "embedded_here": { "type": "boolean", "const": false } }
+        },
+        "slow_bible_pericopes": {
+          "type": "object",
+          "properties": { "embedded_here": { "type": "boolean", "const": false } }
+        }
+      }
+    },
+
+    "totals": {
+      "type": "object",
+      "required": [
+        "days",
+        "canonical_verses",
+        "old_testament_days",
+        "new_testament_days",
+        "first_new_testament_day",
+        "boundary_review"
+      ],
+      "properties": {
+        "days": { "type": "integer", "const": 365 },
+        "canonical_verses": { "type": "integer", "const": 31102 },
+        "old_testament_days": { "type": "integer" },
+        "new_testament_days": { "type": "integer" },
+        "first_new_testament_day": {
+          "type": "object",
+          "properties": {
+            "day_id": { "type": "string" },
+            "ordinal": { "type": "integer" },
+            "calendar_label": { "type": "string" },
+            "book": { "type": "string" }
+          }
+        },
+        "boundary_review": {
+          "type": "object",
+          "properties": {
+            "green": { "type": "integer" },
+            "yellow": { "type": "integer" },
+            "red": { "type": "integer" }
+          }
+        }
+      }
+    },
+
+    "days": {
+      "type": "array",
+      "minItems": 365,
+      "maxItems": 365,
+      "items": { "$ref": "#/$defs/day" }
+    }
+  },
+
+  "$defs": {
+    "verse_id": {
+      "type": "string",
+      "pattern": "^[0-9A-Z]{3}\\.\\d+\\.\\d+$",
+      "description": "Stable verse identity, independent of any translation's display numbering."
+    },
+
+    "reference": {
+      "type": "object",
+      "description": "One canonical reading. A multi-book day carries several of these; it is never flattened into one artificial continuous reference.",
+      "required": [
+        "book",
+        "book_code",
+        "book_slug",
+        "book_canonical_order",
+        "testament",
+        "start",
+        "end",
+        "verse_count",
+        "canonical_display"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "book": { "type": "string" },
+        "book_code": { "type": "string", "pattern": "^[0-9A-Z]{3}$" },
+        "book_slug": { "type": "string" },
+        "book_canonical_order": { "type": "integer", "minimum": 1, "maximum": 66 },
+        "testament": { "enum": ["OT", "NT"] },
+        "start": { "$ref": "#/$defs/position" },
+        "end": { "$ref": "#/$defs/position" },
+        "verse_count": { "type": "integer", "minimum": 1 },
+        "canonical_display": { "type": "string" },
+        "single_chapter_book": { "type": "boolean" }
+      }
+    },
+
+    "position": {
+      "type": "object",
+      "required": ["chapter", "verse", "verse_id"],
+      "additionalProperties": false,
+      "properties": {
+        "chapter": { "type": "integer", "minimum": 1 },
+        "verse": { "type": "integer", "minimum": 1 },
+        "verse_id": { "$ref": "#/$defs/verse_id" }
+      }
+    },
+
+    "day": {
+      "type": "object",
+      "required": [
+        "day_id",
+        "ordinal",
+        "calendar",
+        "title",
+        "testament",
+        "books",
+        "cross_book",
+        "references",
+        "verse_count",
+        "structure",
+        "daily_movement",
+        "boundary_rationale",
+        "endpoint",
+        "review",
+        "notes",
+        "sequence_exception_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "day_id": { "type": "string", "pattern": "^ww-biay-\\d{3}$" },
+        "ordinal": { "type": "integer", "minimum": 1, "maximum": 365 },
+        "calendar": {
+          "type": "object",
+          "required": ["month", "month_name", "day_of_month", "label", "mm_dd"],
+          "additionalProperties": false,
+          "properties": {
+            "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+            "month_name": { "type": "string" },
+            "day_of_month": { "type": "integer", "minimum": 1, "maximum": 31 },
+            "label": { "type": "string" },
+            "mm_dd": { "type": "string", "pattern": "^\\d{2}-\\d{2}$" }
+          }
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "testament": { "enum": ["OT", "NT"] },
+        "books": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "cross_book": { "type": "boolean" },
+        "references": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "verse_count": { "type": "integer", "minimum": 1 },
+
+        "structure": {
+          "type": "object",
+          "required": [
+            "source_text",
+            "story_ids",
+            "scene_ids",
+            "scene_count",
+            "divided_scenes",
+            "unresolved_mappings"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source_text": {
+              "type": "string",
+              "description": "The approved document's own 'Included structure' line, retained verbatim."
+            },
+            "story_ids": { "type": "array", "items": { "type": "string" } },
+            "scene_ids": { "type": "array", "items": { "type": "string" } },
+            "scene_count": { "type": "integer", "minimum": 0 },
+            "divided_scenes": {
+              "type": "array",
+              "description": "Must be empty: the governing specification forbids dividing a scene.",
+              "maxItems": 0,
+              "items": { "type": "object" }
+            },
+            "unresolved_mappings": {
+              "type": "array",
+              "description": "Canonical verses inside this day that no upstream identifier covers. Recorded explicitly rather than concealed; never invented.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "book",
+                  "start_verse_id",
+                  "end_verse_id",
+                  "verse_count",
+                  "summary",
+                  "resolution",
+                  "policy"
+                ],
+                "properties": {
+                  "kind": { "type": "string", "const": "upstream_structure_mapping_gap" },
+                  "book": { "type": "string" },
+                  "start_verse_id": { "$ref": "#/$defs/verse_id" },
+                  "end_verse_id": { "$ref": "#/$defs/verse_id" },
+                  "verse_count": { "type": "integer", "minimum": 1 },
+                  "display": { "type": "string" },
+                  "summary": { "type": "string" },
+                  "resolution": { "type": "string", "const": "unresolved_upstream" },
+                  "policy": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+
+        "daily_movement": { "type": "string", "minLength": 1 },
+        "boundary_rationale": { "type": "string", "minLength": 1 },
+
+        "endpoint": {
+          "type": "object",
+          "required": ["type", "source_label", "hierarchy_rank"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "book_ending",
+                "story_ending",
+                "major_internal_movement",
+                "strong_scene_ending"
+              ]
+            },
+            "source_label": { "type": "string" },
+            "hierarchy_rank": { "type": "integer", "minimum": 1, "maximum": 4 }
+          }
+        },
+
+        "review": {
+          "type": "object",
+          "required": ["boundary", "load", "source_text"],
+          "additionalProperties": false,
+          "properties": {
+            "boundary": { "enum": ["green", "yellow", "red"] },
+            "load": { "enum": ["light", "normal", "elevated", "heavy", "extreme"] },
+            "source_text": { "type": "string" }
+          }
+        },
+
+        "notes": {
+          "type": "object",
+          "required": ["cross_book", "versification", "textual_history"],
+          "additionalProperties": false,
+          "properties": {
+            "cross_book": {
+              "type": ["string", "null"],
+              "description": "Required prose whenever cross_book is true."
+            },
+            "versification": {
+              "type": "array",
+              "description": "Explicit note wherever traditions number differently.",
+              "items": {
+                "type": "object",
+                "required": ["note_id", "book", "summary", "master_plan_position"],
+                "properties": {
+                  "note_id": { "type": "string" },
+                  "book": { "type": "string" },
+                  "summary": { "type": "string" },
+                  "master_plan_position": { "type": "string" },
+                  "affects_coverage": { "type": "boolean" }
+                }
+              }
+            },
+            "textual_history": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["note_id", "passage_verse_ids", "summary", "policy"],
+                "properties": {
+                  "note_id": { "type": "string" },
+                  "passage_verse_ids": {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/verse_id" }
+                  },
+                  "summary": { "type": "string" },
+                  "policy": { "type": "string" }
+                }
+              }
+            },
+            "source_audit_note": { "type": ["string", "null"] },
+            "source_change_note": { "type": ["string", "null"] }
+          }
+        },
+
+        "sequence_exception_ids": { "type": "array", "items": { "type": "string" } }
+      },
+
+      "not": {
+        "anyOf": [
+          { "required": ["kjv_load"] },
+          { "required": ["word_count"] },
+          { "required": ["kjv_word_count"] },
+          { "required": ["reading_minutes"] },
+          { "required": ["reading_duration_minutes"] },
+          { "required": ["audio_minutes"] },
+          { "required": ["audio_duration_minutes"] },
+          { "required": ["quotation"] },
+          { "required": ["kjv_display_reference"] },
+          { "required": ["lexical_commentary"] },
+          { "required": ["word_of_the_day"] },
+          { "required": ["slow_bible"] }
+        ]
+      }
+    }
+  }
+}

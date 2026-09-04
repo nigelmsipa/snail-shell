@@ -1,0 +1,206 @@
+# Bible in a Year — the translation runbook
+
+How to produce twelve month videos for ONE translation. Written to be followed
+cold, by someone with no memory of the session that produced the KJV, because
+that is exactly what will happen for Geneva, Matthew's, Webster's, Young's
+Literal, Smith's Literal, the ERV, the ASV, and the rest.
+
+Read the whole of Part 0 before running anything. It is the part that has
+actually cost time.
+
+---
+
+## PART 0 — What goes wrong, and why the gates exist
+
+Each of these shipped or nearly shipped. None was caught by looking at a log.
+
+### 0.1 The right length, the wrong Bible
+`engine/translation_env.sh` says it plainly: forget `TRANSLATION_LABEL` and all
+1,189 chapters say KING JAMES VERSION while every duration check passes, because
+the video is the right *length*, just the wrong *Bible*.
+
+**Nothing about duration, codec, or file size can catch this.** The only defence
+is to read the translation name off a rendered board and compare it to the slug
+you asked for. That is gate 10.
+
+### 0.2 A command that succeeds while doing nothing
+`drawbox` evaluates its `w`/`h` expressions **once**, at filter init. A time
+expression in `drawbox=w='iw*(1-t/12)'` is accepted, exits 0, logs nothing, and
+never animates. The bar sat permanently full and every other check passed.
+
+Use `overlay`, which evaluates `x` per frame. Slide a gold plate off to the left
+over a static hair-coloured rule: visible gold = `iw * (1 - t/secs)`.
+
+**General rule: exit code 0 is not evidence. Measure the pixels.**
+
+### 0.3 The exit code you are reading is the wrapper's
+`nohup ... &` followed by anything else returns the *wrapper's* status, not the
+job's. A "completed, exit 0" notification arrived while the upload was one third
+done. Verify against the destination, never against the return value.
+
+### 0.4 Quotation marks that appear on three frames out of 780
+A shell-quoting bug in a refill path put apostrophes into a label on exactly the
+frames that got re-rendered after a dropped frame. Frame count, duplicate
+detection, rule monotonicity, hero width and background level all passed, because
+none of them looked at the label.
+
+`verify_clip.py` exists for this: it measures EVERY text band on EVERY frame and
+fails if any band's width deviates from its median by more than 8px. Run it on a
+board clip whenever the text pipeline changes.
+
+### 0.5 Boards that drift from what shipped
+The contents-board column rule changed once (per-book → balanced). January's
+uploaded video has an 18/13 split; regenerating its board today gives 16/15.
+**A regenerated board is not proof of what shipped.** `production/boards/` is
+kept as a record, not as a source.
+
+### 0.6 A whole month rendered against a stale intermediate
+`render_full_day.py` skips any `day<NNN>.mp4` that already exists. That is what
+makes re-stitching cheap, and it is also how a day rendered from an older board
+survives into a new build. If the design changed, delete the affected day files
+first — do not rely on the skip.
+
+### 0.7 Attribution guessed from a template
+`gen_book_boards.py` hardcodes `Narration · David · openbible.com`. MSB is
+human-narrated, so all 65 MSB book outros carry the KJV's narrator.
+**Never infer a narrator from a template.** Every translation needs its
+narration credit stated by a human before its outro is rendered.
+
+### 0.8 xargs -P will take the machine down
+`xargs -P 10` on Chromium drove load to 40 on 32 threads, 2,285 processes, and
+`uptime` itself timed out. Cap parallel Chromium at 4.
+
+---
+
+## PART 1 — Prerequisites for a new translation
+
+Nothing below is optional. If any is missing, stop and get it; do not improvise.
+
+| thing | where | how to check |
+|---|---|---|
+| translation data file | `engine/translations/<slug>.json` | must have `palette` with all 8 keys, `paths.audio`, `name`, `slug` |
+| carded readalongs | `output/<slug>/readalong-carded/<book>-NN-readalong.mp4` | must be 1189 |
+| translation + zoom boards | `output/<slug>/assets/boards/{translation,zoom}.mp4` | both exist |
+| day announcements | `~/audio/day<NNN>_bella_announcement.mp3` | **365, and SHARED** |
+| cues | `assets/cues/{orientation,prayer}_cue.mp3` | shared |
+| fonts | `assets/fonts/wolf-fonts.css` | vendored, no network |
+| **narration credit** | **nowhere — ask Nigel** | see 0.7 |
+
+### The announcements are translation-agnostic. This is the big saving.
+Bella says `"January 1. Today's reading is Genesis, chapters 1 to 3."` — she
+never names a translation. Verified: **0 of 365** day scripts mention the KJV.
+So a new translation costs **no ElevenLabs spend**. Copy the same 365 files.
+
+### board_seconds is per translation and is NOT a constant
+`<slug>.json` carries `board_seconds`. MSB's translation poster is **2.75s**,
+half the KJV's 5.5s — Nigel's decision, "I need to come out swinging": the
+poster is front matter, and someone who cares will pause.
+
+The intro builder reads each clip's **own duration off disk**, so it honours
+this automatically. Do not hardcode 5.5.
+
+---
+
+## PART 2 — The build
+
+    python3 build_month.py --month 3 --dry-run    # preflight only, builds nothing
+    python3 build_month.py --month 3              # full build
+
+One month at a time. Every gate must pass before the next stage runs; a failure
+stops the build rather than letting anything downstream be built on it.
+
+| # | gate | what it actually proves |
+|---|---|---|
+| 1 | sources present | every Bella file and every readalong exists BEFORE a 3-minute render starts |
+| 2 | day videos present | the render produced what it claimed |
+| 3 | `check_days --deep` | per day: duration vs plan, 1920x1080 h264 60fps, 48kHz mono, both prayer beats present as navy stretches |
+| 4 | intro + outro built | both exist, with their real durations |
+| 5 | drain bar resets per board | the timer ANIMATES — see 0.2 |
+| 6 | one codec signature | all segments identical, so concat is a true stream copy |
+| 7 | duration == sum of parts | within 1s; catches a silently dropped segment |
+| 8 | every timestamp lands on a day board | seeks to each mark +3s and checks for white paper with a top rule |
+| 9 | intro + credits boards in output | the four boards are IN THE FINISHED FILE, not just on disk |
+| 10 | **translation label** | the boards name the translation you asked for — see 0.1 |
+
+### Order of operations for a full translation
+
+1. `--dry-run` month 1. Fix any missing source before going further.
+2. Build month 1 only.
+3. **Stop. Nigel looks at it personally.** Colours, boards, no stray quotation
+   marks. This is not optional and does not scale away — a new translation is a
+   new palette and new boards.
+4. Only then build months 2–12, one at a time.
+5. Nigel uploads to YouTube AND Odysee. Two platforms, because Drive shares a
+   failure domain with YouTube.
+6. **Only after he confirms both uploads** may the heavy outputs be deleted.
+   This gate is his. It cannot be automated: nothing on this machine can see
+   whether an upload finished.
+
+---
+
+## PART 3 — What may be deleted, and what may never be
+
+Three tiers. Know which one you are touching.
+
+| tier | what | cost to rebuild |
+|---|---|---|
+| **cheap** | `biay-*/day<NNN>.mp4` (~117 GB) | ~6 s each from the readalongs |
+| **cheap** | `biay-*/<month>.mp4` (~117 GB) | one stream-copy concat, seconds |
+| **EXPENSIVE — keep** | `output/<slug>/readalong-carded/` (~118 GB) | GPU render per chapter — **rented compute** |
+| **IRREPLACEABLE — never** | the 365 Bella announcements (33 MB) | re-purchase from ElevenLabs |
+| **IRREPLACEABLE — never** | `WolfandWordProductionScript_v1.json` | hand-corrected; six readings were mislabeled and fixed by hand |
+
+The day and month videos are **cache**. The readalongs are **rented**. The
+announcements and the plan are **bought or made once**.
+
+---
+
+## PART 4 — Backup, before deleting anything
+
+| destination | holds | independent of |
+|---|---|---|
+| YouTube + Odysee | the 12 finished videos | each other |
+| GitHub `wolf-and-word` | scripts, plan, announcements, shipped boards, timestamps | Google, HF |
+| HF `Finitude1/wolf-and-word-assets` (private) | the same, plus every board/card/thumbnail | Google, GitHub |
+| HF `Finitude1/snail-bibles` (private) | per-chapter opus + alignments, 12 translations | — |
+
+Google Drive is **not** a backup for a YouTube video: same account, same failure.
+
+Keep the HF datasets **private** until narration rights are reviewed. Public
+domain text does not make every narration redistributable.
+
+---
+
+## PART 5 — The shape being produced
+
+    translation -> contents -> zoom -> N day videos -> Complete/<Month> (fades to paper)
+
+Each day: day board (Bella) -> prayer -> every chapter in full -> 2 s white hold -> prayer.
+
+### Design rules, and the reasons they exist
+
+- **Every board that HOLDS gets an audio cue and a visual timer.**
+  Exempt: the reading, the chapter card, the day announcement — those three
+  speak for themselves, and a chime over them talks across the voice.
+- **The timer DRAINS; the year bar FILLS.** Same 16px gold rule, opposite
+  directions, so one stripe never carries two meanings.
+- **Cues are one family, two members.** `orientation` 528+792 Hz, `prayer`
+  396+528 Hz. Shared 528 root. Masters peak at −24 dB against narration at
+  −0.5 dB, so they are lifted +16 dB at render time (`CUE_GAIN_DB`).
+- **Every contents row names its own book.** A row lifted out of the list must
+  still say what it is; that is the whole point of a board people scrub against.
+- **Columns are balanced, not per-book.** February is Exodus 1 / Leviticus 13 /
+  Numbers 14 — a column per book would strand a single orphan row.
+- **Book names grey, numerals gold — for EVERY book in a row.** Six days a year
+  read two or three books, and `1 John` has a digit that belongs to the name.
+- **No "Next up" on a month outro.** The book series can promise the next book
+  because it is already rendered. February is not.
+- **The credits board fades rather than cuts.** The fade is how the board leaves,
+  not a reason to skip having one: borrowed narration needs somewhere to be
+  credited, and YouTube end screens need a settled tail.
+- **The 2 s hold before the closing prayer is an EMPTY page**, not a frozen
+  reading frame. The readalong never stops scrolling, so freezing its last frame
+  stalls a moving thing and reads as a glitch.
+- **Boards match the readalongs' exact codec params** — h264 High, yuv420p,
+  1920x1080, 60fps, aac 48kHz mono — so concat is `-c copy` and the approved
+  frames are never re-encoded.

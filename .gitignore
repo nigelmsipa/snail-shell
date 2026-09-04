@@ -19,3 +19,9 @@ bakeoff/
 design/
 
 _scratch/
+
+# EXCEPTION: the Bella day announcements are a PAID, non-reproducible input.
+# 365 ElevenLabs generations, 33 MB. Everything else in this repo can be
+# remade from source; these can only be re-purchased. They are tracked
+# deliberately, against the *.mp3 rule above.
+!bible-in-a-year/production/announcements/*.mp3

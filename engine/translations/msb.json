@@ -1,0 +1,81 @@
+{
+  "slug": "msb",
+  "name": "Majority Standard Bible",
+  "accent": "#8A6BA8",
+  "highlighter": "#c9b3dd",
+  "eyebrow_left": "THE TRANSLATION",
+  "eyebrow_right": "THE HOLY BIBLE",
+  "narration": {
+    "name": "David",
+    "source": "openbible.com"
+  },
+  "_narration_note": "David of openbible.com narrates BOTH the MSB and the KJV. Confirmed by Nigel 2026-09-04. The MSB's audio is SHORTER per chapter than the KJV's (Genesis 1: 4:53 vs 5:39) because the MSB is a more concise translation (738 words vs 797), not because it is a different reader — same voice, 152 vs 141 wpm. Do not infer a narrator from duration.",
+  "_copy": "Nigel's copy, 2026-08-16. Supersedes an earlier draft of mine that wrongly described the whole Bible as built on the Majority Text — the Old Testament is the Berean Standard's, only the New Testament is Byzantine.",
+  "description": [
+    "A contemporary English Bible combining the Berean Standard Bible (BSB)",
+    "Old Testament with a New Testament from the Byzantine Majority Text."
+  ],
+  "facts": [
+    {
+      "label": "PUBLISHED",
+      "value": [
+        "2022"
+      ]
+    },
+    {
+      "label": "TRANSLATED",
+      "value": [
+        "Berean Bible",
+        "Translation Committee"
+      ]
+    },
+    {
+      "label": "OLD TESTAMENT",
+      "value": [
+        "Masoretic",
+        "Hebrew Text"
+      ]
+    },
+    {
+      "label": "NEW TESTAMENT",
+      "value": [
+        "Byzantine Majority",
+        "(Robinson-Pierpont)"
+      ]
+    },
+    {
+      "label": "ENGLISH",
+      "value": [
+        "Contemporary",
+        "(you, your)"
+      ]
+    }
+  ],
+  "why_heading": "Why it exists",
+  "why": "To give readers a clear modern-English Bible from the broader Byzantine manuscript tradition associated with the King James Version.",
+  "_no_copyright_row": "Deliberately absent. Every translation on this channel is public domain by constitution, so the row states the obvious on all fifteen and costs a line of vertical space that the type scale needs. Do not add it back per-translation.",
+  "_why_rationale": "Nigel's wording, 2026-08-16, replacing four drafts of mine. Two rules it encodes: (1) no fighting words for KJV-only readers — never frame the KJV's English as a defect to escape, which every earlier draft did; (2) no lecture for everyone else — the Textus Receptus / Critical Text footnote detail is inside baseball and was cut. 'Associated with' and 'broader' are deliberately loose: they place the tradition without making a claim the text-critical camps would fight over.",
+  "paths": {
+    "audio": "/home/nigel/msb-human-aligned",
+    "units": "/home/nigel/kjv-render"
+  },
+  "_paths_note": "audio = the .opus + -aligned.json + .versemap.json set. units = pericope scene/story structure, which is VERSE-REFERENCE based and therefore shared across translations — MSB deliberately reads the KJV's units directory, that is not a bug. Every renderer resolves these through engine/translation_env.sh; nothing hard-codes a path per translation any more.",
+  "board_seconds": {
+    "translation": 2.75,
+    "contents": 7.5,
+    "outro": 7.0,
+    "zoom": 5.666667
+  },
+  "_board_seconds_note": "Nigel 2026-08-16: the translation poster was 5.5s and is now HALF that. His reasoning: 'I need to come out swinging' — the poster is front matter, not the video, and 'if you want to really read it, you're going to pause. If you don't care, just let it rip.' 2.75s over 1s because a 1s hold is not landable when scrubbing on a phone, which would break the pause-if-you-care premise. Contents and outro are UNCHANGED and were not part of that decision. These numbers are still hard-coded in renderer-gpu/assemble_book.sh — wire that script to this block when it gets parameterised off KJV paths.",
+  "palette": {
+    "paper": "#FFFFFF",
+    "ink": "#28371A",
+    "accent": "#8A6BA8",
+    "highlighter": "#CCB8E0",
+    "hltext": "#28371A",
+    "read": "#A39B8B",
+    "meta": "#9A9388",
+    "dim": "#CECAC1"
+  },
+  "_palette_note": "Locked 2026-08-16. ink = the accent's complement per the ink rule in color-constitution.md."
+}

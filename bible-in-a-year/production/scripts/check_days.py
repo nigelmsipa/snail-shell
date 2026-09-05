@@ -20,11 +20,12 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, "/home/nigel")
+import biay_translation as T
 from generate_announcer_audio import parse_chapter_cues, slug
 
 HOME = Path("/home/nigel")
-DAYS = HOME / "biay-days"
-READALONG = HOME / "wolf-and-word/output/kjv/readalong-carded"
+DAYS = T.paths()["out"]
+READALONG = T.paths()["readalong"]
 SCRIPT = HOME / "WolfandWordProductionScript_v1.json"
 PRAYER_LEN = 13.0
 HOLD = 2.0

@@ -70,6 +70,53 @@ narration credit stated by a human before its outro is rendered.
 `xargs -P 10` on Chromium drove load to 40 on 32 threads, 2,285 processes, and
 `uptime` itself timed out. Cap parallel Chromium at 4.
 
+### 0.9 The caret reads as "behind" — and it is NOT an alignment problem
+Nigel, 2026-09-04, on MSB January: *"it speaks before it highlights... the cursor
+has to be word precise. I feel like it's a little bit behind."* He assumed a fix
+applied to the KJV had failed to propagate to the MSB.
+
+**Measured: it propagated.** `egor.py --report` over genesis-01, genesis-04,
+exodus-20 and john-03 in BOTH corpora returns `snapped=0` every time. Aligned
+word onsets already sit where the audio energy actually begins. The two corpora
+are in identical condition.
+
+So the residual lag is in the CARET MODEL, not the data — and it is therefore
+equally present in the twelve uploaded KJV videos. `repair_onsets.py` states the
+mechanism: monkeypace "sweeps the caret across the active word over that word's
+own spoken duration", so the emphasis reaches the middle of a word about halfway
+through hearing it. On short function words that is imperceptible; on long words
+after a pause it reads as lag.
+
+**Do not "fix" this by re-running alignment or EGOR — there is nothing there to
+find.** If it is ever addressed it is a change to the sweep: give the caret a
+lead, or light the word at onset and let the sweep trail inside it. That is a
+design decision about the reading experience, and it would change every
+translation at once, so it belongs to Nigel and to a deliberate re-render, not
+to a bugfix during a build.
+
+Two related fixes DO belong in the pipeline, both before rendering:
+- `repair_onsets.py <slug> --apply` — first words that swallowed the chapter
+  announcement (one KJV chapter in seven; 56 MSB chapters)
+- `egor.py in.json audio.opus out.json` — early highlights on function words
+
+
+### 0.10 Three colour paths hardcoded to the KJV, found three different ways
+Switching to the MSB exposed three constants holding KJV values in files with no
+translation in their names:
+
+| what | where | found by |
+|---|---|---|
+| prayer boards | `render_full_day.py` -> `biay-samples/prayer_T6_*.mp4` | a gate written for it |
+| intro/credits drain bar | `render_biay_intro.py` -> `GOLD = "B3944D"` | **Nigel, by eye** |
+| the gate's own accent | `build_month.py` -> `GOLD = [179,148,77]` | only because fixing the bar would have broken the gate |
+
+The third is the instructive one: **the check and the bug shared the same wrong
+assumption.** Gate 5 counted KJV-gold pixels to decide the bar was fine, so a
+gold bar on the MSB PASSED and a correct violet one would have FAILED.
+
+A test that hardcodes the same constant as the code it tests is not a test.
+Everything colour-related now resolves through `biay_translation.py`.
+
 ---
 
 ## PART 1 — Prerequisites for a new translation

@@ -24,14 +24,21 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, "/home/nigel")
+import biay_translation as T
 import render_biay_sample as R
+import biay_translation as T
 from generate_announcer_audio import parse_chapter_cues, slug
 
 HOME = Path("/home/nigel")
-OUT = HOME / "biay-days"
-RA = HOME / "wolf-and-word/output/kjv/readalong-carded"
+OUT = T.paths()["out"]
+RA = T.paths()["readalong"]
 SCRIPT = HOME / "WolfandWordProductionScript_v1.json"
-GOLD = np.array([179, 148, 77])
+# The accent is per translation. This was hardcoded to KJV gold, so gate 5
+# counted gold pixels regardless of which Bible was building - it would have
+# passed a gold bar on MSB (it did) and failed a correct violet one.
+def _accent_rgb():
+    h = T.data()["palette"]["accent"].lstrip("#")
+    return np.array([int(h[i:i+2], 16) for i in (0, 2, 4)])
 
 
 def sh(cmd, **kw):
@@ -106,7 +113,11 @@ def main():
     # ---- GATE 2: prove every day against the plan
     p = subprocess.run([sys.executable, str(HOME / "check_days.py"), "--month", str(a.month), "--deep"],
                        capture_output=True, text=True)
-    gate("check_days --deep", p.returncode == 0, p.stdout.strip().splitlines()[-1] if p.stdout else "")
+    _tail = [l for l in (p.stdout or "").strip().splitlines() if "FAIL" in l or "PASS" in l or "PROBLEM" in l]
+    _err = (p.stderr or "").strip().splitlines()[-3:]
+    gate("check_days --deep", p.returncode == 0,
+         (_tail[-1] if _tail else "no summary line") +
+         (("   stderr: " + " | ".join(_err)) if p.returncode and _err else ""))
 
     # ---- intro + outro
     sh([sys.executable, str(HOME / "render_biay_intro.py"), "--month", str(a.month)])
@@ -120,11 +131,18 @@ def main():
     W = Path(tempfile.mkdtemp(prefix=f"{slug_m}-"))
     sh(["ffmpeg", "-v", "error", "-y", "-i", str(intro), "-vf", "fps=1,crop=1920:16:0:0",
         str(W / "b_%03d.png")])
-    vals = [np.all(np.abs(np.array(Image.open(f).convert("RGB")).astype(int) - GOLD) < 40,
+    vals = [np.all(np.abs(np.array(Image.open(f).convert("RGB")).astype(int) - _accent_rgb()) < 40,
                    axis=2)[8].mean() * 100
             for f in sorted(W.glob("b_*.png"))]
     resets = [i for i in range(1, len(vals)) if vals[i] > vals[i - 1] + 20]
     gate("intro drain bar resets per board", len(resets) == 2, f"at t={resets}s (expect 2 resets)")
+
+    # ...and the bar is THIS translation's accent, not another Bible's.
+    b0 = np.array(Image.open(sorted(W.glob("b_*.png"))[0]).convert("RGB")).astype(int)
+    lit = b0.reshape(-1, 3)[np.abs(b0.reshape(-1, 3) - _accent_rgb()).sum(axis=1) < 60]
+    barpx = tuple(int(x) for x in lit.mean(axis=0)) if len(lit) else (0, 0, 0)
+    gate("drain bar is this translation's accent", len(lit) > 20000,
+         f"want {tuple(int(x) for x in _accent_rgb())} got {barpx} over {len(lit)}px")
 
     # ---- GATE 4: one codec signature, or the copy is unsafe
     segs = [intro] + [OUT / f"day{n:03d}.mp4" for n in days] + [outro]
@@ -179,6 +197,58 @@ def main():
             missing.append(name)
     gate("intro + credits boards in output", not missing,
          "translation/contents/zoom/credits" + (f"  MISSING {missing}" if missing else ""))
+
+    # ---- GATE 10: the boards name the RIGHT BIBLE.
+    # engine/translation_env.sh: "forget TRANSLATION_LABEL -> all 1,189 chapters say
+    # KING JAMES VERSION ... every duration gate passes, because the video is the
+    # right LENGTH, just the wrong Bible." Gates 1-9 would all pass on that. This one
+    # will not. Two independent checks:
+    #   ink   - the hero type's colour must be THIS translation's ink
+    #   label - the footer's translation name, measured by ink width, must match a
+    #           freshly rendered reference for the expected name more closely than
+    #           for any other translation's name
+    im = frame(tmp, marks[0][0] + 3, W / "label.png")
+    arr = np.array(im.convert("RGB")).astype(int)
+    want_ink = tuple(int(T.data()["palette"]["ink"].lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
+    dark = arr.reshape(-1, 3)[np.array(im.convert("L")).reshape(-1) < 120]
+    got = tuple(int(x) for x in dark.mean(axis=0)) if len(dark) else (0, 0, 0)
+    ink_ok = sum(abs(a - b) for a, b in zip(got, want_ink)) < 90
+    gate("day board ink is this translation's", ink_ok,
+         f"want {want_ink} got {got}")
+
+    def label_width(text):
+        html = (f'<!doctype html><meta charset="utf-8">'
+                f'<link href="{R.FONTS}" rel="stylesheet"><style>'
+                f'html,body{{width:1920px;height:200px;margin:0;background:#fff}}'
+                f'div{{font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:26px;'
+                f'letter-spacing:.30em;text-transform:uppercase;color:#000;padding:80px 0 0 40px}}'
+                f'</style><div>{text}</div>')
+        png = W / ("ref_" + "".join(c for c in text if c.isalnum())[:20] + ".png")
+        R.shot(html, png)
+        g = np.array(Image.open(png).convert("L")).astype(int)
+        cols = np.where(g.min(axis=0) < 160)[0]
+        return int(cols.max() - cols.min() + 1) if len(cols) else 0
+
+    band = np.array(im.convert("L")).astype(int)[955:1000]
+    cols = np.where(band.min(axis=0) < 170)[0]
+    got_w = int(cols.max() - cols.min() + 1) if len(cols) else 0
+    cands = {}
+    for f in sorted((HOME / "wolf-and-word/engine/translations").glob("*.json")):
+        cands[f.stem] = label_width(json.loads(f.read_text())["name"])
+    best = min(cands, key=lambda k: abs(cands[k] - got_w))
+    gate("footer names the right translation", best == T.slug(),
+         f"measured {got_w}px -> closest is '{best}' " +
+         ", ".join(f"{k}={v}" for k, v in sorted(cands.items())))
+
+    # ---- GATE 11: the PRAYER board is this translation's ink.
+    # Gate 10 samples the day board and would pass a month whose prayer boards
+    # came from another Bible - which is precisely what happened to MSB January.
+    pt = marks[0][0] + R.dur(HOME / f"audio/day{plan[0]['day']:03d}_bella_announcement.mp3") + 6.0
+    pim = np.array(frame(tmp, pt, W / "prayer.png").convert("RGB")).astype(int)
+    pm = pim[400:700, 300:1600].reshape(-1, 3).mean(axis=0)
+    pdelta = sum(abs(a - b) for a, b in zip(pm, want_ink))
+    gate("prayer board ink is this translation's", pdelta < 60,
+         f"want {want_ink} got ({pm[0]:.0f},{pm[1]:.0f},{pm[2]:.0f}) delta {pdelta:.0f}")
 
     # ---- promote
     final = OUT / f"{slug_m}.mp4"

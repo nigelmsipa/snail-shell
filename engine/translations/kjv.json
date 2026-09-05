@@ -1,0 +1,25 @@
+{
+  "slug": "kjv",
+  "name": "King James Version",
+  "accent": "#B3944D",
+  "highlighter": "#f4d999",
+  "eyebrow_left": "THE TRANSLATION",
+  "eyebrow_right": "THE HOLY BIBLE",
+  "_copy": "Written 2026-09-04 to give the KJV the same data file every other translation already had. Values are what ACTUALLY SHIPPED in the 12 Bible-in-a-Year month videos, cross-checked against color-constitution.md.",
+  "narration": { "name": "David", "source": "openbible.com" },
+  "_narration_note": "David of openbible.com narrates BOTH the KJV and the MSB. Confirmed by Nigel 2026-09-04. Do not infer a narrator from audio duration: MSB's Genesis 1 is shorter (4:53 vs 5:39) because the MSB is a more concise translation (738 words vs 797), not because it is a different reader. Same reader, 152 vs 141 wpm.",
+  "paths": { "audio": "/home/nigel/openbible-kjv", "units": "/home/nigel/kjv-render" },
+  "board_seconds": { "translation": 5.5, "contents": 12.0, "outro": 8.0, "zoom": 5.666667 },
+  "_board_seconds_note": "contents is 12.0 for Bible-in-a-Year, NOT the library's 7.5: a month board carries 31 rows instead of 5, and a signpost you cannot read is not a signpost. translation stays 5.5 for the KJV; MSB cut its to 2.75 ('come out swinging'). The intro builder reads each clip's own duration off disk, so these are documentation, not inputs.",
+  "palette": {
+    "paper": "#ffffff",
+    "ink": "#26324f",
+    "accent": "#B3944D",
+    "highlighter": "#f4d999",
+    "hltext": "#26324f",
+    "read": "#a39b8b",
+    "meta": "#9a9388",
+    "dim": "#c9c3b7"
+  },
+  "_palette_note": "ink #26324f is the shipped navy, which THE INK RULE reproduces from gold (hue 42 -> complement 222). color-constitution.md gives paper as #fcfcfc; the shipped BIAY boards use #ffffff. The difference is 3/255 and invisible, but #ffffff is recorded here because it is what is in the uploaded videos. Reconcile deliberately, not by accident."
+}

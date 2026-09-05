@@ -18,16 +18,26 @@ import argparse, json, subprocess, sys, tempfile, time
 from pathlib import Path
 
 sys.path.insert(0, "/home/nigel")
+import biay_translation as T
 import render_biay_sample as R
 from generate_announcer_audio import parse_chapter_cues, slug
 R.EDGE_PX = 16
 
 HOME = Path("/home/nigel")
-OUT = HOME / "biay-days"
-READALONG = HOME / "wolf-and-word/output/kjv/readalong-carded"
+OUT = T.paths()["out"]
+READALONG = T.paths()["readalong"]
 SCRIPT = HOME / "WolfandWordProductionScript_v1.json"
-PRAYER_BEFORE = HOME / "biay-samples/prayer_T6_before.mp4"
-PRAYER_AFTER  = HOME / "biay-samples/prayer_T6_after.mp4"
+# The prayer boards are PER TRANSLATION. These two paths contain no translation
+# name, which is exactly why a grep for "kjv" missed them and 31 MSB days shipped
+# with the KJV's navy board against MSB olive ink. KJV keeps the exact clips that
+# shipped inside twelve uploaded videos; everything else renders its own via
+# render_prayer.py.
+if T.slug() == "kjv":
+    PRAYER_BEFORE = HOME / "biay-samples/prayer_T6_before.mp4"
+    PRAYER_AFTER  = HOME / "biay-samples/prayer_T6_after.mp4"
+else:
+    PRAYER_BEFORE = T.paths()["out"] / "prayer_before.mp4"
+    PRAYER_AFTER  = T.paths()["out"] / "prayer_after.mp4"
 # the reading must not slam straight into the closing prayer - the production
 # script asks for pre_silence_sec [2,3] before it. Hold the last frame, silent.
 PRE_SILENCE = 2.0
@@ -90,7 +100,11 @@ def prayer_60(which, cache={}):
         else:
             OUT.mkdir(parents=True, exist_ok=True)
             p = OUT / f"_prayer_{which}_60.mp4"
-            if not p.exists():
+            # STALENESS CHECK. "exists" is not "current". A cached re-encode of
+            # the KJV board survived a translation switch here and put navy prayer
+            # boards inside 31 MSB days, while the source path resolved correctly
+            # the whole time. Re-encode whenever the cache predates its source.
+            if not p.exists() or p.stat().st_mtime < src.stat().st_mtime:
                 sh(["ffmpeg", "-v", "error", "-y", "-i", str(src), *VENC,
                     "-af", "aresample=48000", *AENC, str(p)])
             cache[which] = p

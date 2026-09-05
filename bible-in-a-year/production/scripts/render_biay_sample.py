@@ -20,7 +20,11 @@ KJV = ROOT / "openbible-kjv"
 CHROMIUM = "/usr/sbin/chromium"
 EDGE_PX = 5   # full-bleed rule thickness; --edge-px overrides
 
-TOK = """--paper:#ffffff;--ink:#26324f;--metadata:#9a9388;--faint:#c9c3b7;--hair:#e6e2da;--gold:#B3944D"""
+# palette + name come from engine/translations/<slug>.json via BIAY_TRANSLATION.
+# Hardcoding these is how 1,189 chapters end up saying the wrong Bible.
+import biay_translation as T
+TOK = T.tokens()
+TRANS_NAME = T.name()
 FONTS = ("file:///home/nigel/wolf-and-word/assets/fonts/wolf-fonts.css")
 
 
@@ -93,7 +97,7 @@ body::before{{content:"";position:absolute;inset:0;pointer-events:none;
   <span class="grey">Day {day} of 365</span></div>
 <div class="wrap"><div class="datehero">{date}</div>
   <div class="reading">{reading}</div></div>
-<div class="foot"><div class="trans">King James Version</div>{year}</div>{edge}"""
+<div class="foot"><div class="trans">{TRANS_NAME}</div>{year}</div>{edge}"""
 
 
 def shot(html, png):

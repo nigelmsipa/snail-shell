@@ -33,16 +33,23 @@ import argparse, calendar, json, re, subprocess, sys, tempfile
 from pathlib import Path
 
 sys.path.insert(0, "/home/nigel")
+import biay_translation as T
 import render_biay_sample as R
 
 HOME = Path("/home/nigel")
-OUT = HOME / "biay-days"
-BOARDS = HOME / "wolf-and-word/output/kjv/assets/boards"
+OUT = T.paths()["out"]
+BOARDS = T.paths()["boards"]
 CUES = HOME / "wolf-and-word/assets/cues"
 SCRIPT = HOME / "WolfandWordProductionScript_v1.json"
 FONTS = "file:///home/nigel/wolf-and-word/assets/fonts/wolf-fonts.css"
 
-GOLD, HAIR = "B3944D", "e6e2da"
+# The drain bar is THIS TRANSLATION'S accent. Hardcoding it left every MSB
+# intro and credits board wearing the KJV's gold bar over MSB olive type -
+# Nigel caught it by eye; no gate was looking at the bar's COLOUR, only that
+# it reset once per board. HAIR is the unfilled track and stays neutral,
+# matching gen_book_boards.py, whose dividers are neutral in every translation.
+GOLD = T.data()["palette"]["accent"].lstrip("#")
+HAIR = "e6e2da"
 EDGE_PX = 16                 # decreed
 CUE_GAIN_DB = 16             # -24 dB master -> ~-8 dB, just under the voices
 
@@ -115,8 +122,7 @@ def contents_html(month_name, rows_by_book):
 
     return f"""<!doctype html><meta charset="utf-8">
 <link href="{FONTS}" rel="stylesheet"><style>
-:root{{--paper:#ffffff;--ink:#26324f;--metadata:#9a9388;--faint:#c9c3b7;
---hair:#e6e2da;--gold:#B3944D;
+:root{{{T.tokens()};
 --display:"DM Serif Display",Georgia,serif;--serif:"Source Serif 4",Georgia,serif;
 --sans:"IBM Plex Sans",system-ui,sans-serif}}
 *{{box-sizing:border-box;margin:0;padding:0}}
@@ -150,7 +156,7 @@ body::before{{content:"";position:absolute;inset:0;pointer-events:none;
 </style>
 <div class="map">
   <div class="head"><div class="book">{month_name}</div>
-    <div class="hr"><div class="t">King James Version</div><div class="s">{sub}</div></div></div>
+    <div class="hr"><div class="t">{T.name()}</div><div class="s">{sub}</div></div></div>
   <div class="cols">{cols}</div>
 </div>"""
 

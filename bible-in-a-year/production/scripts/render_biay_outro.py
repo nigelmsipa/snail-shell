@@ -18,6 +18,7 @@ import argparse, calendar, json, subprocess, sys, tempfile
 from pathlib import Path
 
 sys.path.insert(0, "/home/nigel")
+import biay_translation as T
 import render_biay_sample as R
 from render_biay_intro import (HOME, OUT, CUES, SCRIPT, FONTS, VENC, AENC,
                                EDGE_PX, sh, dur, timed_board)
@@ -27,10 +28,13 @@ FADE = 1.6
 
 
 def credits_html(month, span):
+    # The credit is STATED per translation in engine/translations/<slug>.json,
+    # never inherited from this template. gen_book_boards.py hardcoded it and
+    # every translation it ever rendered carried the KJV's line by default.
+    _nar_name, _nar_src = T.narration()
     return f"""<!doctype html><meta charset="utf-8">
 <link href="{FONTS}" rel="stylesheet"><style>
-:root{{--paper:#ffffff;--ink:#26324f;--ink-soft:#4f535a;--metadata:#9a9388;
---hair:#e6e2da;--gold:#B3944D;
+:root{{{T.tokens()};--ink-soft:#4f535a;
 --display:"DM Serif Display",Georgia,serif;--serif:"Source Serif 4",Georgia,serif;
 --sans:"IBM Plex Sans",system-ui,sans-serif}}
 *{{box-sizing:border-box;margin:0;padding:0}}
@@ -60,8 +64,8 @@ body::before{{content:"";position:absolute;inset:0;pointer-events:none;mix-blend
   <div class="left"><div class="eyebrow">Complete</div><h3>{month}</h3>
     <div class="sum">{span}</div></div>
   <div class="right">
-    <div class="cr"><span class="k">Translation</span>King James Version</div>
-    <div class="cr"><span class="k">Narration</span>David<span class="src">openbible.com</span></div>
+    <div class="cr"><span class="k">Translation</span>{T.name()}</div>
+    <div class="cr"><span class="k">Narration</span>{_nar_name}<span class="src">{_nar_src}</span></div>
   </div>
 </div><div class="brand">W &amp; W</div>"""
 

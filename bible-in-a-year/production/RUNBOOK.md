@@ -202,6 +202,24 @@ The KJV makes this easy to test, because it is built from them — Genesis 1 is
 stress-test of precisely the failure mode. Run the sample there, not on a
 narrative chapter with long words.
 
+### The measurement that proves it (Genesis 1, KJV)
+
+| | |
+|---|---|
+| words in the chapter | 797 |
+| how many are "and" | **97 — 12% of the chapter** |
+| "and"s preceded by a gap >100 ms | **89 of 97**, median gap **760 ms** |
+| median SPOKEN DURATION of "and" | **100 ms** |
+| `PACE_SMOOTH` caret lag | **120 ms** |
+
+**The caret lag is 120% of an entire "and".** On the most common word in the
+KJV — 97 times in one chapter, 89 of them after a three-quarter-second pause —
+the caret is more than a full word behind. It is still arriving at the "and"
+after the "and" has been spoken and the next word has started.
+
+This is not a subtle tuning artifact and it is not a matter of taste. It is the
+read-along's central promise failing on 12% of the text.
+
 **A translation is not cleared to render until the "and"s are on point.**
 
 **Verification, once implemented:** for every word, sample the caret's x at that

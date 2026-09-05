@@ -200,6 +200,13 @@ rendering and no eyes, and it should become a gate.
   ("come out swinging"). Decide per translation; the builder reads the clip's
   own duration off disk.
 - **`repair_onsets.py <slug> --apply`** — MUST run before rendering
+- **CRF stays 18. SETTLED 2026-09-04, do not reopen.** Measured on a real
+  chapter: CRF 22 saves 41% of the file but puts ELEVEN TIMES more error onto
+  the ink (7,930 pixels >8 off vs 741 at CRF 18), and YouTube re-encodes on top
+  of that. The files are large because a month is eight hours, not because the
+  bitrate is high — 10.1 GB over 8h12m is only 2.9 Mbps, well under YouTube's
+  recommended 12 Mbps for 1080p60. Text on paper is the worst case for
+  compression artifacts. Nothing is gained by turning this dial.
 
 ## PART 1 — Prerequisites for a new translation
 

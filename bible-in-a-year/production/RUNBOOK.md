@@ -119,6 +119,88 @@ Everything colour-related now resolves through `biay_translation.py`.
 
 ---
 
+# PART 0.5 — DECIDE BEFORE YOU RENDER
+
+Read this section before the FIRST chapter of a new translation is rendered.
+Everything in it is baked into frames. Once a corpus is rendered and uploaded it
+is not patchable — that is the deal an artifact makes with you.
+
+> *"That's the one thing about an artifact: you have to get it right the first
+> time. And if you don't get it right, you have to live with it."*
+> — Nigel, 2026-09-04, after shipping twelve KJV months
+
+## 0.5.1 THE CARET RULE — a requirement, not a preference
+
+> **"There's no decision to settle. The decision is: the word that is spoken is
+> what should be highlighted."** — Nigel, 2026-09-04
+
+This is not a taste setting to A/B. It is the read-along's defining promise. If
+the marker is not on the word you are hearing, the thing has failed at the one
+job it exists to do. Treat any violation as a bug, not a trade-off.
+
+### Where it currently stands
+Two markers move. Only one breaks the rule.
+
+**Word ignition — COMPLIES.** `build_genesis.py`:
+
+    # Advance the highlight at the next word's true onset minus this lead
+    # — never at the gap midpoint. Locked 2026-07-06 (the "and lights up early" fix).
+    LEAD_MS = 50
+
+Words light 50 ms before they are spoken. Correct, and confirmed intact:
+`egor.py --report` returns `snapped=0` across four chapters in BOTH the KJV and
+MSB corpora. The alignment is not the problem and there is nothing to re-run.
+
+**The gold caret — VIOLATES.**
+
+    PACE_SMOOTH = float(os.environ.get("PACE_SMOOTH", "120"))
+    # The filter lags the target slightly and catches up.
+
+A 120 ms low-pass filter on caret POSITION. At ~141 wpm a word averages ~425 ms,
+so 120 ms of lag is roughly a quarter to a third of a word — and after a pause,
+or across short function words, it puts the caret behind the word being spoken.
+That is the rule broken.
+
+### The fix is NOT to disable smoothing
+`PACE_SMOOTH=0` would satisfy the caret rule and break the other standing rule —
+**"caret flows, never dashes"**: a fresh motion onset every word grabs attention
+involuntarily, which is the entire reason monkeypace replaced monkeytype. Both
+rules hold at once. Neither is negotiable.
+
+### The fix is to CLAMP the smoothed position to the active word
+Let the low-pass filter do its job — it exists to kill the velocity spikes that
+read as "too fast" — but bound its output so it can never leave the span of the
+word currently being spoken:
+
+    target   = word-locked caret position
+    smoothed = low_pass(target, PACE_SMOOTH)
+    caret    = clamp(smoothed, active_word.x_start, active_word.x_end)
+
+Inside a word the filter is free and the motion stays smooth. At a word boundary
+the clamp pulls the caret forward so it cannot sit on the previous word while a
+new one is being spoken. Flow is preserved; the promise is kept.
+
+**Unimplemented as of 2026-09-04.** It must land before the first chapter of the
+next corpus is rendered — Nigel's order is Matthew's Bible BEFORE Geneva. The
+KJV and MSB shipped without it and cannot be patched: 96 hours of rendered video
+and an upload in progress. See `Thinking/2026-09-04-the-artifact-has-no-patch-tuesday.md`.
+
+**Verification, once implemented:** for every word, sample the caret's x at that
+word's onset+10 ms and at its end-10 ms, and assert both fall inside that word's
+glyph span. That is a deterministic check over the scene JSON — it needs no
+rendering and no eyes, and it should become a gate.
+
+## 0.5.2 The other before-you-render decisions
+- **narration credit** — stated in `engine/translations/<slug>.json`, never
+  inherited from a template (0.7)
+- **accent + ink** — accent by publication year; ink = the accent's complement
+  per THE INK RULE in `color-constitution.md`. Geneva `#B37D56`/`#213544`,
+  Webster `#95A653`/`#352B5A`, ASV `#4F9270`/`#4E253A` are already derived.
+- **`board_seconds.translation`** — the KJV poster is 5.5 s, the MSB's is 2.75 s
+  ("come out swinging"). Decide per translation; the builder reads the clip's
+  own duration off disk.
+- **`repair_onsets.py <slug> --apply`** — MUST run before rendering
+
 ## PART 1 — Prerequisites for a new translation
 
 Nothing below is optional. If any is missing, stop and get it; do not improvise.

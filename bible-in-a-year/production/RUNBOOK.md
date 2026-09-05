@@ -185,6 +185,25 @@ next corpus is rendered — Nigel's order is Matthew's Bible BEFORE Geneva. The
 KJV and MSB shipped without it and cannot be patched: 96 hours of rendered video
 and an upload in progress. See `Thinking/2026-09-04-the-artifact-has-no-patch-tuesday.md`.
 
+### THE ACCEPTANCE TEST: the "and"s
+> *"All I know about the future is that the ands need to be on point."*
+> — Nigel, 2026-09-04
+
+Do not judge the caret on an average word. Judge it on **"and"** — a short
+function word arriving after a pause, which is the exact case that breaks:
+the pause gets swallowed into the word's span, the caret is still catching up
+from the previous word, and the eye is waiting at a hard prosodic boundary.
+
+EGOR exists because "and" lit up ~400 ms early. The clamp must not trade that
+for "and" lighting up late.
+
+The KJV makes this easy to test, because it is built from them — Genesis 1 is
+*And God said… And there was… And God saw…* Any passage of it is a dense
+stress-test of precisely the failure mode. Run the sample there, not on a
+narrative chapter with long words.
+
+**A translation is not cleared to render until the "and"s are on point.**
+
 **Verification, once implemented:** for every word, sample the caret's x at that
 word's onset+10 ms and at its end-10 ms, and assert both fall inside that word's
 glyph span. That is a deterministic check over the scene JSON — it needs no
